@@ -1182,17 +1182,174 @@ img {
 .theme-picker-actions button { flex:1; border-radius:12px; padding:10px; background:var(--surface-3); font-size:12px; }
 @media (prefers-reduced-motion: reduce) { .app,.app::before,.app::after,.theme-preset::before { animation:none !important; } }
 
-/* ===== AITEL Telegram-inspired visual refresh ===== */
-:root{--tg-bg:#202b42;--tg-surface:rgba(30,43,66,.94);--tg-surface-2:rgba(47,61,88,.94);--tg-line:rgba(179,202,235,.13);--tg-blue:#4b91f2}
-html,body,.app{background:#202b42!important}.app{background:radial-gradient(ellipse at 12% 0%,rgba(38,117,148,.24),transparent 42%),radial-gradient(ellipse at 90% 100%,rgba(64,89,160,.24),transparent 48%),linear-gradient(145deg,#1d2940,#202b42 55%,#18283e)!important;color:#f4f7ff}.app:before,.app:after{opacity:.13!important;filter:blur(28px)!important}
-.screen{background:rgba(31,43,66,.96)!important;color:#f4f7ff}.page{background:transparent!important}.page-heading p,.muted,.profile-username,.profile-bio{color:#aab7cc!important}
-.search-box,.filter-row,.section-card,.chat-item,.profile-header,.setting-row,.empty-state{background:rgba(48,61,87,.82)!important;border-color:rgba(193,211,239,.12)!important;color:#f4f7ff!important;box-shadow:0 8px 24px rgba(5,13,28,.12)}.search-box input{color:#f4f7ff!important}.search-box input::placeholder{color:#a3aec2!important}.filter-chip{color:#e7edf8!important}.filter-chip.active{background:#4a91f0!important;color:white!important}
-.bottom-nav{background:rgba(24,35,56,.86)!important;border:1px solid rgba(194,215,246,.16)!important;box-shadow:0 10px 34px rgba(0,0,0,.28);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%)}.nav-item{color:#9eabc0!important}.nav-item.active{color:#62a1ff!important}
-.icon-btn,.back-btn,.composer-action{background:rgba(63,81,112,.72)!important;color:#f5f8ff!important;border:1px solid rgba(207,224,250,.12)!important}
-.chat-screen{background:radial-gradient(circle at 14% 18%,rgba(20,119,145,.24),transparent 35%),radial-gradient(circle at 85% 75%,rgba(43,93,164,.25),transparent 42%),linear-gradient(145deg,#07384b,#102d4c 55%,#182b4b)!important}.chat-header{background:rgba(8,43,62,.72)!important;border-bottom:1px solid rgba(185,218,246,.13)!important;backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}.chat-header-info strong{color:#fff!important}.chat-header-info small{color:#a9c0d5!important}
-.messages-area{background:radial-gradient(circle at 15% 20%,rgba(61,154,176,.10),transparent 28%),radial-gradient(circle at 85% 70%,rgba(72,111,190,.12),transparent 34%),repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 1px,transparent 1px 22px),transparent!important}.message-row.mine .message-bubble{background:linear-gradient(145deg,#587ba9,#46658f)!important;color:#fff!important;border:1px solid rgba(221,237,255,.13)!important;border-bottom-left-radius:17px!important;border-bottom-right-radius:5px!important}.message-row.theirs .message-bubble{background:rgba(30,47,70,.94)!important;color:#f3f6fb!important;border:1px solid rgba(201,222,247,.08)!important;border-bottom-left-radius:5px!important}.message-meta{color:#b9c8dc!important}.date-divider{background:rgba(28,48,73,.75)!important;color:#d6e1ef!important}
-.composer-wrap{background:linear-gradient(transparent,rgba(10,28,49,.32))!important}.composer{background:rgba(12,34,57,.82)!important;border:1px solid rgba(186,216,244,.18)!important;border-radius:28px!important;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}.composer textarea{color:white!important}.composer textarea::placeholder{color:#9baec5!important}.send-btn,.primary-btn{background:#438df0!important;color:white!important}.modal,.modal-head{background:#24344f!important;color:#f5f7fb!important}.modal{border:1px solid rgba(205,224,248,.15)!important}.modal-backdrop{background:rgba(3,10,22,.68)!important}
-.aitel-emoji-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:8px 0}.aitel-emoji{font-size:25px;padding:9px 2px;border-radius:12px;background:rgba(255,255,255,.08);color:white}.aitel-emoji:active{transform:scale(.92);background:rgba(75,145,242,.28)}.aitel-chat-more{display:grid;gap:8px}.aitel-chat-more button{padding:13px;border-radius:12px;text-align:right;background:rgba(255,255,255,.08);color:white}
+
+/* ===== Telegram-like chat wallpaper and glass UI ===== */
+:root {
+  --tg-blue: #4b91f2;
+}
+.app {
+  background-color: var(--aitel-wallpaper-base, #17243a) !important;
+  background-image: var(--aitel-wallpaper-glow, none), var(--aitel-wallpaper, none) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: cover, 300px 360px !important;
+  transition: background-color .35s ease, background-image .35s ease;
+}
+.screen {
+  background-color: transparent !important;
+  background-image: var(--aitel-wallpaper-glow, none), var(--aitel-wallpaper, none) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: cover, 300px 360px !important;
+}
+#mainScreen {
+  background-color: var(--aitel-wallpaper-base, #17243a) !important;
+}
+#mainScreen .topbar,
+#mainScreen .bottom-nav {
+  background: rgba(23, 36, 58, .80) !important;
+  border-color: rgba(190, 215, 245, .13) !important;
+  backdrop-filter: blur(24px) saturate(145%);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+}
+#mainScreen .section-card,
+#mainScreen .chat-item,
+#mainScreen .search-box,
+#mainScreen .filter-row,
+#mainScreen .profile-header {
+  background: rgba(29, 45, 69, .88) !important;
+  border-color: rgba(190, 215, 245, .12) !important;
+  color: #f4f7ff !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+#mainScreen .setting-row,
+#mainScreen .section-title,
+#mainScreen .brand-name,
+#mainScreen .chat-name,
+#mainScreen .chat-preview,
+#mainScreen .setting-info strong,
+#mainScreen .setting-info small,
+#mainScreen .profile-name {
+  color: #f3f6fc !important;
+}
+#mainScreen .muted,
+#mainScreen .chat-time,
+#mainScreen .profile-username,
+#mainScreen .profile-bio {
+  color: #aabbd2 !important;
+}
+.chat-screen {
+  background-color: #102d49 !important;
+  background-image: var(--aitel-wallpaper-glow, none), var(--aitel-wallpaper, none) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: cover, 300px 360px !important;
+}
+.chat-header {
+  background: rgba(7, 42, 62, .78) !important;
+  border-color: rgba(197, 224, 249, .13) !important;
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+.messages-area {
+  background-color: transparent !important;
+  background-image: var(--aitel-wallpaper-glow, none), var(--aitel-wallpaper, none) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: cover, 300px 360px !important;
+}
+.composer-wrap {
+  background: rgba(7, 31, 52, .72) !important;
+  border-color: rgba(197, 224, 249, .14) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.composer-input-wrap {
+  background: rgba(15, 43, 68, .88) !important;
+  border-color: rgba(197, 224, 249, .18) !important;
+}
+.composer textarea { color: #f7f9ff !important; }
+.composer textarea::placeholder { color: #a8bad0 !important; }
+.message-row.mine .message-bubble {
+  background: linear-gradient(145deg, #587ba9, #45658f) !important;
+  color: white !important;
+  border: 1px solid rgba(220, 237, 255, .13) !important;
+  border-bottom-right-radius: 5px !important;
+}
+.message-row.theirs .message-bubble {
+  background: rgba(27, 47, 70, .94) !important;
+  color: #f5f7fb !important;
+  border: 1px solid rgba(201, 222, 247, .09) !important;
+  border-bottom-left-radius: 5px !important;
+}
+.message-meta { color: #c1d0e2 !important; }
+.date-divider {
+  background: rgba(25, 49, 75, .82) !important;
+  color: #dbe6f3 !important;
+  backdrop-filter: blur(10px);
+}
+.modal-backdrop { backdrop-filter: blur(10px); }
+.theme-picker-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  max-height: min(62vh, 560px) !important;
+  overflow-y: auto !important;
+  padding: 3px !important;
+}
+.theme-preset {
+  min-height: 112px !important;
+  padding: 8px !important;
+  border-radius: 15px !important;
+  background: rgba(31, 48, 73, .96) !important;
+  color: #f5f8ff !important;
+  border: 1px solid rgba(205, 225, 250, .13) !important;
+  text-align: right !important;
+}
+.theme-preset-preview {
+  height: 62px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 7px;
+  padding: 4px 9px;
+  color: rgba(255,255,255,.82);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.32), transparent 28%),
+    radial-gradient(circle at 85% 80%, var(--swatch-b), transparent 48%),
+    linear-gradient(135deg, var(--swatch-a), var(--swatch-b));
+  background-size: cover;
+  position: relative;
+}
+.theme-preset-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .42;
+  background-image: repeating-linear-gradient(135deg, transparent 0 13px, rgba(255,255,255,.26) 14px 15px, transparent 16px 28px);
+  animation: aitelWallpaperShift 10s linear infinite;
+}
+.theme-preset-preview i,
+.theme-preset-preview b { position: relative; z-index: 1; font-size: 13px; font-style: normal; letter-spacing: 4px; }
+.theme-preset-preview b { text-align: left; }
+.theme-preset strong { display: block; font-size: 10px !important; }
+.theme-preset small { color: #b6c6dc !important; font-size: 9px !important; }
+.theme-preset.selected {
+  border: 2px solid #58a0ff !important;
+  box-shadow: 0 0 0 2px rgba(75,145,242,.18), 0 8px 22px rgba(0,0,0,.18) !important;
+}
+.theme-picker-intro { color: #bdcce0 !important; font-size: 11px; line-height: 1.9; }
+.theme-picker-actions button {
+  background: #344c6c !important;
+  color: white !important;
+  border-radius: 12px !important;
+}
+@keyframes aitelWallpaperShift {
+  from { transform: translate3d(-8px, -5px, 0); }
+  to { transform: translate3d(8px, 5px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-preset-preview::after { animation: none !important; }
+}
 
 </style>
 </head>
@@ -2679,65 +2836,135 @@ const AITEL_BACKGROUND_THEMES = Array.from({length:100}, (_, index) => {
   return { id: index + 1, name: `${palette[0]} ${AITEL_BACKGROUND_STYLES[index % 10]}`, a: palette[1], b: palette[2], style: index % 10 };
 });
 
+
+/* Telegram-style wallpaper engine: 100 selectable combinations */
+const AITEL_WALLPAPER_MOTIFS = [
+  "✧  ◇  ♡  ◌  ⌁  ☆", "☾  ✦  ◍  ⌘  ✧  ◇", "♡  ♡  ✧  ◌  ☆  ⌁",
+  "◉  ◌  ◇  ✦  ⌁  ⊹", "✈  ✧  ♡  ◍  ☆  ◇", "☁  ☾  ✦  ◌  ♡  ⌁",
+  "♧  ✧  ◇  ◉  ☆  ♡", "⌁  ⊹  ✦  ◌  ◇  ☾", "☆  ♡  ✧  ◍  ✈  ⌁",
+  "◇  ◉  ☾  ✦  ♡  ⊹"
+];
+
+function makeTelegramWallpaper(theme) {
+  const accent = theme.a;
+  const accent2 = theme.b;
+  const motif = AITEL_WALLPAPER_MOTIFS[theme.style];
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="300" height="360" viewBox="0 0 300 360">
+    <g fill="none" stroke="${accent}" stroke-opacity=".22" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M28 48c8-15 28-15 36 0 8 15-18 30-18 30S20 63 28 48Z"/>
+      <circle cx="130" cy="35" r="13"/><circle cx="130" cy="35" r="5"/>
+      <path d="m220 28 7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2Z"/>
+      <path d="M40 160c-8-8-20-2-17 9 2 8 17 20 17 20s15-12 17-20c3-11-9-17-17-9Z"/>
+      <path d="M145 126q20-18 40 0t0 36q-20 18-40 0t0-36Z"/>
+      <path d="m230 145 28 12-28 12 6-12-6-12Z"/><path d="M230 157h-19"/>
+      <path d="M83 260c0-17 28-17 28 0 0 10-14 22-14 22S83 270 83 260Z"/>
+      <path d="M180 248l13 13-13 13-13-13Z"/><path d="M244 270c8-9 22-9 30 0"/>
+      <path d="M24 320q15-15 30 0m-15-15v30"/>
+      <circle cx="145" cy="315" r="10"/><path d="M145 300v30m-15-15h30"/>
+    </g>
+    <g fill="none" stroke="${accent2}" stroke-opacity=".20" stroke-width="1.8" stroke-linecap="round">
+      <path d="M80 80q10-12 20 0t20 0"/><path d="M190 85q10-12 20 0t20 0"/>
+      <circle cx="68" cy="215" r="17"/><circle cx="68" cy="215" r="7"/>
+      <path d="M145 205l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z"/>
+      <path d="M260 330q-10-18-20 0t-20 0"/>
+    </g>
+    <g fill="${accent}" fill-opacity=".22" font-family="Arial" font-size="17">
+      <text x="12" y="112">${motif.slice(0, 3)}</text>
+      <text x="190" y="215">${motif.slice(6, 9)}</text>
+      <text x="112" y="350">${motif.slice(12, 15)}</text>
+    </g>
+  </svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+
 function applyBackgroundTheme(id, save = true) {
   const theme = AITEL_BACKGROUND_THEMES.find(item => item.id === Number(id)) || AITEL_BACKGROUND_THEMES[0];
   const app = document.querySelector(".app");
   if (!app) return;
+
+  const wallpaper = makeTelegramWallpaper(theme);
+  const glow = `radial-gradient(ellipse at 12% 18%, ${theme.a}30, transparent 48%), radial-gradient(ellipse at 88% 82%, ${theme.b}30, transparent 48%)`;
+  const base = document.documentElement.dataset.theme === "dark" ? "#17243a" : "#eaf1fa";
+
+  app.style.setProperty("--aitel-wallpaper", wallpaper);
+  app.style.setProperty("--aitel-wallpaper-glow", glow);
+  app.style.setProperty("--aitel-wallpaper-base", base);
   app.style.setProperty("--bg-a", theme.a);
   app.style.setProperty("--bg-b", theme.b);
   app.style.setProperty("--orb-speed", `${15 + (theme.style % 5) * 3}s`);
-  app.style.setProperty("--orb-opacity", theme.style === 9 ? ".22" : theme.style === 4 ? ".55" : ".42");
-  app.style.setProperty("--orb-blur", theme.style === 4 ? "8px" : theme.style === 8 ? "3px" : "1px");
-  const a = theme.a, b = theme.b;
-  const patterns = [
-    `radial-gradient(ellipse at 12% 18%, ${a}55, transparent 42%), radial-gradient(ellipse at 88% 82%, ${b}55, transparent 45%), linear-gradient(135deg, ${a}12, ${b}16)`,
-    `radial-gradient(circle at 20% 25%, ${a}77 0 7%, transparent 8%), radial-gradient(circle at 78% 72%, ${b}88 0 11%, transparent 12%), radial-gradient(circle at 70% 18%, ${a}55 0 4%, transparent 5%), linear-gradient(145deg, ${a}18, ${b}22)`,
-    `repeating-linear-gradient(125deg, ${a}18 0 2px, transparent 2px 34px), radial-gradient(ellipse at 70% 35%, ${b}66, transparent 50%), linear-gradient(135deg, ${a}22, transparent)`,
-    `radial-gradient(ellipse at 25% 30%, ${a}88, transparent 38%), radial-gradient(ellipse at 78% 75%, ${b}88, transparent 42%), radial-gradient(ellipse at 80% 8%, #ffffff33, transparent 30%)`,
-    `conic-gradient(from 35deg at 70% 35%, ${a}44, ${b}66, transparent, ${a}44), radial-gradient(circle at 25% 80%, ${b}66, transparent 42%)`,
-    `linear-gradient(115deg, ${a}44, transparent 35%, ${b}55 68%, transparent), radial-gradient(ellipse at 20% 75%, ${a}66, transparent 45%)`,
-    `radial-gradient(circle at 15% 20%, #ffffff66, transparent 15%), radial-gradient(circle at 80% 80%, ${b}88, transparent 38%), radial-gradient(circle at 55% 25%, ${a}66, transparent 42%)`,
-    `radial-gradient(ellipse at 50% 0%, ${a}88, transparent 55%), radial-gradient(ellipse at 0% 100%, ${b}88, transparent 48%), linear-gradient(145deg, transparent, ${a}22)`,
-    `radial-gradient(ellipse at 30% 40%, ${a}99, transparent 34%), radial-gradient(ellipse at 75% 60%, ${b}99, transparent 38%), linear-gradient(25deg, ${a}22, ${b}22)`,
-    `repeating-radial-gradient(ellipse at 50% 50%, ${a}15 0 2px, transparent 3px 28px), linear-gradient(135deg, ${a}18, ${b}22)`
-  ];
-  app.style.backgroundImage = patterns[theme.style];
   app.dataset.backgroundTheme = String(theme.id);
-  if (save) {
-    try { localStorage.setItem("aitel_background_theme", String(theme.id)); }
-    catch (error) { console.warn("AITEL background preference could not be saved."); }
-  }
+
   document.querySelectorAll(".theme-preset").forEach(button => {
     button.classList.toggle("selected", Number(button.dataset.themeId) === theme.id);
   });
+
+  if (save) {
+    try {
+      localStorage.setItem("aitel_background_theme", String(theme.id));
+    } catch (error) {
+      console.warn("AITEL background preference could not be saved.", error);
+    }
+  }
 }
 
 function openBackgroundThemePicker() {
-  const current = Number(localStorage.getItem("aitel_background_theme") || 1);
+  let current = 1;
+  try {
+    current = Number(localStorage.getItem("aitel_background_theme") || 1);
+  } catch (_) {}
+
   const cards = AITEL_BACKGROUND_THEMES.map(theme => `
     <button type="button" class="theme-preset ${theme.id === current ? "selected" : ""}"
-      data-theme-id="${theme.id}" style="--swatch-a:${theme.a};--swatch-b:${theme.b}">
-      <strong>${theme.id}. ${theme.name}</strong><small>پس‌زمینه متحرک سه‌بعدی</small>
+      data-theme-id="${theme.id}" style="--swatch-a:${theme.a};--swatch-b:${theme.b};--motif-index:${theme.style}">
+      <span class="theme-preset-preview"><i>✧　♡　◇　◉</i><b>✦　⌁　☾</b></span>
+      <strong>${theme.id}. ${theme.name}</strong>
+      <small>طرح تلگرامی · پس‌زمینه چت</small>
     </button>`).join("");
-  openModal("انتخاب پس‌زمینه متحرک", `
-    <p class="theme-picker-intro">از بین ۱۰۰ ترکیب متحرک انتخاب کن؛ انتخابت روی همین دستگاه ذخیره می‌شود.</p>
+
+  openModal("انتخاب پس‌زمینه چت", `
+    <p class="theme-picker-intro">هر طرح را انتخاب کنی، همان لحظه روی صفحه چت و بخش‌های برنامه اعمال و روی همین دستگاه ذخیره می‌شود.</p>
     <div class="theme-picker-grid">${cards}</div>
-    <div class="theme-picker-actions"><button type="button" id="resetBackgroundTheme">بازگشت به پیش‌فرض</button><button type="button" id="closeBackgroundTheme">بستن</button></div>
+    <div class="theme-picker-actions">
+      <button type="button" id="resetBackgroundTheme">بازگشت به پیش‌فرض</button>
+      <button type="button" id="closeBackgroundTheme">بستن</button>
+    </div>
   `);
-  byId("modalBody")?.addEventListener("click", event => {
+
+  const modalBody = byId("modalBody");
+  if (!modalBody) return;
+  modalBody.onclick = event => {
     const choice = event.target.closest("[data-theme-id]");
-    if (choice) applyBackgroundTheme(choice.dataset.themeId);
-    if (event.target.closest("#resetBackgroundTheme")) applyBackgroundTheme(1);
+    if (choice) {
+      applyBackgroundTheme(choice.dataset.themeId);
+      modalBody.querySelectorAll(".theme-preset").forEach(card => {
+        card.classList.toggle("selected", card === choice);
+      });
+      return;
+    }
+    if (event.target.closest("#resetBackgroundTheme")) {
+      applyBackgroundTheme(1);
+      modalBody.querySelectorAll(".theme-preset").forEach(card => {
+        card.classList.toggle("selected", Number(card.dataset.themeId) === 1);
+      });
+    }
     if (event.target.closest("#closeBackgroundTheme")) closeModal();
-  });
+  };
 }
 
 byId("backgroundThemesBtn")?.addEventListener("click", openBackgroundThemePicker);
 byId("backgroundThemesBtn")?.addEventListener("keydown", event => {
-  if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openBackgroundThemePicker(); }
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openBackgroundThemePicker();
+  }
 });
-try { applyBackgroundTheme(localStorage.getItem("aitel_background_theme") || 1, false); }
-catch { applyBackgroundTheme(1, false); }
+
+try {
+  applyBackgroundTheme(localStorage.getItem("aitel_background_theme") || 1, false);
+} catch {
+  applyBackgroundTheme(1, false);
+}
 
 /* -------------------------
    21. PRIVACY SETTINGS
