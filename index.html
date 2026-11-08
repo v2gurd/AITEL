@@ -823,6 +823,32 @@ img {
   border-bottom-left-radius: 5px;
 }
 
+/* Telegram-inspired translucent message bubbles */
+.message-bubble {
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 62%, rgba(255,255,255,.34));
+  box-shadow: 0 8px 26px rgba(0,0,0,.075), inset 0 1px 0 rgba(255,255,255,.22);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+.message-row.mine .message-bubble {
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent);
+}
+.message-row.theirs .message-bubble {
+  background: color-mix(in srgb, var(--surface) 66%, transparent);
+}
+.aitel-bot-poll { margin-top:10px; display:grid; gap:8px; min-width:min(250px,68vw); }
+.aitel-poll-option { width:100%; border:1px solid color-mix(in srgb,var(--primary) 28%,var(--line)); background:color-mix(in srgb,var(--surface) 58%,transparent); color:var(--text); border-radius:13px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:right; font:inherit; font-size:12px; cursor:pointer; backdrop-filter:blur(12px); }
+.aitel-poll-option:active { transform:scale(.985); }
+.aitel-poll-option.selected { border-color:var(--primary); background:color-mix(in srgb,var(--primary) 15%,transparent); }
+.aitel-poll-option:disabled { opacity:.82; cursor:default; }
+.aitel-poll-check { width:19px;height:19px;border:1.5px solid var(--muted);border-radius:50%;display:grid;place-items:center;flex:none;font-size:12px;color:white; }
+.aitel-poll-option.selected .aitel-poll-check { background:var(--primary);border-color:var(--primary); }
+.aitel-bot-menu { display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line); }
+.aitel-bot-menu button { border:1px solid color-mix(in srgb,var(--primary) 24%,var(--line));background:color-mix(in srgb,var(--surface) 55%,transparent);color:var(--text);border-radius:11px;padding:9px 7px;font:inherit;font-size:11px;cursor:pointer;backdrop-filter:blur(12px); }
+.aitel-bot-menu button:active { background:var(--primary-soft); }
+
 .message-text {
   font-size: 13px;
   line-height: 1.85;
@@ -1378,6 +1404,72 @@ img {
 .aitel-settings-form .form-hint{font-size:11px;line-height:1.9;color:var(--muted);margin:9px 0}
 .aitel-settings-form .primary-btn{margin-top:12px}
 
+
+/* AITEL premium visual refinement */
+#emojiBtn{display:none!important}
+.composer-action#voiceBtn{font-size:10px;font-weight:700;letter-spacing:-.2px}
+.aitel-file-icon,.aitel-media-option-icon{font-size:0!important;width:28px;height:28px;border-radius:9px;background:var(--primary-soft);display:inline-flex;align-items:center;justify-content:center}
+.aitel-file-icon:after,.aitel-media-option-icon:after{content:"";width:12px;height:14px;border:1.5px solid var(--primary);border-radius:3px;display:block}
+.attach-option{font-size:12px}
+
+:root{
+ --bg:#f5f7fb;--surface:rgba(255,255,255,.88);--surface-2:#f8faff;--surface-3:#eef2f8;
+ --text:#17243a;--muted:#78859a;--line:rgba(104,126,158,.16);--primary:#315fbd;--primary-soft:#eaf0fc;
+ --shadow:0 14px 40px rgba(31,52,88,.075);--radius:22px;
+}
+[data-theme="dark"]{
+ --bg:#101725;--surface:rgba(25,36,54,.88);--surface-2:#1b2940;--surface-3:#24344e;
+ --text:#edf3ff;--muted:#9aaac1;--line:rgba(170,190,220,.13);--primary:#8baeff;--primary-soft:#223555;
+ --shadow:0 16px 42px rgba(0,0,0,.22);
+}
+body{background:var(--bg);letter-spacing:-.12px}
+.app{background:radial-gradient(ellipse at 12% 0%,rgba(76,123,204,.075),transparent 34%),var(--bg)}
+.page-heading{padding:22px 20px 16px}
+.page-heading h2,.chat-header-title,.profile-name{letter-spacing:-.45px}
+.section-card,.chat-item,.auth-card,.composer,.chat-header,.setting-row,.modal-content{
+ border-radius:20px!important;border-color:var(--line)!important;
+ box-shadow:0 5px 22px rgba(25,45,80,.045);
+}
+.chat-item{margin:5px 12px;padding:12px 14px;min-height:76px;transition:background .2s ease,transform .2s ease,box-shadow .2s ease}
+.chat-item:active{transform:scale(.992)}
+.avatar,.chat-header-avatar,.profile-photo{border-radius:50%!important;object-fit:cover}
+.chat-details{min-width:0}
+.chat-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.chat-preview{font-size:11px;line-height:1.65}
+.chat-time{font-size:10px;color:var(--muted)}
+.bottom-nav{background:color-mix(in srgb,var(--surface) 88%,transparent)!important;border-top:1px solid var(--line);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 -8px 30px rgba(25,45,80,.045)}
+.nav-item{gap:5px;font-size:10px;font-weight:600;color:var(--muted);border-radius:15px;transition:.2s}
+.nav-item.active{color:var(--primary);background:var(--primary-soft)}
+.nav-icon{font-size:0!important;width:21px;height:21px;display:grid;place-items:center}
+.nav-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.message-bubble{border-radius:19px!important;padding:10px 13px!important;box-shadow:0 5px 20px rgba(18,37,70,.055),inset 0 1px 0 rgba(255,255,255,.3)!important;backdrop-filter:blur(24px) saturate(150%)!important;-webkit-backdrop-filter:blur(24px) saturate(150%)!important}
+.message-row.mine .message-bubble{background:linear-gradient(145deg,rgba(67,112,194,.17),rgba(99,145,220,.11))!important;border-color:rgba(77,124,205,.19)!important}
+.message-row.theirs .message-bubble{background:color-mix(in srgb,var(--surface) 78%,transparent)!important}
+.message-row.mine .message-bubble,.message-row.theirs .message-bubble{border-radius:19px!important}
+.aitel-bot-menu{gap:9px;padding-top:13px;margin-top:13px}
+.aitel-bot-menu button,.aitel-poll-option{border-radius:14px!important;padding:11px 12px!important;background:color-mix(in srgb,var(--surface) 80%,transparent)!important;border:1px solid var(--line)!important;transition:background .2s ease,border-color .2s ease,transform .2s ease}
+.aitel-bot-menu button:active,.aitel-poll-option:active{transform:scale(.985)}
+.aitel-poll-option.selected{border-color:var(--primary)!important;background:var(--primary-soft)!important}
+.aitel-poll-check{width:19px;height:19px;border:1.5px solid #a8b4c7;border-radius:50%;position:relative}
+.aitel-poll-option.selected .aitel-poll-check:after{content:"";width:7px;height:7px;border-radius:50%;background:#fff;position:absolute;inset:0;margin:auto}
+.official-verified{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;vertical-align:middle;flex:none}
+.official-verified svg{width:16px;height:16px;display:block}
+.official-pin{font-size:9px;color:var(--muted);font-weight:600;margin-inline-start:4px}
+.official-card{border:1px solid color-mix(in srgb,var(--primary) 18%,var(--line))!important;background:linear-gradient(135deg,color-mix(in srgb,var(--primary-soft) 72%,var(--surface)),var(--surface))!important}
+.official-card .setting-row{background:transparent;box-shadow:none}
+.official-open-btn{margin-top:9px;width:100%;padding:11px 14px;border-radius:13px;background:var(--primary);color:#fff;font-size:12px;font-weight:700}
+.official-channel-mark{display:flex;align-items:center;gap:10px}
+.official-channel-mark img{width:46px;height:46px;border-radius:50%;object-fit:cover}
+.official-brand-note{font-size:10px;color:var(--muted);line-height:1.8}
+.empty-icon{font-size:0!important;width:44px;height:44px;border-radius:15px;background:var(--primary-soft);margin:0 auto 12px}
+.empty-icon:after{content:"";display:block;width:18px;height:18px;margin:auto;transform:translateY(13px);border:1.7px solid var(--primary);border-radius:5px;opacity:.8}
+.setting-icon{font-size:0!important;width:38px;height:38px;border-radius:13px;background:var(--surface-3);position:relative;flex:none}
+.setting-icon:after{content:"";position:absolute;width:13px;height:13px;border:1.7px solid var(--muted);border-radius:4px;inset:0;margin:auto}
+input,textarea,select,.input{border-radius:13px!important}
+.primary-btn,.icon-btn,.composer-action{border-radius:14px!important}
+.modal-content{border-radius:24px!important}
+@media(prefers-reduced-motion:no-preference){.chat-item,.message-bubble,.section-card{transition:all .22s ease}}
+
 </style>
 </head>
 
@@ -1555,18 +1647,17 @@ img {
           <button class="icon-btn" id="createChannelBtn">＋</button>
         </div>
 
-        <div class="section-card" id="officialChannelCard">
+        <div class="section-card official-card" id="officialChannelCard">
           <div class="setting-row">
             <img src="./AITEL-Official-Logo.png" class="avatar" alt="AITEL" style="width:46px;height:46px">
             <div class="setting-info">
               <strong>کانال رسمی AITEL</strong>
               <small>اطلاعیه‌ها و اخبار رسمی ایتل</small>
             </div>
-            <span style="color:var(--primary)">✓</span>
+            <span class="official-verified" aria-label="تأییدشده"><svg viewBox="0 0 20 20"><path fill="#2f80ed" d="M10 1.2 12.2 2l2.3-.1 1.3 1.9 2 1.2-.1 2.4.9 2.2-.9 2.2.1 2.4-2 1.2-1.3 1.9-2.3-.1-2.2.8-2.2-.8-2.3.1-1.3-1.9-2-1.2.1-2.4L1.4 10l.9-2.2-.1-2.4 2-1.2 1.3-1.9 2.3.1Z"/><path d="m6.2 10.1 2.4 2.4 5.2-5.2" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </div>
-          <p class="muted" style="font-size:10px;line-height:1.8">
-            کانال رسمی ایتل برای دریافت اطلاعیه‌های مهم و اخبار به‌روزرسانی‌ها.
-          </p>
+          <p class="official-brand-note">کانال تأییدشده برای اطلاعیه‌ها، آموزش‌ها و اخبار رسمی ایتل.</p>
+          <button type="button" class="official-open-btn" id="openOfficialChannelBtn">ورود به کانال رسمی</button>
         </div>
 
         <div id="channelsList"></div>
@@ -1693,23 +1784,23 @@ img {
 
     <nav class="bottom-nav" id="bottomNav">
       <button class="nav-item active" data-page="chatsPage">
-        <span class="nav-icon">💬</span>
+        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-1-1 1.5-3A7.5 7.5 0 1 1 20 11.5Z"/></svg></span>
         <span>گفت‌وگوها</span>
       </button>
       <button class="nav-item" data-page="contactsPage">
-        <span class="nav-icon">👥</span>
+        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.3-3 2.4-4.8 6-4.8s5.7 1.8 6 4.8M16 5.2a3 3 0 0 1 0 5.7M17 14.5c2.4.5 3.7 2 4 4.5"/></svg></span>
         <span>مخاطبین</span>
       </button>
       <button class="nav-item" data-page="channelsPage">
-        <span class="nav-icon">📢</span>
+        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13V9a2 2 0 0 1 2-2h3l9-4v16l-9-4H6a2 2 0 0 1-2-2Z"/><path d="m8 15 2 6h4l-3-5M21 9v4"/></svg></span>
         <span>کانال‌ها</span>
       </button>
       <button class="nav-item" data-page="savedPage">
-        <span class="nav-icon">🔖</span>
+        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4Z"/></svg></span>
         <span>ذخیره‌ها</span>
       </button>
       <button class="nav-item" data-page="profilePage">
-        <span class="nav-icon">👤</span>
+        <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c.5-4.2 3.2-6.3 8-6.3s7.5 2.1 8 6.3"/></svg></span>
         <span>پروفایل</span>
       </button>
     </nav>
@@ -1750,19 +1841,19 @@ img {
 
         <div class="composer-input-wrap">
           <textarea id="messageInput" rows="1" placeholder="پیام بنویسید..." maxlength="10000"></textarea>
-          <button class="composer-action" id="emojiBtn" aria-label="ایموجی">☺</button>
+          <button class="composer-action" id="emojiBtn" aria-label="ابزار نوشتار" title="ابزار نوشتار" hidden>＋</button>
         </div>
 
-        <button class="composer-action" id="voiceBtn" aria-label="ضبط صدا">🎙</button>
+        <button class="composer-action" id="voiceBtn" aria-label="ضبط صدا">صدا</button>
         <button class="composer-action send-btn" id="sendBtn" aria-label="ارسال">➤</button>
       </div>
     </div>
 
     <div class="attach-menu" id="attachMenu">
-      <button class="attach-option" data-file-type="image">🖼️ تصویر</button>
-      <button class="attach-option" data-file-type="video">🎬 ویدئو</button>
-      <button class="attach-option" data-file-type="audio">🎵 فایل صوتی</button>
-      <button class="attach-option" data-file-type="document">📎 فایل و سند</button>
+      <button class="attach-option" data-file-type="image">تصویر</button>
+      <button class="attach-option" data-file-type="video">ویدئو</button>
+      <button class="attach-option" data-file-type="audio">فایل صوتی</button>
+      <button class="attach-option" data-file-type="document">فایل و سند</button>
     </div>
   </section>
 
@@ -1812,7 +1903,7 @@ const AITEL_CONFIG = Object.freeze({
   LOGO_URL: "https://v2gurd.github.io/AITEL/AITEL-Official-Logo.png",
   PROFILE_BUCKET: "aitel-profile-photos",
   MEDIA_BUCKET: "aitel-chat-media",
-  VERSION: "1.0.0"
+  VERSION: "1.1.0"
 });
 
 if (!window.supabase) {
@@ -2520,8 +2611,12 @@ async function initializeApplication(session) {
 
     await loadMyPrivacySettings();
 
-    // پیام‌های سیستمی با کنترل تکرار سمت سرور: خوش‌آمد، ثبت‌نام و نظرسنجی ماهانه
-    Promise.all(["new_registration", "welcome", "survey"].map(event =>
+    // اتصال خودکار به کانال رسمی و ساخت گفت‌وگوی ربات برای هر حساب.
+    const { data: officialSetup, error: officialSetupError } = await db.functions.invoke("aitel-system-bot", { body: { event: "ensure_officials" } });
+    if (officialSetupError || officialSetup?.ok === false) console.warn("AITEL official accounts setup:", officialSetupError || officialSetup);
+
+    // پیام‌های سیستمی با کنترل تکرار سمت سرور.
+    Promise.all(["new_registration", "survey"].map(event =>
       db.functions.invoke("aitel-system-bot", { body: { event } })
         .catch(error => console.warn("AITEL system bot event:", event, error))
     ));
@@ -3261,14 +3356,15 @@ async function loadChats() {
     });
 
     AITEL.chats.sort((a, b) => {
-      const first = new Date(
-        a.updated_at || a.created_at || 0
-      ).getTime();
-
-      const second = new Date(
-        b.updated_at || b.created_at || 0
-      ).getTime();
-
+      const pinRank = chat => {
+        if (chat.chat_type === "channel" && chat.is_official && chat.is_verified) return 0;
+        if (chat.chat_type === "direct" && chat.otherMembers?.some(m => m.profile?.username === AITEL_CONFIG.BOT_USERNAME)) return 1;
+        return 2;
+      };
+      const rank = pinRank(a) - pinRank(b);
+      if (rank) return rank;
+      const first = new Date(a.updated_at || a.created_at || 0).getTime();
+      const second = new Date(b.updated_at || b.created_at || 0).getTime();
       return second - first;
     });
 
@@ -3363,6 +3459,8 @@ function getChatPreview(chat) {
    6. CHAT LIST RENDERING
 --------------------------------------------------------- */
 
+function officialVerifiedBadge(){return `<span class="official-verified" title="حساب رسمی تأییدشده" aria-label="حساب رسمی تأییدشده"><svg viewBox="0 0 20 20"><path fill="#2f80ed" d="M10 1.2 12.2 2l2.3-.1 1.3 1.9 2 1.2-.1 2.4.9 2.2-.9 2.2.1 2.4-2 1.2-1.3 1.9-2.3-.1-2.2.8-2.2-.8-2.3.1-1.3-1.9-2-1.2.1-2.4L1.4 10l.9-2.2-.1-2.4 2-1.2 1.3-1.9 2.3.1Z"/><path d="m6.2 10.1 2.4 2.4 5.2-5.2" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;}
+
 function renderChatList() {
   const container = byId("chatList");
 
@@ -3439,10 +3537,10 @@ function renderChatList() {
       ? `<span class="unread-badge">${unread > 99 ? "99+" : unread}</span>`
       : "";
 
-    const verified =
-      chat.isChannel && chat.title === "کانال رسمی AITEL"
-        ? `<span style="color:var(--primary)">✓</span>`
-        : "";
+    const isOfficialChannel = chat.chat_type === "channel" && chat.is_official && chat.is_verified;
+    const isOfficialBot = chat.chat_type === "direct" && chat.otherMembers?.some(m => m.profile?.username === AITEL_CONFIG.BOT_USERNAME);
+    const verified = (isOfficialChannel || isOfficialBot) ? officialVerifiedBadge() : "";
+    const pinned = (isOfficialChannel || isOfficialBot) ? `<span class="official-pin">سنجاق‌شده</span>` : "";
 
     const online = !chat.isGroup && !chat.isChannel
       ? `<span class="online-dot hidden"></span>`
@@ -3470,7 +3568,7 @@ function renderChatList() {
 
           <div class="chat-topline">
             <span class="chat-name">
-              ${title} ${verified}
+              ${title} ${verified} ${pinned}
             </span>
 
             <span class="chat-time">
@@ -3802,8 +3900,8 @@ function renderChannels() {
         </div>
 
         <div class="chat-details">
-          <div class="chat-name">${title}</div>
-          <div class="chat-preview">کانال AITEL</div>
+          <div class="chat-name">${title} ${channel.is_official && channel.is_verified ? officialVerifiedBadge() : ""}</div>
+          <div class="chat-preview">${channel.is_official && channel.is_verified ? "کانال رسمی تأییدشده" : "کانال AITEL"}</div>
         </div>
 
         <span style="color:var(--primary)">›</span>
@@ -3817,6 +3915,12 @@ function renderChannels() {
 /* ---------------------------------------------------------
    15. CHANNEL CLICK
 --------------------------------------------------------- */
+
+byId("openOfficialChannelBtn")?.addEventListener("click", async () => {
+  const official = AITEL.chats.find(c => c.chat_type === "channel" && c.is_official && c.is_verified);
+  if (official) await openChat(official);
+  else toast("کانال رسمی هنوز بارگذاری نشده است.", "info");
+});
 
 byId("channelsList")?.addEventListener(
   "click",
@@ -4383,6 +4487,49 @@ function renderMessages(messages) {
         openMediaViewer(img.src);
       });
     });
+
+  // Telegram-style bot menu and single-choice poll actions.
+  container.querySelectorAll("[data-bot-menu]").forEach(button => {
+    button.addEventListener("click", () => {
+      const action = button.dataset.botMenu;
+      const target = action === "support" ? "helpSettingBtn" : action === "privacy" ? "privacySettingsBtn" : action === "notifications" ? "notificationSettingBtn" : "profileBtn";
+      const control = document.getElementById(target);
+      if (control) control.click();
+      else if (action === "profile" && typeof renderMyProfile === "function") renderMyProfile();
+      else if (typeof toast === "function") toast("این بخش از منوی اصلی قابل دسترسی است.", "info");
+    });
+  });
+  container.querySelectorAll(".aitel-bot-poll").forEach(poll => {
+    poll.querySelectorAll("[data-poll-option]").forEach(button => {
+      button.addEventListener("click", async () => {
+        if (!db || !AITEL.user || button.disabled) return;
+        const messageId = poll.dataset.pollId;
+        const optionIndex = Number(button.dataset.pollOption);
+        const message = (AITEL.messages || []).find(item => item.id === messageId) || (messages || []).find(item => item.id === messageId);
+        const options = message?.metadata?.poll?.options || [];
+        const choice = options[optionIndex];
+        if (!choice) return;
+        poll.querySelectorAll("button").forEach(b => b.disabled = true);
+        try {
+          const marker = `poll:${messageId}:`;
+          const { data: prior, error: checkError } = await db.from("aitel_feedback").select("id").eq("user_id", AITEL.user.id).eq("feedback_type", "survey").like("content", marker + "%").limit(1);
+          if (checkError) throw checkError;
+          if (prior && prior.length) throw new Error("قبلاً در این نظرسنجی شرکت کرده‌ای.");
+          const { error } = await db.from("aitel_feedback").insert({ user_id: AITEL.user.id, feedback_type: "survey", content: marker + String(choice) });
+          if (error) throw error;
+          poll.querySelectorAll("[data-poll-option]").forEach(b => {
+            const selected = Number(b.dataset.pollOption) === optionIndex;
+            b.classList.toggle("selected", selected);
+            b.querySelector(".aitel-poll-check").textContent = selected ? "✓" : "";
+          });
+          const note = poll.querySelector("small"); if (note) note.textContent = "پاسخت ثبت شد؛ ممنون از همراهی‌ات";
+        } catch (error) {
+          poll.querySelectorAll("button").forEach(b => b.disabled = false);
+          if (typeof toast === "function") toast(error.message || "ثبت رأی انجام نشد", "error");
+        }
+      });
+    });
+  });
 }
 
 
@@ -4415,14 +4562,12 @@ function renderSingleMessage(message) {
     ? getDisplayName(sender.profile)
     : "کاربر";
 
-  const senderHTML = AITEL.activeChat?.isGroup && !mine
+  const senderProfile = sender?.profile;
+  const isOfficialBotSender = senderProfile?.username === AITEL_CONFIG.BOT_USERNAME;
+  const senderHTML = (AITEL.activeChat?.isGroup && !mine) || isOfficialBotSender
     ? `
-      <div
-        class="message-sender"
-        data-user-id="${escapeAttribute(senderId || "")}"
-        style="font-size:10px;color:var(--primary);margin-bottom:4px"
-      >
-        ${escapeHTML(senderName)}
+      <div class="message-sender" data-user-id="${escapeAttribute(senderId || "")}" style="font-size:10px;color:var(--primary);margin-bottom:5px;display:flex;align-items:center;gap:5px">
+        ${escapeHTML(senderName)} ${isOfficialBotSender ? officialVerifiedBadge() : ""}
       </div>
     `
     : "";
@@ -4444,6 +4589,19 @@ function renderSingleMessage(message) {
     : "";
 
   const contentHTML = renderMessageContent(message);
+  const botMeta = message.metadata && typeof message.metadata === "object" ? message.metadata : {};
+  const pollHTML = botMeta.poll && Array.isArray(botMeta.poll.options) ? `
+    <div class="aitel-bot-poll" data-poll-id="${escapeAttribute(message.id)}">
+      ${botMeta.poll.options.map((option, index) => `<button type="button" class="aitel-poll-option" data-poll-option="${index}"><span>${escapeHTML(String(option))}</span><span class="aitel-poll-check"></span></button>`).join("")}
+      <small style="color:var(--muted);font-size:10px">برای ثبت نظر، یکی از گزینه‌ها را انتخاب کن</small>
+    </div>` : "";
+  const menuHTML = botMeta.bot_menu ? `
+    <div class="aitel-bot-menu">
+      <button type="button" data-bot-menu="support">ارسال گزارش و پیشنهاد</button>
+      <button type="button" data-bot-menu="privacy">حریم خصوصی</button>
+      <button type="button" data-bot-menu="notifications">تنظیم اعلان‌ها</button>
+      <button type="button" data-bot-menu="profile">پروفایل من</button>
+    </div>` : "";
 
   return `
     <div
@@ -4465,6 +4623,8 @@ function renderSingleMessage(message) {
         <div class="message-text">
           ${contentHTML}
         </div>
+        ${pollHTML}
+        ${menuHTML}
 
         <div class="message-meta">
           ${edited}
@@ -4549,7 +4709,7 @@ function renderMessageContent(message) {
       target="_blank"
       rel="noopener noreferrer"
     >
-      📎 دریافت فایل
+      دریافت فایل
     </a>
     ${window.AITEL_formatMessageText ? window.AITEL_formatMessageText(content) : escapeHTML(content)}
   `;
@@ -4862,14 +5022,14 @@ function showMessageActions(messageId) {
         class="secondary-btn"
         onclick="replyToMessage('${escapeAttribute(messageId)}');closeModal()"
       >
-        ↩ پاسخ به پیام
+        پاسخ به پیام
       </button>
 
       <button
         class="secondary-btn"
         onclick="copyMessage('${escapeAttribute(messageId)}')"
       >
-        📋 کپی پیام
+        کپی پیام
       </button>
 
       ${
@@ -4879,7 +5039,7 @@ function showMessageActions(messageId) {
               class="secondary-btn"
               onclick="editMessage('${escapeAttribute(messageId)}')"
             >
-              ✏️ ویرایش پیام
+              ویرایش پیام
             </button>
           `
           : ""
@@ -4893,7 +5053,7 @@ function showMessageActions(messageId) {
               style="color:var(--danger)"
               onclick="deleteMessage('${escapeAttribute(messageId)}')"
             >
-              🗑 حذف پیام
+              حذف پیام
             </button>
           `
           : ""
@@ -6347,22 +6507,22 @@ const AITEL_MEDIA = (() => {
 
     menu.innerHTML = `
       <button class="aitel-media-option" data-media-action="image">
-        <span class="aitel-media-option-icon">🖼️</span>
+        <span class="aitel-media-option-icon"></span>
         <span>ارسال عکس</span>
       </button>
 
       <button class="aitel-media-option" data-media-action="video">
-        <span class="aitel-media-option-icon">🎬</span>
+        <span class="aitel-media-option-icon"></span>
         <span>ارسال ویدئو</span>
       </button>
 
       <button class="aitel-media-option" data-media-action="audio">
-        <span class="aitel-media-option-icon">🎵</span>
+        <span class="aitel-media-option-icon"></span>
         <span>ارسال موسیقی</span>
       </button>
 
       <button class="aitel-media-option" data-media-action="file">
-        <span class="aitel-media-option-icon">📎</span>
+        <span class="aitel-media-option-icon"></span>
         <span>ارسال فایل</span>
       </button>
     `;
@@ -6604,14 +6764,7 @@ const AITEL_MEDIA = (() => {
 
     icon.className = "aitel-file-icon";
 
-    const fileIcon = {
-      image: "🖼️",
-      video: "🎬",
-      audio: "🎵",
-      file: "📄"
-    };
-
-    icon.textContent = fileIcon[message.message_type] || "📎";
+    icon.textContent = "";
 
     const info = document.createElement("div");
 
@@ -6990,11 +7143,6 @@ const AITEL_MEDIA = (() => {
 (function(){
  const el=id=>document.getElementById(id);
  const modal=(title,body)=>{if(typeof window.openModal==='function')window.openModal(title,body);else if(typeof window.toast==='function')window.toast(body.replace(/<[^>]*>/g,' '),'info');else alert(body.replace(/<[^>]*>/g,' '));};
- el('emojiBtn')?.addEventListener('click',()=>{
-  const emojis=['😀','😂','🥹','😍','🥰','😘','😉','😊','😭','😎','🤍','❤️','🔥','👍','🙏','👏','🎉','💯','🌹','✨','💙','🫶','😅','🙃','🤔','😴','🥳','💔','☕','🌙'];
-  modal('انتخاب ایموجی',`<div class="aitel-emoji-grid">${emojis.map(e=>`<button type="button" class="aitel-emoji" data-emoji="${e}">${e}</button>`).join('')}</div>`);
-  el('modalBody')?.addEventListener('click',function pick(e){const b=e.target.closest('[data-emoji]');if(!b)return;const input=el('messageInput');if(input){const a=input.selectionStart??input.value.length,z=input.selectionEnd??input.value.length;input.value=input.value.slice(0,a)+b.dataset.emoji+input.value.slice(z);input.focus();input.setSelectionRange(a+b.dataset.emoji.length,a+b.dataset.emoji.length);input.dispatchEvent(new Event('input',{bubbles:true}));}if(typeof window.closeModal==='function')window.closeModal();this.removeEventListener('click',pick);});
- });
  const pending={createChannelBtn:['ساخت کانال','ساخت کانال هنوز به عملیات ایجاد کانال در دیتابیس متصل نشده است.']};
  Object.entries(pending).forEach(([id,v])=>el(id)?.addEventListener('click',()=>modal(v[0],`<p>${v[1]}</p>`)));
  const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
