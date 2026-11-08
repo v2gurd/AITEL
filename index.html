@@ -1182,6 +1182,18 @@ img {
 .theme-picker-actions button { flex:1; border-radius:12px; padding:10px; background:var(--surface-3); font-size:12px; }
 @media (prefers-reduced-motion: reduce) { .app,.app::before,.app::after,.theme-preset::before { animation:none !important; } }
 
+/* ===== AITEL Telegram-inspired visual refresh ===== */
+:root{--tg-bg:#202b42;--tg-surface:rgba(30,43,66,.94);--tg-surface-2:rgba(47,61,88,.94);--tg-line:rgba(179,202,235,.13);--tg-blue:#4b91f2}
+html,body,.app{background:#202b42!important}.app{background:radial-gradient(ellipse at 12% 0%,rgba(38,117,148,.24),transparent 42%),radial-gradient(ellipse at 90% 100%,rgba(64,89,160,.24),transparent 48%),linear-gradient(145deg,#1d2940,#202b42 55%,#18283e)!important;color:#f4f7ff}.app:before,.app:after{opacity:.13!important;filter:blur(28px)!important}
+.screen{background:rgba(31,43,66,.96)!important;color:#f4f7ff}.page{background:transparent!important}.page-heading p,.muted,.profile-username,.profile-bio{color:#aab7cc!important}
+.search-box,.filter-row,.section-card,.chat-item,.profile-header,.setting-row,.empty-state{background:rgba(48,61,87,.82)!important;border-color:rgba(193,211,239,.12)!important;color:#f4f7ff!important;box-shadow:0 8px 24px rgba(5,13,28,.12)}.search-box input{color:#f4f7ff!important}.search-box input::placeholder{color:#a3aec2!important}.filter-chip{color:#e7edf8!important}.filter-chip.active{background:#4a91f0!important;color:white!important}
+.bottom-nav{background:rgba(24,35,56,.86)!important;border:1px solid rgba(194,215,246,.16)!important;box-shadow:0 10px 34px rgba(0,0,0,.28);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%)}.nav-item{color:#9eabc0!important}.nav-item.active{color:#62a1ff!important}
+.icon-btn,.back-btn,.composer-action{background:rgba(63,81,112,.72)!important;color:#f5f8ff!important;border:1px solid rgba(207,224,250,.12)!important}
+.chat-screen{background:radial-gradient(circle at 14% 18%,rgba(20,119,145,.24),transparent 35%),radial-gradient(circle at 85% 75%,rgba(43,93,164,.25),transparent 42%),linear-gradient(145deg,#07384b,#102d4c 55%,#182b4b)!important}.chat-header{background:rgba(8,43,62,.72)!important;border-bottom:1px solid rgba(185,218,246,.13)!important;backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}.chat-header-info strong{color:#fff!important}.chat-header-info small{color:#a9c0d5!important}
+.messages-area{background:radial-gradient(circle at 15% 20%,rgba(61,154,176,.10),transparent 28%),radial-gradient(circle at 85% 70%,rgba(72,111,190,.12),transparent 34%),repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 1px,transparent 1px 22px),transparent!important}.message-row.mine .message-bubble{background:linear-gradient(145deg,#587ba9,#46658f)!important;color:#fff!important;border:1px solid rgba(221,237,255,.13)!important;border-bottom-left-radius:17px!important;border-bottom-right-radius:5px!important}.message-row.theirs .message-bubble{background:rgba(30,47,70,.94)!important;color:#f3f6fb!important;border:1px solid rgba(201,222,247,.08)!important;border-bottom-left-radius:5px!important}.message-meta{color:#b9c8dc!important}.date-divider{background:rgba(28,48,73,.75)!important;color:#d6e1ef!important}
+.composer-wrap{background:linear-gradient(transparent,rgba(10,28,49,.32))!important}.composer{background:rgba(12,34,57,.82)!important;border:1px solid rgba(186,216,244,.18)!important;border-radius:28px!important;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}.composer textarea{color:white!important}.composer textarea::placeholder{color:#9baec5!important}.send-btn,.primary-btn{background:#438df0!important;color:white!important}.modal,.modal-head{background:#24344f!important;color:#f5f7fb!important}.modal{border:1px solid rgba(205,224,248,.15)!important}.modal-backdrop{background:rgba(3,10,22,.68)!important}
+.aitel-emoji-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:8px 0}.aitel-emoji{font-size:25px;padding:9px 2px;border-radius:12px;background:rgba(255,255,255,.08);color:white}.aitel-emoji:active{transform:scale(.92);background:rgba(75,145,242,.28)}.aitel-chat-more{display:grid;gap:8px}.aitel-chat-more button{padding:13px;border-radius:12px;text-align:right;background:rgba(255,255,255,.08);color:white}
+
 </style>
 </head>
 
@@ -2644,9 +2656,9 @@ byId("themeSwitch")?.addEventListener(
 );
 
 try {
-  applyTheme(localStorage.getItem("aitel_theme") || "light");
+  applyTheme(localStorage.getItem("aitel_theme") || "dark");
 } catch {
-  applyTheme("light");
+  applyTheme("dark");
 }
 
 
@@ -6684,6 +6696,25 @@ const AITEL_MEDIA = (() => {
        
  
 
+</script>
+
+<script>
+/* AITEL interaction repairs: avoid dead controls and provide clear feedback. */
+(function(){
+ const el=id=>document.getElementById(id);
+ const modal=(title,body)=>{if(typeof window.openModal==='function')window.openModal(title,body);else if(typeof window.toast==='function')window.toast(body.replace(/<[^>]*>/g,' '),'info');else alert(body.replace(/<[^>]*>/g,' '));};
+ el('emojiBtn')?.addEventListener('click',()=>{
+  const emojis=['😀','😂','🥹','😍','🥰','😘','😉','😊','😭','😎','🤍','❤️','🔥','👍','🙏','👏','🎉','💯','🌹','✨','💙','🫶','😅','🙃','🤔','😴','🥳','💔','☕','🌙'];
+  modal('انتخاب ایموجی',`<div class="aitel-emoji-grid">${emojis.map(e=>`<button type="button" class="aitel-emoji" data-emoji="${e}">${e}</button>`).join('')}</div>`);
+  el('modalBody')?.addEventListener('click',function pick(e){const b=e.target.closest('[data-emoji]');if(!b)return;const input=el('messageInput');if(input){const a=input.selectionStart??input.value.length,z=input.selectionEnd??input.value.length;input.value=input.value.slice(0,a)+b.dataset.emoji+input.value.slice(z);input.focus();input.setSelectionRange(a+b.dataset.emoji.length,a+b.dataset.emoji.length);input.dispatchEvent(new Event('input',{bubbles:true}));}if(typeof window.closeModal==='function')window.closeModal();this.removeEventListener('click',pick);});
+ });
+ const pending={createChannelBtn:['ساخت کانال','ساخت کانال هنوز به عملیات ایجاد کانال در دیتابیس متصل نشده است.'],editProfileBtn:['ویرایش پروفایل','فرم ویرایش پروفایل هنوز به ذخیره‌سازی اطلاعات حساب متصل نشده است.'],profileGalleryBtn:['گالری پروفایل','مدیریت چند تصویر پروفایل هنوز پیاده‌سازی نشده است.'],privacySettingsBtn:['حریم خصوصی','تنظیمات حریم خصوصی هنوز به‌طور کامل برای تغییر و ذخیره در دیتابیس متصل نشده است.'],notificationSettingBtn:['اعلان‌ها','تنظیمات اعلان هنوز پیاده‌سازی نشده است.'],helpSettingBtn:['پشتیبانی AITEL','برای فعال‌سازی پشتیبانی باید نشانی یا شناسه پشتیبانی رسمی مشخص شود.']};
+ Object.entries(pending).forEach(([id,v])=>el(id)?.addEventListener('click',()=>modal(v[0],`<p>${v[1]}</p>`)));
+ el('chatMoreBtn')?.addEventListener('click',()=>{
+  modal('گزینه‌های گفت‌وگو','<div class="aitel-chat-more"><button type="button" data-more="search">جست‌وجو در پیام‌ها</button><button type="button" data-more="back">بازگشت به فهرست گفت‌وگوها</button></div>');
+  el('modalBody')?.addEventListener('click',function more(e){const a=e.target.closest('[data-more]')?.dataset.more;if(!a)return;if(typeof window.closeModal==='function')window.closeModal();if(a==='search')el('chatSearchMessagesBtn')?.click();if(a==='back')el('chatBackBtn')?.click();this.removeEventListener('click',more);});
+ });
+})();
 </script>
 
 </body>
