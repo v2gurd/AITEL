@@ -1,1038 +1,1509 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f7f8fc">
-<link rel="manifest" href="/AITEL/manifest.webmanifest">
 <title>AITEL | ایتل</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
---bg:#f6f7fb;--panel:#fff;--ink:#182033;--muted:#8790a5;
---line:#edf0f5;--purple:#7868f6;--purple2:#9b8fff;
---soft:#f0edff;--green:#28bd8a;--shadow:0 18px 55px #27304b0c;
---bubble:#f2f3f8;--mine:#7868f6;
+ --bg:#f5f6fa;
+ --panel:#fff;
+ --text:#202333;
+ --muted:#9298a9;
+ --line:#eceef4;
+ --primary:#7868f6;
+ --primary2:#968aff;
+ --soft:#f0edff;
+ --green:#24bd88;
+ --blue:#3988ff;
+ --danger:#ed5b68;
+ --shadow:0 10px 35px rgba(30,35,70,.07);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,sans-serif;min-height:100vh}
-button,input,textarea,select{font:inherit}
+body{
+ margin:0;
+ font-family:Vazirmatn,sans-serif;
+ background:var(--bg);
+ color:var(--text);
+ height:100dvh;
+ overflow:hidden;
+}
+button,input,textarea{font-family:inherit;font-size:16px}
 button{cursor:pointer;border:0}
-.hidden{display:none!important}
-#app{min-height:100vh;display:grid;grid-template-columns:340px minmax(0,1fr);gap:18px;padding:18px;max-width:1600px;margin:auto}
-.sidebar,.chat-panel{background:var(--panel);border:1px solid #eef0f5;border-radius:25px;box-shadow:var(--shadow);min-height:calc(100vh - 36px)}
-.sidebar{display:flex;flex-direction:column;overflow:hidden}
-.brand{padding:23px 22px 17px;display:flex;align-items:center;justify-content:space-between}
-.brand-left{display:flex;align-items:center;gap:12px}
-.logo,.login-logo{background:linear-gradient(140deg,#9a8cff,#6958ed);display:grid;place-items:center;color:white}
-.logo{width:48px;height:48px;border-radius:17px;font-size:24px;box-shadow:0 10px 22px #8272f54a}
-.brand h1{font-size:23px;letter-spacing:1px;margin:0;font-weight:900}
-.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.5px;margin-top:-3px}
-.icon-btn{width:40px;height:40px;border-radius:14px;background:#f6f7fb;color:#68718a;display:grid;place-items:center;font-size:18px;transition:.2s}
-.icon-btn:hover{background:var(--soft);color:var(--purple)}
-.me{margin:0 16px 16px;padding:12px;border-radius:18px;background:linear-gradient(110deg,#f8f7ff,#f5f7ff);display:flex;align-items:center;gap:11px}
-.avatar{width:43px;height:43px;border-radius:50%;object-fit:cover;background:#e8e5ff;display:grid;place-items:center;color:#7565ed;font-weight:800;flex:none}
-.me-info{min-width:0;flex:1}
-.me-info b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.me-info small{color:var(--green);font-size:11px}
-.search-wrap{padding:0 16px 14px}
-.search{height:46px;border-radius:15px;background:#f6f7fb;display:flex;align-items:center;padding:0 13px;gap:9px;color:#a1a8b8}
-.search input{border:0;outline:0;background:transparent;width:100%;color:var(--ink);font-size:16px}
-.tabs{display:flex;gap:7px;padding:0 16px 13px;overflow-x:auto}
-.tab{background:#f6f7fb;color:#8991a5;border-radius:12px;padding:8px 13px;font-size:12px;white-space:nowrap}
-.tab.active{background:var(--soft);color:var(--purple);font-weight:700}
-.section-label{padding:4px 21px 9px;color:#a1a8b8;font-size:11px;font-weight:700}
-.chat-list{overflow:auto;flex:1;padding:0 9px 12px}
-.chat-item{display:flex;align-items:center;gap:11px;padding:12px;border-radius:17px;cursor:pointer;transition:.18s}
+button:disabled{opacity:.5;cursor:not-allowed}
+#app{
+ display:none;
+ height:100dvh;
+ width:100%;
+}
+.layout{
+ display:flex;
+ width:100%;
+ height:100%;
+ padding:12px;
+ gap:12px;
+}
+.sidebar{
+ width:355px;
+ min-width:310px;
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:22px;
+ display:flex;
+ flex-direction:column;
+ overflow:hidden;
+}
+.brand{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:20px 18px 15px;
+}
+.brand-left{display:flex;align-items:center;gap:10px}
+.logo{
+ width:43px;height:43px;border-radius:15px;
+ display:grid;place-items:center;
+ background:linear-gradient(145deg,#9a8cff,#6958ed);
+ color:white;font-size:21px;font-weight:800;
+ box-shadow:0 6px 18px #8171f54a;
+}
+.brand-name{font-weight:800;font-size:20px;letter-spacing:.3px}
+.brand-sub{font-size:10px;color:var(--muted)}
+.icon-btn{
+ width:38px;height:38px;border-radius:13px;
+ background:#f5f5fa;color:#74798c;
+ font-size:19px;
+ display:grid;place-items:center;
+}
+.icon-btn:hover{background:var(--soft);color:var(--primary)}
+.me-box{
+ margin:0 14px 14px;padding:12px;
+ border:1px solid var(--line);border-radius:16px;
+ display:flex;align-items:center;gap:10px;
+ cursor:pointer;
+}
+.avatar{
+ width:43px;height:43px;min-width:43px;
+ border-radius:50%;background:var(--soft);
+ color:var(--primary);display:grid;place-items:center;
+ overflow:hidden;font-weight:700;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.me-info{flex:1;min-width:0}
+.me-info b{font-size:13px;display:block}
+.me-info small{font-size:10px;color:var(--muted)}
+.search-box{padding:0 14px 12px}
+.search-box input{
+ width:100%;height:43px;border:1px solid var(--line);
+ background:#f8f8fb;border-radius:13px;
+ padding:0 13px;outline:none;
+}
+.search-box input:focus{border-color:var(--primary)}
+.tabs{display:flex;padding:0 14px 12px;gap:7px}
+.tab{
+ flex:1;padding:9px 5px;border-radius:11px;
+ background:#f6f6fa;color:var(--muted);
+ font-size:11px;
+}
+.tab.active{background:var(--soft);color:var(--primary);font-weight:700}
+.list-title{
+ padding:8px 18px;font-size:11px;color:var(--muted);
+ display:flex;justify-content:space-between;
+}
+.chat-list{flex:1;overflow:auto;padding:0 9px 12px}
+.chat-item{
+ display:flex;align-items:center;gap:10px;
+ padding:11px 9px;border-radius:15px;
+ cursor:pointer;margin-bottom:3px;
+}
 .chat-item:hover{background:#f8f8fc}
-.chat-item.active{background:#f0edff}
-.chat-item .avatar{width:47px;height:47px}
-.chat-meta{flex:1;min-width:0}
-.chat-meta-top{display:flex;align-items:center;justify-content:space-between;gap:5px}
-.chat-meta b{font-size:13px}
-.chat-meta time{font-size:10px;color:#a7adba}
-.chat-meta p{font-size:11px;color:#9299aa;margin:3px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.empty-list{text-align:center;color:#a0a6b4;font-size:12px;padding:35px 15px}
-.sidebar-foot{padding:13px 17px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:#9aa1b0;font-size:11px}
-.chat-panel{display:flex;flex-direction:column;overflow:hidden;position:relative}
-.welcome{height:100%;min-height:500px;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px}
-.welcome-inner{max-width:390px}
-.welcome-art{width:130px;height:130px;border-radius:42px;margin:0 auto 24px;background:linear-gradient(145deg,#f0edff,#e9f3ff);display:grid;place-items:center;font-size:55px;color:var(--purple);transform:rotate(-7deg)}
-.welcome h2{font-size:25px;margin:0 0 8px}
-.welcome p{font-size:13px;color:var(--muted);line-height:2;margin:0}
-.chat-header{height:78px;padding:0 23px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);flex:none}
-.chat-header .avatar{width:44px;height:44px}
-.chat-title{flex:1;min-width:0}
-.chat-title b{display:block;font-size:14px}
-.chat-title small{font-size:11px;color:var(--green)}
-.header-actions{display:flex;gap:8px}
-.messages{flex:1;overflow:auto;padding:24px clamp(14px,4vw,55px);background:linear-gradient(180deg,#fff 0%,#fcfcff 100%);display:flex;flex-direction:column;gap:12px}
-.day-sep{align-self:center;padding:5px 13px;border-radius:20px;background:#f4f5f9;color:#9aa1b0;font-size:10px;margin:5px 0 10px}
-.msg-row{display:flex;align-items:flex-end;gap:8px;max-width:min(78%,620px)}
-.msg-row.mine{align-self:flex-start;flex-direction:row-reverse}
-.msg-row.theirs{align-self:flex-end}
-.bubble{padding:11px 14px;border-radius:18px 18px 5px 18px;background:var(--bubble);color:#343b4d;font-size:13px;line-height:1.9;overflow-wrap:anywhere;min-width:70px}
-.mine .bubble{background:var(--mine);color:white;border-radius:18px 18px 18px 5px}
-.bubble img,.bubble video{max-width:min(100%,340px);max-height:300px;border-radius:12px;display:block}
-.bubble audio{max-width:260px;width:100%}
-.msg-time{font-size:9px;color:#aab0bd;display:block;text-align:left;margin-top:3px}
-.mine .msg-time{color:#e0dcff}
-.composer-area{padding:14px 20px 19px;border-top:1px solid var(--line);background:#fff;flex:none}
-.composer{display:flex;align-items:flex-end;gap:9px;background:#f6f7fb;border:1px solid #eff0f6;border-radius:20px;padding:8px 9px}
-.composer textarea{resize:none;border:0;outline:0;background:transparent;flex:1;min-height:38px;max-height:120px;padding:9px 5px;color:var(--ink);font-size:16px}
-.tool-btn{width:39px;height:39px;border-radius:13px;background:transparent;color:#9098aa;font-size:19px;display:grid;place-items:center;flex:none}
-.tool-btn:hover{background:#ebe8ff;color:var(--purple)}
-.send-btn{width:42px;height:42px;border-radius:15px;background:var(--purple);color:white;font-size:17px;box-shadow:0 7px 15px #7868f64d;flex:none}
-.recording{color:#ed5b78!important;background:#fff0f3!important}
-.overlay{position:fixed;inset:0;background:#18203355;z-index:20;display:grid;place-items:center;padding:18px}
-.modal{width:min(460px,100%);max-height:88dvh;overflow:auto;background:white;border-radius:24px;padding:23px;box-shadow:0 25px 80px #10172c30}
-.modal h3{margin:0 0 15px;font-size:18px}
-.modal input,.modal textarea,.modal select{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px;outline:0;margin:7px 0 13px;font-size:16px;background:white;color:var(--ink)}
-.primary{background:var(--purple);color:white;border-radius:13px;padding:11px 18px;font-size:13px;font-weight:700}
-.secondary{background:#f3f4f8;color:#737b8d;border-radius:13px;padding:11px 18px;font-size:13px}
-.danger{background:#fff0f1;color:#e14d68;border-radius:13px;padding:11px 18px;font-size:13px}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
-.user-result{display:flex;align-items:center;gap:10px;padding:10px;border-radius:13px;cursor:pointer}
-.user-result:hover{background:#f5f4ff}
-.user-result span{font-size:13px}
-.emoji-panel{position:absolute;bottom:86px;right:24px;background:white;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:17px;padding:10px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px;z-index:5}
-.emoji-panel button{background:transparent;font-size:23px;padding:5px;border-radius:8px}
-.emoji-panel button:hover{background:#f2efff}
-.login-screen{position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 80% 15%,#ece9ff 0,transparent 30%),radial-gradient(circle at 15% 85%,#e8f3ff 0,transparent 28%),#f8f9fd;display:grid;place-items:center;padding:20px}
-.login-card{width:min(420px,100%);background:#ffffffeb;backdrop-filter:blur(18px);border:1px solid white;border-radius:30px;padding:35px 30px;text-align:center;box-shadow:0 25px 90px #26304b13}
-.login-logo{width:75px;height:75px;border-radius:25px;font-size:36px;margin:0 auto 18px;box-shadow:0 14px 30px #7868f64a}
-.login-card h1{font-size:30px;margin:0;font-weight:900;letter-spacing:1px}
-.login-card p{color:#9299aa;font-size:13px;line-height:2;margin:9px 0 25px}
-.google-btn{width:100%;height:53px;border:1px solid #e8eaf0;border-radius:15px;background:white;color:#303849;display:flex;align-items:center;justify-content:center;gap:11px;font-size:14px;font-weight:700;box-shadow:0 4px 12px #25304a08}
-.google-g{font-size:20px;font-weight:900;color:#4285f4}
-.login-note{font-size:10px!important;color:#adb3c0!important;margin-top:18px!important}
-.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#20283a;color:white;padding:11px 18px;border-radius:13px;font-size:12px;z-index:100;box-shadow:var(--shadow);max-width:90vw;text-align:center}
-.profile-badge{display:inline-grid;place-items:center;background:#e9f0ff;color:#3478e5;width:17px;height:17px;border-radius:50%;font-size:11px;vertical-align:middle}
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.menu-card{background:#f7f7fb;border:1px solid #eeeef5;border-radius:15px;padding:14px;text-align:right;color:var(--ink)}
-.menu-card b{display:block;font-size:13px}
-.menu-card small{color:var(--muted);font-size:10px}
-.typing{font-size:11px;color:var(--purple);padding:0 20px 8px}
-@media(max-width:800px){
-#app{display:block;padding:0;height:100dvh;min-height:0}
-.sidebar,.chat-panel{border:0;border-radius:0;min-height:0;height:100dvh;box-shadow:none}
-.chat-panel{display:none}.chat-panel.mobile-open{display:flex}.sidebar.mobile-hidden{display:none}
-.brand{padding-top:calc(15px + env(safe-area-inset-top))}
-.composer-area{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
-.chat-header{padding:0 13px;height:70px}
-.messages{padding:18px 13px}
-.msg-row{max-width:88%}
-.back-mobile{display:grid!important}
-.header-actions .optional{display:none}
-.welcome{min-height:100dvh}
+.chat-item.active{background:var(--soft)}
+.chat-item.official{background:#f5f7ff}
+.chat-item .avatar{width:47px;height:47px;min-width:47px}
+.chat-info{flex:1;min-width:0}
+.chat-info b{
+ font-size:12px;display:flex;align-items:center;
+ gap:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-@media(min-width:801px){.back-mobile{display:none!important}}
-body.dark{
---bg:#10131d;--panel:#191e2c;--ink:#edf0fa;--muted:#939bb0;
---line:#2b3142;--soft:#302b50;--bubble:#292f40;
+.chat-info p{
+ margin:5px 0 0;font-size:10px;color:var(--muted);
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-body.dark .messages{background:#171c29}
-body.dark .composer-area,body.dark .modal{background:#191e2c}
-body.dark .composer,body.dark .search,body.dark .icon-btn,body.dark .tab{background:#242a3a}
-body.dark .me{background:#24283a}
-body.dark .bubble{color:#e9ebf5}
-body.dark .mine .bubble{color:white}
-body.dark .modal input,body.dark .modal textarea,body.dark .modal select{background:#242a3a;color:white;border-color:#343a4d}
-body.dark .welcome-art{background:#292c46}
+.chat-meta{font-size:9px;color:var(--muted);align-self:flex-start}
+.verified{color:var(--blue);font-size:14px;display:inline-block}
+.channel-tag{
+ font-size:9px;color:var(--primary);
+ background:var(--soft);padding:2px 6px;border-radius:7px;
+}
+.main{
+ flex:1;min-width:0;background:var(--panel);
+ border:1px solid var(--line);border-radius:22px;
+ overflow:hidden;display:flex;flex-direction:column;
+ position:relative;
+}
+.welcome{
+ flex:1;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;text-align:center;
+ padding:25px;
+}
+.welcome-logo{
+ width:90px;height:90px;border-radius:30px;
+ display:grid;place-items:center;
+ background:linear-gradient(145deg,#a99fff,#7060f0);
+ color:white;font-size:39px;font-weight:800;
+ box-shadow:0 15px 40px #8070f544;
+}
+.welcome h2{font-size:23px;margin:20px 0 5px}
+.welcome p{font-size:12px;color:var(--muted);max-width:300px;line-height:2}
+.chat-panel{display:none;flex:1;min-height:0;flex-direction:column}
+.chat-header{
+ height:75px;min-height:75px;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;padding:0 18px;gap:11px;
+}
+.back-btn{display:none}
+.chat-header .avatar{width:43px;height:43px;min-width:43px}
+.header-info{flex:1;min-width:0}
+.header-info b{font-size:13px;display:flex;align-items:center;gap:5px}
+.header-info small{font-size:10px;color:var(--muted)}
+.messages{
+ flex:1;overflow-y:auto;padding:20px;
+ display:flex;flex-direction:column;gap:9px;
+ background:
+ radial-gradient(#aaa5 0.6px,transparent .6px);
+ background-size:18px 18px;
+}
+.message-row{display:flex;max-width:82%;gap:7px;align-items:flex-end}
+.message-row.mine{align-self:flex-start;flex-direction:row-reverse}
+.message-row.theirs{align-self:flex-end}
+.bubble{
+ padding:10px 13px;border-radius:16px;
+ background:white;border:1px solid var(--line);
+ box-shadow:0 2px 8px #00000005;
+ min-width:70px;overflow-wrap:anywhere;
+}
+.mine .bubble{
+ background:var(--soft);border-color:#e9e4ff;
+ border-bottom-left-radius:5px;
+}
+.theirs .bubble{border-bottom-right-radius:5px}
+.bubble p{font-size:12px;line-height:1.9;margin:0;white-space:pre-wrap}
+.bubble img,.bubble video{
+ max-width:250px;width:100%;border-radius:12px;display:block;
+}
+.bubble audio{max-width:230px;width:100%}
+.file-link{color:var(--primary);font-size:12px;text-decoration:none}
+.msg-time{
+ font-size:9px;color:#a2a5b2;
+ display:flex;justify-content:flex-end;gap:4px;margin-top:5px;
+}
+.read-tick{color:var(--blue)}
+.composer{
+ border-top:1px solid var(--line);
+ padding:12px 15px;
+ display:flex;align-items:flex-end;gap:8px;
+ background:white;
+}
+.composer textarea{
+ flex:1;resize:none;max-height:120px;min-height:43px;
+ border:1px solid var(--line);border-radius:14px;
+ padding:11px 13px;outline:none;line-height:1.7;
+ background:#f9f9fc;font-size:16px;
+}
+.composer textarea:focus{border-color:var(--primary)}
+.send-btn{
+ width:43px;height:43px;border-radius:14px;
+ color:white;background:var(--primary);font-size:18px;
+}
+.tool-btn{
+ width:40px;height:42px;border-radius:13px;
+ background:#f5f5fa;color:#74798c;font-size:18px;
+}
+.emoji-panel{
+ display:none;position:absolute;bottom:75px;right:15px;
+ background:white;border:1px solid var(--line);
+ border-radius:15px;padding:10px;box-shadow:var(--shadow);
+ z-index:5;width:250px;
+}
+.emoji-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.emoji-grid button{background:none;font-size:21px;padding:4px}
+.verified-big{color:var(--blue);font-size:17px}
+.login-screen{
+ position:fixed;inset:0;z-index:100;
+ background:#f7f8fc;display:flex;align-items:center;
+ justify-content:center;padding:20px;
+}
+.login-card{
+ width:100%;max-width:390px;background:white;
+ padding:35px 27px;border:1px solid var(--line);
+ border-radius:25px;text-align:center;box-shadow:var(--shadow);
+}
+.login-card .logo{margin:auto;width:65px;height:65px;font-size:29px}
+.login-card h1{font-size:26px;margin:17px 0 4px}
+.login-card p{font-size:12px;color:var(--muted);line-height:2}
+.google-btn{
+ width:100%;height:49px;border:1px solid var(--line);
+ background:white;border-radius:13px;margin-top:20px;
+ display:flex;align-items:center;justify-content:center;gap:10px;
+ font-weight:600;color:#303443;
+}
+.google-btn:hover{background:#f8f8fc}
+.modal-overlay{
+ display:none;position:fixed;inset:0;z-index:80;
+ background:#11182777;align-items:center;justify-content:center;padding:15px;
+}
+.modal{
+ width:100%;max-width:420px;background:white;
+ border-radius:22px;padding:22px;
+ max-height:85dvh;overflow:auto;box-shadow:var(--shadow);
+}
+.modal h3{font-size:17px;margin:0 0 16px}
+.modal input,.modal textarea{
+ width:100%;padding:12px;border:1px solid var(--line);
+ border-radius:12px;outline:none;margin:6px 0 12px;
+ font-size:16px;
+}
+.modal textarea{min-height:85px;resize:vertical}
+.modal-actions{display:flex;gap:8px;margin-top:12px}
+.primary-btn,.secondary-btn{
+ flex:1;padding:12px;border-radius:12px;font-size:12px;
+}
+.primary-btn{background:var(--primary);color:white}
+.secondary-btn{background:#f1f1f7;color:#777}
+.profile-photo-edit{
+ display:flex;align-items:center;gap:13px;
+ padding:12px 0 18px;
+}
+.profile-photo-edit .avatar{width:75px;height:75px;min-width:75px}
+.upload-avatar-btn{
+ display:inline-block;background:var(--soft);color:var(--primary);
+ padding:8px 12px;border-radius:10px;font-size:11px;cursor:pointer;
+}
+.user-result{
+ display:flex;align-items:center;gap:10px;
+ padding:10px;border-bottom:1px solid var(--line);cursor:pointer;
+}
+.user-result:hover{background:#f8f8fc}
+.user-result .avatar{width:38px;height:38px;min-width:38px}
+.toast{
+ position:fixed;z-index:200;bottom:25px;left:50%;
+ transform:translateX(-50%) translateY(20px);
+ background:#242638;color:white;padding:11px 17px;
+ border-radius:12px;font-size:11px;opacity:0;
+ pointer-events:none;transition:.25s;max-width:90%;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--muted);font-size:12px;padding:30px}
+@media(max-width:700px){
+ .layout{padding:0;gap:0}
+ .sidebar{width:100%;min-width:0;border:0;border-radius:0}
+ .main{display:none;border:0;border-radius:0;width:100%}
+ body.mobile-chat .sidebar{display:none}
+ body.mobile-chat .main{display:flex}
+ .back-btn{display:grid}
+ .chat-header{padding:0 12px}
+ .messages{padding:13px}
+ .message-row{max-width:90%}
+ .composer{padding:9px}
+}
 </style>
 </head>
 
 <body>
-<div id="app">
-<aside class="sidebar" id="sidebar">
-  <div class="brand">
-    <div class="brand-left">
-      <div class="logo">➤</div>
-      <div><h1>AITEL</h1><small>CONNECT BEYOND DISTANCE</small></div>
-    </div>
-    <button class="icon-btn" id="newChatBtn" title="گفت‌وگوی جدید">＋</button>
-  </div>
-
-  <div class="me">
-    <div class="avatar" id="myAvatar">A</div>
-    <div class="me-info"><b id="myName">کاربر ایتل</b><small>● آنلاین</small></div>
-    <button class="icon-btn" id="profileBtn" title="پروفایل">✎</button>
-  </div>
-
-  <div class="search-wrap">
-    <div class="search"><span>⌕</span><input id="chatSearch" placeholder="جست‌وجوی گفتگوها..."></div>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" data-filter="all">همه</button>
-    <button class="tab" data-filter="private">شخصی</button>
-    <button class="tab" data-filter="groups">گروه‌ها</button>
-    <button class="tab" data-filter="channels">کانال‌ها</button>
-  </div>
-
-  <div class="section-label">گفتگوهای اخیر</div>
-  <div class="chat-list" id="chatList">
-    <div class="empty-list">برای شروع، روی + بزن.</div>
-  </div>
-
-  <div class="sidebar-foot">
-    <span>AITEL • نسخه آزمایشی</span>
-    <button class="icon-btn" id="settingsBtn" title="تنظیمات">⚙</button>
-    <button class="icon-btn" id="logoutBtn" title="خروج">↪</button>
-  </div>
-</aside>
-
-<main class="chat-panel" id="chatPanel">
-  <section class="welcome" id="welcome">
-    <div class="welcome-inner">
-      <div class="welcome-art">✉</div>
-      <h2>دنیای گفتگو، نزدیک‌تر از همیشه</h2>
-      <p>در ایتل پیام بده، ویس بفرست، عکس و ویدیو به اشتراک بگذار و با آدم‌ها در ارتباط بمان.</p>
-    </div>
-  </section>
-
-  <header class="chat-header hidden" id="chatHeader">
-    <button class="icon-btn back-mobile" id="backBtn">‹</button>
-    <div class="avatar" id="peerAvatar">A</div>
-    <div class="chat-title">
-      <b id="peerName">گفتگو</b>
-      <small id="peerStatus">● ایتل</small>
-    </div>
-    <div class="header-actions">
-      <button class="icon-btn optional" id="chatInfoBtn" title="اطلاعات گفتگو">ⓘ</button>
-      <button class="icon-btn optional" id="moreChatBtn" title="بیشتر">⋮</button>
-    </div>
-  </header>
-
-  <div class="messages hidden" id="messages"></div>
-  <div class="typing hidden" id="typingIndicator">در حال نوشتن...</div>
-
-  <div class="composer-area hidden" id="composerArea">
-    <div class="composer">
-      <button class="tool-btn" id="emojiBtn" title="ایموجی">☺</button>
-      <button class="tool-btn" id="attachBtn" title="ارسال فایل">＋</button>
-      <input type="file" id="fileInput" accept="image/*,video/*,audio/*,.gif,.pdf" hidden>
-      <textarea id="messageInput" rows="1" placeholder="پیامت رو بنویس..."></textarea>
-      <button class="tool-btn" id="recordBtn" title="ضبط ویس">🎙</button>
-      <button class="send-btn" id="sendBtn" title="ارسال">➤</button>
-    </div>
-  </div>
-
-  <div class="emoji-panel hidden" id="emojiPanel"></div>
-</main>
-</div>
 
 <div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">➤</div>
-    <h1>AITEL</h1>
-    <p>یک پیام‌رسان ساده، سریع و دوست‌داشتنی.<br>برای شروع، با حساب گوگل وارد شو.</p>
-    <button class="google-btn" id="googleLogin"><span class="google-g">G</span> ورود با گوگل</button>
-    <p class="login-note">با ورود، قوانین استفاده و حریم خصوصی ایتل را می‌پذیرید.</p>
-  </div>
+ <div class="login-card">
+  <div class="logo">A</div>
+  <h1>AITEL</h1>
+  <p>یک ارتباط ساده، سریع و امن.<br>به دنیای ایتل خوش آمدید.</p>
+  <button class="google-btn" id="googleLogin">
+   <span style="font-size:19px">G</span>
+   ورود با حساب گوگل
+  </button>
+  <p style="font-size:10px;margin-top:20px">با ورود، قوانین استفاده از ایتل را می‌پذیرید.</p>
+ </div>
 </div>
 
-<div class="overlay hidden" id="modalOverlay"><div class="modal" id="modal"></div></div>
-<div class="toast hidden" id="toast"></div>
+<div id="app">
+ <div class="layout">
+
+  <aside class="sidebar">
+   <div class="brand">
+    <div class="brand-left">
+     <div class="logo">A</div>
+     <div>
+      <div class="brand-name">AITEL</div>
+      <div class="brand-sub">ارتباطی فراتر از پیام</div>
+     </div>
+    </div>
+    <div style="display:flex;gap:6px">
+     <button class="icon-btn" id="newChatBtn" title="گفتگوی جدید">＋</button>
+     <button class="icon-btn" id="createGroupBtn" title="ساخت گروه">♧</button>
+     <button class="icon-btn" id="createChannelBtn" title="ساخت کانال">▤</button>
+    </div>
+   </div>
+
+   <div class="me-box" id="profileBtn">
+    <div class="avatar" id="myAvatar">A</div>
+    <div class="me-info">
+     <b id="myName">کاربر ایتل</b>
+     <small>حساب کاربری من</small>
+    </div>
+    <span style="color:#aaa">⚙</span>
+   </div>
+
+   <div class="search-box">
+    <input id="chatSearch" placeholder="جستجو در گفتگوها...">
+   </div>
+
+   <div class="tabs">
+    <button class="tab active" data-filter="all">همه</button>
+    <button class="tab" data-filter="private">شخصی</button>
+    <button class="tab" data-filter="groups">گروه و کانال</button>
+   </div>
+
+   <div class="list-title">
+    <span>گفتگوهای شما</span>
+    <span id="chatCount">۰</span>
+   </div>
+
+   <div class="chat-list" id="chatList">
+    <div class="empty">در حال دریافت گفتگوها...</div>
+   </div>
+  </aside>
+
+  <main class="main">
+   <section class="welcome" id="welcome">
+    <div class="welcome-logo">A</div>
+    <h2>به ایتل خوش آمدید</h2>
+    <p>یک گفتگو را انتخاب کنید یا برای شروع ارتباط جدید، روی دکمه + بزنید.</p>
+   </section>
+
+   <section class="chat-panel" id="chatPanel">
+    <header class="chat-header" id="chatHeader">
+     <button class="icon-btn back-btn" id="backBtn">‹</button>
+     <div class="avatar" id="peerAvatar">A</div>
+     <div class="header-info">
+      <b id="peerName">گفتگو</b>
+      <small id="peerStatus">...</small>
+     </div>
+     <button class="icon-btn" id="chatMoreBtn">⋮</button>
+    </header>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="composer" id="composerArea">
+     <button class="tool-btn" id="emojiBtn">☺</button>
+     <button class="tool-btn" id="fileBtn">＋</button>
+     <input type="file" id="fileInput" hidden accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.zip">
+     <textarea id="messageInput" rows="1" placeholder="پیامت را بنویس..."></textarea>
+     <button class="send-btn" id="sendBtn">➤</button>
+    </div>
+
+    <div class="emoji-panel" id="emojiPanel">
+     <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+   </section>
+  </main>
+ </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+ <div class="modal" id="modal"></div>
+</div>
+<div class="toast" id="toast"></div>
 
 <script>
-(()=>{
-'use strict';
+/* =========================
+   AITEL CONFIG
+========================= */
 
 const SUPABASE_URL='https://psvesfkxtmlnjyhphsfs.supabase.co';
 const SUPABASE_KEY='sb_publishable_QClWgLVOmPGwPK_kTsL5UA_L0cNqJ4H';
-const BUCKET='aitel-media';
 const SITE_URL='https://v2gurd.github.io/AITEL/';
+const MEDIA_BUCKET='aitel-media';
+const AVATAR_BUCKET='aitel-avatars';
+
+const sb=window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY,
+ {
+  auth:{
+   persistSession:true,
+   autoRefreshToken:true,
+   detectSessionInUrl:false,
+   flowType:'pkce'
+  }
+ }
+);
+
+/* =========================
+   APP STATE
+========================= */
+
+let me=null;
+let profile=null;
+let chats=[];
+let currentChat=null;
+let currentFilter='all';
+let messageChannel=null;
+let profileChannel=null;
+let toastTimer=null;
+let mediaRecorder=null;
+let audioChunks=[];
+let lastMessageIds=new Set();
+let bootExchangeStarted=false;
+
 const $=id=>document.getElementById(id);
 
-if(!window.supabase?.createClient){
- document.body.innerHTML='<div style="padding:30px;direction:rtl">کتابخانه اتصال به سرور بارگذاری نشد. اینترنت یا CDN را بررسی کنید.</div>';
- return;
+function esc(v){
+ return String(v??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
 }
 
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
- auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'pkce'}
-});
-
-let me=null,profile=null,chats=[],activeChat=null,activeMembers=[];
-let activeChannel=null,typingChannel=null,recorder=null,recordedChunks=[];
-let recording=false,currentFilter='all',toastTimer=null;
-let authUserId=null,authLoading=false,authReady=false,typingTimer=null;
-let lastTypingSent=0;
+function initials(name){
+ return String(name||'A').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'A';
+}
 
 function toast(msg){
- $('toast').textContent=msg;
- $('toast').classList.remove('hidden');
+ const el=$('toast');
+ el.textContent=msg;
+ el.classList.add('show');
  clearTimeout(toastTimer);
- toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),4000);
+ toastTimer=setTimeout(()=>el.classList.remove('show'),3200);
 }
-function esc(s=''){
- return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function initials(s='A'){
- return (s.trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('')||'A').toUpperCase();
-}
-function avatarMarkup(url,name){
- return url?`<img class="avatar" src="${esc(url)}" alt="">`:`<div class="avatar">${esc(initials(name))}</div>`;
-}
-function timeLabel(v){
- try{return new Date(v).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}catch{return ''}
-}
-function setLoggedIn(on){$('loginScreen').classList.toggle('hidden',on)}
-function showChatLayout(on){
- $('welcome').classList.toggle('hidden',on);
- $('chatHeader').classList.toggle('hidden',!on);
- $('messages').classList.toggle('hidden',!on);
- $('composerArea').classList.toggle('hidden',!on);
-}
-function setMobileChat(on){
- if(innerWidth<=800){
-  $('sidebar').classList.toggle('mobile-hidden',on);
-  $('chatPanel').classList.toggle('mobile-open',on);
- }
-}
-function openModal(html){
- $('modal').innerHTML=html;
- $('modalOverlay').classList.remove('hidden');
-}
-function closeModal(){$('modalOverlay').classList.add('hidden')}
-$('modalOverlay').addEventListener('click',e=>{
- if(e.target===$('modalOverlay'))closeModal();
-});
 
-async function handleSession(session){
- if(!session){
-  me=null;profile=null;chats=[];activeChat=null;authUserId=null;
-  if(authReady)setLoggedIn(false);
-  return;
- }
- if(authLoading)return;
- if(authUserId===session.user.id&&profile){setLoggedIn(true);return}
- authLoading=true;
- me=session.user;
- setLoggedIn(true);
- try{
-  await afterLogin();
-  authUserId=session.user.id;
- }catch(error){
-  authUserId=null;
-  console.error('afterLogin:',error);
-  toast('بارگذاری حساب ناموفق بود: '+(error.message||error));
- }finally{authLoading=false}
+function avatarMarkup(url,name){
+ if(url)return `<div class="avatar"><img src="${esc(url)}" alt=""></div>`;
+ return `<div class="avatar">${esc(initials(name))}</div>`;
 }
+
+function verifiedMark(value){
+ return value?'<span class="verified" title="حساب تأییدشده">✔</span>':'';
+}
+
+function formatTime(date){
+ if(!date)return '';
+ return new Date(date).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'});
+}
+
+/* =========================
+   AUTH
+========================= */
 
 async function boot(){
  try{
   const params=new URLSearchParams(location.search);
   const code=params.get('code');
-  const oauthError=params.get('error_description')||params.get('error');
 
-  if(oauthError){
-   history.replaceState({},document.title,SITE_URL);
-   authReady=true;setLoggedIn(false);
-   toast('خطای ورود گوگل: '+decodeURIComponent(String(oauthError).replace(/\+/g,' ')));
-   return;
-  }
+  if(code&&!bootExchangeStarted){
+   bootExchangeStarted=true;
+   const {data,error}=await sb.auth.exchangeCodeForSession(code);
 
-  if(code){
-   const {error}=await sb.auth.exchangeCodeForSession(code);
    if(error){
-    console.error('OAuth exchange error:',error);
-    history.replaceState({},document.title,SITE_URL);
-    authReady=true;setLoggedIn(false);
-    toast('تکمیل ورود ناموفق بود: '+error.message);
-    return;
+    console.error(error);
+    toast('ورود گوگل ناموفق بود: '+error.message);
    }
+
    history.replaceState({},document.title,SITE_URL);
+   if(data?.session){
+    await handleSession(data.session);
+   }
   }
 
   const {data,error}=await sb.auth.getSession();
   if(error)throw error;
-  authReady=true;
 
-  if(data?.session)await handleSession(data.session);
-  else setLoggedIn(false);
+  if(data.session)await handleSession(data.session);
 
   sb.auth.onAuthStateChange((event,session)=>{
    if(event==='SIGNED_OUT'){
-    authUserId=null;me=null;profile=null;chats=[];activeChat=null;
-    setLoggedIn(false);return;
+    me=null;profile=null;
+    $('app').style.display='none';
+    $('loginScreen').style.display='flex';
    }
-   if(session)setTimeout(()=>handleSession(session),0);
+   if(session&&event==='SIGNED_IN'){
+    setTimeout(()=>handleSession(session),0);
+   }
   });
 
- }catch(error){
-  console.error('boot:',error);
-  authReady=true;setLoggedIn(false);
-  toast('خطای راه‌اندازی: '+(error.message||error));
+ }catch(e){
+  console.error(e);
+  toast('خطا در اتصال: '+e.message);
  }
+}
+
+async function loginGoogle(){
+ const {error}=await sb.auth.signInWithOAuth({
+  provider:'google',
+  options:{
+   redirectTo:SITE_URL,
+   queryParams:{prompt:'select_account'}
+  }
+ });
+ if(error)toast(error.message);
+}
+
+async function handleSession(session){
+ if(!session?.user)return;
+ me=session.user;
+ await afterLogin();
 }
 
 async function afterLogin(){
- const u=me.user_metadata||{};
- const row={
-  id:me.id,
-  display_name:u.full_name||u.name||me.email?.split('@')[0]||'کاربر ایتل',
-  avatar_url:u.avatar_url||u.picture||null
- };
- const {data,error}=await sb.from('aitel_profiles').upsert(row,{onConflict:'id'}).select().single();
- if(error)throw error;
- profile=data;
- $('myName').textContent=profile.display_name||'کاربر ایتل';
- $('myAvatar').innerHTML=profile.avatar_url?
- `<img src="${esc(profile.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:
- esc(initials(profile.display_name));
- await loadChats();
- await updatePresence(true);
- registerServiceWorker();
-}
+ $('loginScreen').style.display='none';
+ $('app').style.display='block';
 
-$('googleLogin').onclick=async()=>{
- const btn=$('googleLogin');
- btn.disabled=true;btn.textContent='در حال انتقال به گوگل...';
- const {error}=await sb.auth.signInWithOAuth({
-  provider:'google',
-  options:{redirectTo:SITE_URL,queryParams:{prompt:'select_account'}}
- });
- if(error){
-  console.error(error);toast('خطای ورود گوگل: '+error.message);
-  btn.disabled=false;btn.innerHTML='<span class="google-g">G</span> ورود با گوگل';
+ const meta=me.user_metadata||{};
+ const displayName=meta.full_name||meta.name||me.email?.split('@')[0]||'کاربر ایتل';
+ const avatarUrl=meta.avatar_url||meta.picture||null;
+
+ const {data:existing,error:findError}=await sb
+  .from('aitel_profiles')
+  .select('*')
+  .eq('id',me.id)
+  .maybeSingle();
+
+ if(findError){
+  console.error(findError);
+  toast('خطا در دریافت پروفایل');
+  return;
  }
-};
 
-$('logoutBtn').onclick=async()=>{
- await updatePresence(false);
- const {error}=await sb.auth.signOut();
- if(error)toast(error.message);
- else location.replace(SITE_URL);
-};
+ if(existing){
+  profile=existing;
+ }else{
+  const {data:newProfile,error}=await sb
+   .from('aitel_profiles')
+   .insert({
+    id:me.id,
+    display_name:displayName,
+    avatar_url:avatarUrl
+   })
+   .select()
+   .single();
 
-async function updatePresence(online){
- if(!me)return;
- const {error}=await sb.from('aitel_profiles').update({
-  is_online:online,last_seen:new Date().toISOString()
- }).eq('id',me.id);
- if(error)console.warn('Presence update:',error.message);
+  if(error){
+   console.error(error);
+   toast('ساخت پروفایل ناموفق بود: '+error.message);
+   return;
+  }
+  profile=newProfile;
+ }
+
+ renderMyAvatar();
+ await loadChats();
+ await ensureOfficialChannel();
+ subscribeProfile();
 }
 
-document.addEventListener('visibilitychange',()=>{
- if(document.visibilityState==='visible'&&me)updatePresence(true);
-});
-window.addEventListener('beforeunload',()=>{if(me)updatePresence(false)});
+/* =========================
+   PROFILE
+========================= */
+
+function renderMyAvatar(){
+ if(!profile)return;
+ $('myAvatar').innerHTML=profile.avatar_url
+  ?`<img src="${esc(profile.avatar_url)}" alt="">`
+  :esc(initials(profile.display_name));
+ $('myName').textContent=profile.display_name||'کاربر ایتل';
+}
+
+function showProfile(){
+ if(!profile)return;
+
+ $('modal').innerHTML=`
+  <h3>پروفایل من</h3>
+  <div class="profile-photo-edit">
+   ${avatarMarkup(profile.avatar_url,profile.display_name)}
+   <div>
+    <b style="font-size:13px">تصویر پروفایل</b>
+    <p style="font-size:10px;color:#9298a9;margin:5px 0 9px">عکس دلخواهت را انتخاب کن.</p>
+    <label class="upload-avatar-btn" for="avatarUpload">انتخاب عکس</label>
+    <input id="avatarUpload" type="file" accept="image/*" hidden>
+   </div>
+  </div>
+  <label style="font-size:11px;color:#85899a">نام نمایشی</label>
+  <input id="profileNameInput" maxlength="60" value="${esc(profile.display_name)}">
+  <label style="font-size:11px;color:#85899a">نام کاربری</label>
+  <input id="profileUsernameInput" maxlength="30" value="${esc(profile.username||'')}" placeholder="مثلاً ehsan">
+  <label style="font-size:11px;color:#85899a">درباره من</label>
+  <textarea id="profileBioInput" maxlength="250" placeholder="چند کلمه درباره خودت...">${esc(profile.bio||'')}</textarea>
+  <div class="modal-actions">
+   <button class="secondary-btn" onclick="closeModal()">بستن</button>
+   <button class="primary-btn" id="saveProfileBtn">ذخیره تغییرات</button>
+  </div>
+  <button class="secondary-btn" id="logoutBtn" style="width:100%;margin-top:10px;color:#e45b67">خروج از حساب</button>
+ `;
+
+ openModal();
+
+ $('avatarUpload').addEventListener('change',e=>{
+  uploadProfilePhoto(e.target.files[0]);
+ });
+
+ $('saveProfileBtn').onclick=saveProfile;
+ $('logoutBtn').onclick=logout;
+}
+
+async function uploadProfilePhoto(file){
+ if(!file||!me)return;
+
+ if(!file.type.startsWith('image/')){
+  toast('فقط فایل تصویری انتخاب کن.');
+  return;
+ }
+ if(file.size>5*1024*1024){
+  toast('حجم عکس باید کمتر از ۵ مگابایت باشد.');
+  return;
+ }
+
+ const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+ const path=`${me.id}/${crypto.randomUUID()}.${ext}`;
+
+ toast('در حال بارگذاری عکس...');
+
+ const {error:uploadError}=await sb.storage
+  .from(AVATAR_BUCKET)
+  .upload(path,file,{contentType:file.type,upsert:false});
+
+ if(uploadError){
+  toast('خطا در بارگذاری: '+uploadError.message);
+  return;
+ }
+
+ const {data}=sb.storage.from(AVATAR_BUCKET).getPublicUrl(path);
+
+ const {data:updated,error}=await sb
+  .from('aitel_profiles')
+  .update({avatar_url:data.publicUrl})
+  .eq('id',me.id)
+  .select()
+  .single();
+
+ if(error){
+  toast('ذخیره عکس ناموفق بود: '+error.message);
+  return;
+ }
+
+ profile=updated;
+ renderMyAvatar();
+ showProfile();
+ toast('عکس پروفایل تغییر کرد.');
+}
+
+async function saveProfile(){
+ const display_name=$('profileNameInput').value.trim();
+ const username=$('profileUsernameInput').value.trim().replace(/^@/,'').toLowerCase();
+ const bio=$('profileBioInput').value.trim();
+
+ if(!display_name){
+  toast('نام نمایشی را وارد کن.');
+  return;
+ }
+
+ if(username&&!/^[a-z0-9_]{3,30}$/.test(username)){
+  toast('نام کاربری باید ۳ تا ۳۰ حرف انگلیسی یا عدد باشد.');
+  return;
+ }
+
+ const updates={display_name,bio};
+ if(username)updates.username=username;
+
+ const {data,error}=await sb
+  .from('aitel_profiles')
+  .update(updates)
+  .eq('id',me.id)
+  .select()
+  .single();
+
+ if(error){
+  toast('خطا: '+error.message);
+  return;
+ }
+
+ profile=data;
+ renderMyAvatar();
+ closeModal();
+ toast('پروفایل ذخیره شد.');
+}
+
+async function logout(){
+ await sb.auth.signOut();
+ location.reload();
+}
+
+/* =========================
+   OFFICIAL CHANNEL
+========================= */
+
+async function ensureOfficialChannel(){
+ if(!me)return;
+
+ const {data,error}=await sb
+  .from('aitel_chats')
+  .select('id')
+  .eq('is_official',true)
+  .maybeSingle();
+
+ if(error){
+  console.error(error);
+  return;
+ }
+
+ if(!data)return;
+
+ const {data:member,error:memberError}=await sb
+  .from('aitel_chat_members')
+  .select('chat_id')
+  .eq('chat_id',data.id)
+  .eq('user_id',me.id)
+  .maybeSingle();
+
+ if(memberError){
+  console.error(memberError);
+  return;
+ }
+
+ if(!member){
+  const {error:joinError}=await sb
+   .from('aitel_chat_members')
+   .insert({
+    chat_id:data.id,
+    user_id:me.id,
+    role:'member',
+    added_by:me.id
+   });
+
+  if(joinError)console.error(joinError);
+ }
+
+ await loadChats();
+}
+
+/* =========================
+   PROFILE REALTIME
+========================= */
+
+function subscribeProfile(){
+ if(profileChannel)sb.removeChannel(profileChannel);
+
+ profileChannel=sb.channel('aitel-profile-'+me.id)
+  .on('postgres_changes',{
+   event:'UPDATE',
+   schema:'public',
+   table:'aitel_profiles',
+   filter:'id=eq.'+me.id
+  },payload=>{
+   profile=payload.new;
+   renderMyAvatar();
+  }).subscribe();
+}
+
+/* =========================
+   CHAT LIST
+========================= */
 
 async function loadChats(){
  if(!me)return;
- const {data:members,error}=await sb.from('aitel_chat_members')
- .select('chat_id').eq('user_id',me.id);
- if(error){toast('خطای دریافت گفتگوها: '+error.message);return}
- const ids=(members||[]).map(x=>x.chat_id);
- if(!ids.length){chats=[];renderChats();return}
 
- const {data:rows,error:e}=await sb.from('aitel_chats')
- .select('*').in('id',ids).order('updated_at',{ascending:false});
- if(e){toast(e.message);return}
+ const {data:members,error:memberError}=await sb
+  .from('aitel_chat_members')
+  .select('chat_id,user_id,role')
+  .eq('user_id',me.id);
 
- const {data:allMembers,error:memberError}=await sb.from('aitel_chat_members')
- .select('chat_id,user_id,role').in('chat_id',ids);
- if(memberError){toast(memberError.message);return}
+ if(memberError){
+  console.error(memberError);
+  toast('دریافت گفتگوها ناموفق بود.');
+  return;
+ }
 
- const others=[...new Set((allMembers||[]).filter(x=>x.user_id!==me.id).map(x=>x.user_id))];
- const {data:profiles}=others.length?
- await sb.from('aitel_profiles').select('id,display_name,avatar_url,is_online,last_seen,username').in('id',others):
- {data:[]};
+ const ids=[...new Set((members||[]).map(x=>x.chat_id))];
+
+ if(!ids.length){
+  chats=[];
+  renderChats();
+  return;
+ }
+
+ const {data:rows,error}=await sb
+  .from('aitel_chats')
+  .select('*')
+  .in('id',ids);
+
+ if(error){
+  console.error(error);
+  toast('خطا در دریافت فهرست گفتگوها.');
+  return;
+ }
+
+ const {data:allMembers}=await sb
+  .from('aitel_chat_members')
+  .select('chat_id,user_id,role')
+  .in('chat_id',ids);
+
+ const userIds=[...new Set((allMembers||[]).map(x=>x.user_id))];
+
+ const {data:profiles}=await sb
+  .from('aitel_profiles')
+  .select('id,username,display_name,avatar_url,is_online,last_seen,is_verified')
+  .in('id',userIds);
 
  const pmap=new Map((profiles||[]).map(p=>[p.id,p]));
  const mMap=new Map();
+
  (allMembers||[]).forEach(m=>{
   if(!mMap.has(m.chat_id))mMap.set(m.chat_id,[]);
-  mMap.get(m.chat_id).push(m.user_id);
+  mMap.get(m.chat_id).push(m);
  });
 
- const {data:lastMessages}=await sb.from('aitel_messages')
- .select('chat_id,content,message_type,created_at')
- .in('chat_id',ids).is('deleted_at',null)
- .order('created_at',{ascending:false}).limit(150);
+ const {data:lastMessages}=await sb
+  .from('aitel_messages')
+  .select('id,chat_id,content,message_type,created_at,sender_id')
+  .in('chat_id',ids)
+  .is('deleted_at',null)
+  .order('created_at',{ascending:false});
 
  const lastMap=new Map();
- (lastMessages||[]).forEach(m=>{if(!lastMap.has(m.chat_id))lastMap.set(m.chat_id,m)});
+ (lastMessages||[]).forEach(m=>{
+  if(!lastMap.has(m.chat_id))lastMap.set(m.chat_id,m);
+ });
 
  chats=(rows||[]).map(c=>{
-  const other=(mMap.get(c.id)||[]).find(id=>id!==me.id);
-  return {...c,peer:pmap.get(other),memberIds:mMap.get(c.id)||[],last:lastMap.get(c.id)};
+  const chatMembers=mMap.get(c.id)||[];
+  const peerMember=chatMembers.find(x=>x.user_id!==me.id);
+  const peer=peerMember?pmap.get(peerMember.user_id):null;
+  const mine=chatMembers.find(x=>x.user_id===me.id);
+
+  return {
+   ...c,
+   peer,
+   role:mine?.role||'member',
+   memberIds:chatMembers.map(x=>x.user_id),
+   memberCount:chatMembers.length,
+   last:lastMap.get(c.id)
+  };
  });
+
+ chats.sort((a,b)=>{
+  if(a.is_official)return -1;
+  if(b.is_official)return 1;
+  return new Date(b.last?.created_at||b.updated_at)-new Date(a.last?.created_at||a.updated_at);
+ });
+
  renderChats();
 }
 
-function chatType(c){
- if(c.chat_type==='channel')return 'channel';
- if(c.chat_type==='group'||c.is_group)return 'group';
- return 'private';
-}
 function chatName(c){
- const type=chatType(c);
- if(type==='channel')return c.title||'کانال ایتل';
- if(type==='group')return c.title||'گروه ایتل';
+ if(c.is_official)return 'AITEL | کانال رسمی';
+ if(c.chat_type==='channel')return c.title||'کانال ایتل';
+ if(c.is_group)return c.title||'گروه ایتل';
  return c.peer?.display_name||'کاربر ایتل';
+}
+
+function chatAvatar(c){
+ if(c.is_official)return 'A';
+ if(c.is_group||c.chat_type==='channel')return initials(c.title||'A');
+ return initials(c.peer?.display_name);
+}
+
+function chatImage(c){
+ if(c.is_official)return '';
+ if(c.is_group||c.chat_type==='channel')return '';
+ return c.peer?.avatar_url||'';
+}
+
+function lastText(c){
+ if(!c.last)return c.is_official?'کانال رسمی ایتل':'هنوز پیامی ارسال نشده';
+ if(c.last.message_type==='image')return '📷 تصویر';
+ if(c.last.message_type==='video')return '🎬 ویدیو';
+ if(c.last.message_type==='audio')return '🎤 پیام صوتی';
+ if(c.last.message_type==='file')return '📎 فایل';
+ return c.last.content||'پیام';
 }
 
 function renderChats(){
  const q=$('chatSearch').value.trim().toLowerCase();
+
  let list=chats.filter(c=>{
-  const type=chatType(c);
-  const matches=currentFilter==='all'||
-   (currentFilter==='private'&&type==='private')||
-   (currentFilter==='groups'&&type==='group')||
-   (currentFilter==='channels'&&type==='channel');
-  return matches&&chatName(c).toLowerCase().includes(q);
+  const group=c.is_group||c.chat_type==='channel';
+  const typeOk=currentFilter==='all'||
+   (currentFilter==='groups'&&group)||
+   (currentFilter==='private'&&!group);
+
+  return typeOk&&chatName(c).toLowerCase().includes(q);
  });
 
- $('chatList').innerHTML=list.length?list.map(c=>{
-  const type=chatType(c);
-  const icon=type==='channel'?'📢':type==='group'?'👥':'';
-  const preview=c.last?
-   (c.last.message_type==='text'?c.last.content:
-   c.last.message_type==='audio'?'🎙 پیام صوتی':'📎 فایل ارسال شد'):
-   'هنوز پیامی نیست';
-  return `<div class="chat-item ${activeChat?.id===c.id?'active':''}" data-id="${c.id}">
-   ${avatarMarkup(type==='private'?c.peer?.avatar_url:null,chatName(c))}
-   <div class="chat-meta">
-    <div class="chat-meta-top"><b>${icon} ${esc(chatName(c))}</b><time>${c.last?timeLabel(c.last.created_at):''}</time></div>
-    <p>${esc(preview)}</p>
-   </div>
-  </div>`;
- }).join(''):'<div class="empty-list">گفتگویی پیدا نشد.</div>';
+ $('chatCount').textContent=String(list.length);
 
- $('chatList').querySelectorAll('.chat-item').forEach(el=>{
+ if(!list.length){
+  $('chatList').innerHTML='<div class="empty">گفتگویی پیدا نشد.</div>';
+  return;
+ }
+
+ $('chatList').innerHTML=list.map(c=>{
+  const active=currentChat?.id===c.id;
+  const img=chatImage(c);
+  const avatar=img
+   ?`<div class="avatar"><img src="${esc(img)}"></div>`
+   :`<div class="avatar">${esc(chatAvatar(c))}</div>`;
+
+  return `
+   <div class="chat-item ${active?'active':''} ${c.is_official?'official':''}" data-id="${c.id}">
+    ${avatar}
+    <div class="chat-info">
+     <b>
+      ${esc(chatName(c))}
+      ${verifiedMark(c.is_verified)}
+      ${c.is_official?'<span class="channel-tag">رسمی</span>':''}
+     </b>
+     <p>${esc(lastText(c))}</p>
+    </div>
+    <div class="chat-meta">${formatTime(c.last?.created_at)}</div>
+   </div>
+  `;
+ }).join('');
+
+ document.querySelectorAll('.chat-item').forEach(el=>{
   el.onclick=()=>selectChat(el.dataset.id);
  });
 }
 
-$('chatSearch').addEventListener('input',renderChats);
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
- document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');currentFilter=b.dataset.filter;renderChats();
-});
+/* =========================
+   SELECT CHAT
+========================= */
 
 async function selectChat(id){
- activeChat=chats.find(c=>c.id===id);
- if(!activeChat)return;
- activeMembers=activeChat.memberIds||[];
- $('peerName').textContent=chatName(activeChat);
- $('peerAvatar').outerHTML=avatarMarkup(
-  chatType(activeChat)==='private'?activeChat.peer?.avatar_url:null,
-  chatName(activeChat)
- ).replace('class="avatar"','class="avatar" id="peerAvatar"');
+ const chat=chats.find(c=>c.id===id);
+ if(!chat)return;
 
- $('peerStatus').textContent=chatType(activeChat)==='private'?
-  (activeChat.peer?.is_online?'● آنلاین':'آخرین بازدید'):
-  `${activeMembers.length} عضو`;
+ currentChat=chat;
+ lastMessageIds.clear();
 
- showChatLayout(true);setMobileChat(true);renderChats();
+ $('welcome').style.display='none';
+ $('chatPanel').style.display='flex';
+ document.body.classList.add('mobile-chat');
+
+ $('peerName').innerHTML=
+  `${esc(chatName(chat))} ${verifiedMark(chat.is_verified)}`;
+
+ $('peerStatus').textContent=
+  chat.is_official?'کانال رسمی ایتل':
+  chat.chat_type==='channel'?'کانال':
+  chat.is_group?`${chat.memberCount} عضو`:
+  chat.peer?.is_online?'آنلاین':
+  chat.peer?.last_seen?'آخرین بازدید: '+formatTime(chat.peer.last_seen):
+  'پیام‌رسان ایتل';
+
+ const img=chatAvatar(chat);
+ const photo=chatImage(chat);
+ $('peerAvatar').innerHTML=photo
+  ?`<img src="${esc(photo)}">`
+  :esc(img);
+
+ const canSend=chat.chat_type!=='channel'||
+  ['owner','admin'].includes(chat.role);
+
+ $('composerArea').style.display=canSend?'flex':'none';
+
+ if(messageChannel){
+  await sb.removeChannel(messageChannel);
+  messageChannel=null;
+ }
+
  await loadMessages();
 
- if(activeChannel)await sb.removeChannel(activeChannel);
- activeChannel=sb.channel('aitel-chat-'+id)
- .on('postgres_changes',{
-  event:'*',schema:'public',table:'aitel_messages',filter:'chat_id=eq.'+id
- },async payload=>{
-  if(payload.eventType==='INSERT'){
+ messageChannel=sb.channel('aitel-messages-'+id)
+  .on('postgres_changes',{
+   event:'INSERT',
+   schema:'public',
+   table:'aitel_messages',
+   filter:'chat_id=eq.'+id
+  },async payload=>{
+   if(!currentChat||currentChat.id!==id)return;
+   if(lastMessageIds.has(payload.new.id))return;
    await appendMessage(payload.new);
-   if(payload.new.sender_id!==me.id)notifyIncoming(payload.new);
-  }else await loadMessages();
-  await loadChats();
- }).subscribe();
+   loadChats();
+  })
+  .subscribe();
 
- setupTyping(id);
+ renderChats();
 }
 
+/* =========================
+   MESSAGES
+========================= */
+
 async function loadMessages(){
- if(!activeChat)return;
- $('messages').innerHTML='<div class="day-sep">شروع گفت‌وگو</div>';
- const {data,error}=await sb.from('aitel_messages')
- .select('*').eq('chat_id',activeChat.id)
- .is('deleted_at',null).order('created_at',{ascending:true}).limit(250);
- if(error){toast('خطای دریافت پیام‌ها: '+error.message);return}
- for(const m of data||[])await appendMessage(m,false);
+ if(!currentChat)return;
+
+ $('messages').innerHTML='<div class="empty">در حال دریافت پیام‌ها...</div>';
+
+ const {data,error}=await sb
+  .from('aitel_messages')
+  .select('*')
+  .eq('chat_id',currentChat.id)
+  .is('deleted_at',null)
+  .order('created_at',{ascending:true})
+  .limit(150);
+
+ if(error){
+  console.error(error);
+  $('messages').innerHTML='<div class="empty">خطا در دریافت پیام‌ها</div>';
+  return;
+ }
+
+ $('messages').innerHTML='';
+ lastMessageIds.clear();
+
+ for(const msg of data||[]){
+  await appendMessage(msg,false);
+ }
+
+ scrollMessages();
+}
+
+async function mediaUrl(path){
+ if(!path)return null;
+
+ const {data,error}=await sb.storage
+  .from(MEDIA_BUCKET)
+  .createSignedUrl(path,3600);
+
+ if(error){
+  console.error(error);
+  return null;
+ }
+ return data.signedUrl;
+}
+
+async function appendMessage(msg,scroll=true){
+ if(!msg||lastMessageIds.has(msg.id))return;
+ lastMessageIds.add(msg.id);
+
+ const mine=msg.sender_id===me.id;
+ const sender=profilesCache.get(msg.sender_id);
+ const isSystem=msg.metadata?.system_sender==='AITEL';
+
+ let body='';
+
+ if(msg.message_type==='image'){
+  const url=await mediaUrl(msg.media_path);
+  body=url?`<a href="${esc(url)}" target="_blank"><img src="${esc(url)}" loading="lazy"></a>`:'<p>تصویر در دسترس نیست</p>';
+ }else if(msg.message_type==='video'){
+  const url=await mediaUrl(msg.media_path);
+  body=url?`<video src="${esc(url)}" controls playsinline></video>`:'<p>ویدیو در دسترس نیست</p>';
+ }else if(msg.message_type==='audio'){
+  const url=await mediaUrl(msg.media_path);
+  body=url?`<audio src="${esc(url)}" controls></audio>`:'<p>صوت در دسترس نیست</p>';
+ }else if(msg.message_type==='file'){
+  const url=await mediaUrl(msg.media_path);
+  body=url?`<a class="file-link" href="${esc(url)}" target="_blank">📎 ${esc(msg.content||'دریافت فایل')}</a>`:'<p>فایل در دسترس نیست</p>';
+ }else{
+  body=`<p>${esc(msg.content)}</p>`;
+ }
+
+ const row=document.createElement('div');
+ row.className='message-row '+(mine?'mine':'theirs');
+
+ row.innerHTML=`
+  <div class="bubble">
+   ${isSystem?'<div style="font-size:10px;color:#7567e9;margin-bottom:5px;font-weight:700">AITEL • پیام رسمی</div>':''}
+   ${body}
+   <div class="msg-time">
+    ${formatTime(msg.created_at)}
+    ${mine?'<span>✓</span>':''}
+   </div>
+  </div>
+ `;
+
+ $('messages').appendChild(row);
+
+ if(scroll)scrollMessages();
+}
+
+const profilesCache=new Map();
+
+function scrollMessages(){
  $('messages').scrollTop=$('messages').scrollHeight;
 }
 
-async function appendMessage(m,scroll=true){
- if($('messages').querySelector(`[data-msg="${m.id}"]`))return;
- let media='';
- if(m.media_path){
-  const {data,error}=await sb.storage.from(BUCKET).createSignedUrl(m.media_path,3600);
-  const url=data?.signedUrl;
-  if(error)console.warn('Media URL:',error);
-  if(url){
-   if(['image','gif','sticker'].includes(m.message_type))
-    media=`<img src="${esc(url)}" alt="media" loading="lazy">`;
-   else if(m.message_type==='video')
-    media=`<video controls playsinline src="${esc(url)}"></video>`;
-   else if(m.message_type==='audio')
-    media=`<audio controls src="${esc(url)}"></audio>`;
-   else media=`<a href="${esc(url)}" target="_blank" rel="noopener">دریافت فایل</a>`;
-  }
- }
-
- const mine=m.sender_id===me.id;
- const content=m.message_type==='text'?
-  esc(m.content).replace(/\n/g,'<br>'):
-  media+(m.content?`<div>${esc(m.content)}</div>`:'');
-
- const row=document.createElement('div');
- row.className='msg-row '+(mine?'mine':'theirs');
- row.dataset.msg=m.id;
- row.innerHTML=`
-  <div class="bubble">
-   ${content}
-   <span class="msg-time">${timeLabel(m.created_at)} ${mine?'✓':''}</span>
-  </div>`;
- row.addEventListener('contextmenu',e=>{
-  e.preventDefault();messageMenu(m);
- });
- $('messages').appendChild(row);
- if(scroll)$('messages').scrollTop=$('messages').scrollHeight;
-}
-
 async function sendText(){
- const content=$('messageInput').value.trim();
- if(!content||!activeChat||!me)return;
- $('sendBtn').disabled=true;
- const {error}=await sb.from('aitel_messages').insert({
-  chat_id:activeChat.id,sender_id:me.id,message_type:'text',content
- });
- $('sendBtn').disabled=false;
- if(error){toast('ارسال ناموفق: '+error.message);return}
- $('messageInput').value='';
- $('messageInput').style.height='auto';
- await loadChats();
-}
-$('sendBtn').onclick=sendText;
-$('messageInput').addEventListener('keydown',e=>{
- if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText()}
-});
-$('messageInput').addEventListener('input',e=>{
- e.target.style.height='auto';
- e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';
- sendTyping();
-});
+ if(!currentChat||!me)return;
 
-$('attachBtn').onclick=()=>$('fileInput').click();
-$('fileInput').onchange=async e=>{
- const file=e.target.files[0];e.target.value='';
- if(!file||!activeChat)return;
- if(file.size>50*1024*1024){toast('حداکثر حجم فایل ۵۰ مگابایت است.');return}
- const type=file.type.startsWith('image/')?
-  (file.type==='image/gif'?'gif':'image'):
-  file.type.startsWith('video/')?'video':
-  file.type.startsWith('audio/')?'audio':'file';
- await uploadAndSend(file,type);
-};
+ const input=$('messageInput');
+ const content=input.value.trim();
 
-async function uploadAndSend(file,type){
- const ext=(file.name.split('.').pop()||'bin').replace(/[^a-z0-9]/gi,'').slice(0,8)||'bin';
- const path=`${me.id}/${activeChat.id}/${crypto.randomUUID()}.${ext}`;
- toast('در حال بارگذاری فایل...');
- const {error:upErr}=await sb.storage.from(BUCKET).upload(path,file,{
-  contentType:file.type||'application/octet-stream',upsert:false
- });
- if(upErr){toast('بارگذاری ناموفق: '+upErr.message);return}
- const {error}=await sb.from('aitel_messages').insert({
-  chat_id:activeChat.id,sender_id:me.id,message_type:type,
-  content:file.name,media_path:path,media_mime:file.type,media_size:file.size
- });
- if(error){toast('فایل بارگذاری شد اما پیام ارسال نشد: '+error.message);return}
- toast('فایل ارسال شد');await loadChats();
-}
+ if(!content)return;
 
-const emojis=['😀','😁','😂','🥹','😍','🥰','😘','😎','🤩','😭','😅','😉','❤️','🧡','💛','💚','💙','💜','🖤','✨','🔥','🎉','👍','👎','👏','🙏','🤝','💯','🌹','☕','📸','🎧','🎬','🌙','⭐','🫶','🤍','💌','🚀','🐱','🐼','🍀'];
-$('emojiPanel').innerHTML=emojis.map(x=>`<button type="button">${x}</button>`).join('');
-$('emojiBtn').onclick=()=>$('emojiPanel').classList.toggle('hidden');
-$('emojiPanel').querySelectorAll('button').forEach(b=>b.onclick=()=>{
- $('messageInput').value+=b.textContent;
- $('messageInput').focus();
-});
-
-$('recordBtn').onclick=async()=>{
- if(!activeChat)return;
- if(!recording){
-  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){
-   toast('ضبط صدا در این مرورگر پشتیبانی نمی‌شود.');return;
-  }
-  try{
-   const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-   recorder=new MediaRecorder(stream);recordedChunks=[];
-   recorder.ondataavailable=e=>{if(e.data.size)recordedChunks.push(e.data)};
-   recorder.onstop=async()=>{
-    stream.getTracks().forEach(t=>t.stop());
-    const blob=new Blob(recordedChunks,{type:recorder.mimeType||'audio/webm'});
-    const file=new File([blob],`voice-${Date.now()}.webm`,{type:blob.type});
-    await uploadAndSend(file,'audio');
-   };
-   recorder.start();recording=true;
-   $('recordBtn').classList.add('recording');
-   $('recordBtn').textContent='■';
-   toast('در حال ضبط ویس... برای پایان دوباره دکمه را بزن.');
-  }catch(err){toast('دسترسی میکروفون داده نشد: '+err.message)}
- }else{
-  recorder.stop();recording=false;
-  $('recordBtn').classList.remove('recording');
-  $('recordBtn').textContent='🎙';
- }
-};
-
-/* گفت‌وگوی جدید */
-$('newChatBtn').onclick=showNewChat;
-async function showNewChat(){
- openModal(`
-  <h3>شروع گفت‌وگوی تازه</h3>
-  <div class="menu-grid">
-   <button class="menu-card" id="newPrivate"><b>👤 گفت‌وگوی شخصی</b><small>جست‌وجوی کاربران ایتل</small></button>
-   <button class="menu-card" id="newGroup"><b>👥 ساخت گروه</b><small>دعوت چند نفر به گفتگو</small></button>
-   <button class="menu-card" id="newChannel"><b>📢 ساخت کانال</b><small>ایجاد کانال اطلاع‌رسانی</small></button>
-   <button class="menu-card" id="savedMessages"><b>🔖 پیام‌های ذخیره‌شده</b><small>فضای شخصی پیام‌ها</small></button>
-  </div>
-  <div class="modal-actions"><button class="secondary" id="cancelModal">بستن</button></div>
- `);
- $('cancelModal').onclick=closeModal;
- $('newPrivate').onclick=showUserSearch;
- $('newGroup').onclick=()=>showCreateGroup('group');
- $('newChannel').onclick=()=>showCreateGroup('channel');
- $('savedMessages').onclick=openSavedMessages;
-}
-
-function showUserSearch(){
- openModal(`
-  <h3>شروع گفت‌وگوی شخصی</h3>
-  <input id="userSearchInput" placeholder="نام یا نام کاربری را جست‌وجو کن...">
-  <div id="userResults" style="max-height:300px;overflow:auto"><div class="empty-list">حداقل ۲ حرف بنویس.</div></div>
-  <div class="modal-actions"><button class="secondary" id="cancelModal">بستن</button></div>
- `);
- $('cancelModal').onclick=closeModal;
- let timer;
- $('userSearchInput').oninput=()=>{
-  clearTimeout(timer);timer=setTimeout(searchUsers,350);
- };
-}
-
-async function searchUsers(){
- const q=$('userSearchInput')?.value.trim();
- if(!q||q.length<2){
-  if($('userResults'))$('userResults').innerHTML='<div class="empty-list">حداقل ۲ حرف بنویس.</div>';
+ if(currentChat.chat_type==='channel'&&!['owner','admin'].includes(currentChat.role)){
+  toast('فقط مدیر کانال می‌تواند پیام ارسال کند.');
   return;
  }
- const safe=q.replace(/[,%()]/g,' ');
- const {data,error}=await sb.from('aitel_profiles')
- .select('id,display_name,avatar_url,username,is_verified')
- .neq('id',me.id)
- .or(`display_name.ilike.%${safe}%,username.ilike.%${safe}%`).limit(12);
 
- if(error){$('userResults').textContent=error.message;return}
- $('userResults').innerHTML=data?.length?data.map(p=>`
+ input.value='';
+ input.style.height='43px';
+
+ const {data,error}=await sb
+  .from('aitel_messages')
+  .insert({
+   chat_id:currentChat.id,
+   sender_id:me.id,
+   message_type:'text',
+   content
+  })
+  .select()
+  .single();
+
+ if(error){
+  console.error(error);
+  toast('ارسال پیام ناموفق بود: '+error.message);
+  input.value=content;
+  return;
+ }
+
+ await appendMessage(data);
+ loadChats();
+}
+
+/* =========================
+   FILES AND MEDIA
+========================= */
+
+async function uploadAndSend(file){
+ if(!file||!currentChat||!me)return;
+
+ if(file.size>50*1024*1024){
+  toast('حداکثر حجم فایل ۵۰ مگابایت است.');
+  return;
+ }
+
+ const mime=file.type||'application/octet-stream';
+ let type='file';
+
+ if(mime.startsWith('image/'))type='image';
+ else if(mime.startsWith('video/'))type='video';
+ else if(mime.startsWith('audio/'))type='audio';
+
+ const ext=(file.name.split('.').pop()||'bin').toLowerCase();
+ const path=`${currentChat.id}/${me.id}/${crypto.randomUUID()}.${ext}`;
+
+ toast('در حال بارگذاری فایل...');
+
+ const {error:uploadError}=await sb.storage
+  .from(MEDIA_BUCKET)
+  .upload(path,file,{contentType:mime,upsert:false});
+
+ if(uploadError){
+  toast('خطا در بارگذاری: '+uploadError.message);
+  return;
+ }
+
+ const {data,error}=await sb
+  .from('aitel_messages')
+  .insert({
+   chat_id:currentChat.id,
+   sender_id:me.id,
+   message_type:type,
+   content:file.name,
+   media_path:path,
+   media_mime:mime,
+   media_size:file.size
+  })
+  .select()
+  .single();
+
+ if(error){
+  toast('فایل بارگذاری شد اما پیام ثبت نشد: '+error.message);
+  return;
+ }
+
+ await appendMessage(data);
+ loadChats();
+ toast('ارسال شد.');
+}
+
+/* =========================
+   NEW DIRECT CHAT
+========================= */
+
+function showNewChat(){
+ $('modal').innerHTML=`
+  <h3>گفتگوی جدید</h3>
+  <input id="userSearchInput" placeholder="نام یا نام کاربری را جستجو کن...">
+  <div id="userSearchResults"><div class="empty">برای جستجو نام کاربر را وارد کن.</div></div>
+  <div class="modal-actions">
+   <button class="secondary-btn" onclick="closeModal()">بستن</button>
+  </div>
+ `;
+ openModal();
+
+ let timer=null;
+ $('userSearchInput').addEventListener('input',()=>{
+  clearTimeout(timer);
+  timer=setTimeout(()=>searchUsers($('userSearchInput').value),350);
+ });
+}
+
+async function searchUsers(q){
+ q=q.trim().replace(/[(),."']/g,'');
+ if(q.length<2){
+  $('userSearchResults').innerHTML='<div class="empty">حداقل دو حرف وارد کن.</div>';
+  return;
+ }
+
+ const {data,error}=await sb
+  .from('aitel_profiles')
+  .select('id,username,display_name,avatar_url,is_verified')
+  .or(`display_name.ilike.%${q}%,username.ilike.%${q}%`)
+  .neq('id',me.id)
+  .limit(20);
+
+ if(error){
+  $('userSearchResults').innerHTML='<div class="empty">خطا در جستجو</div>';
+  return;
+ }
+
+ if(!data?.length){
+  $('userSearchResults').innerHTML='<div class="empty">کاربری پیدا نشد.</div>';
+  return;
+ }
+
+ data.forEach(p=>profilesCache.set(p.id,p));
+
+ $('userSearchResults').innerHTML=data.map(p=>`
   <div class="user-result" data-user="${p.id}">
    ${avatarMarkup(p.avatar_url,p.display_name)}
-   <span>${esc(p.display_name)} ${p.is_verified?'<span class="profile-badge">✓</span>':''} ${p.username?' · @'+esc(p.username):''}</span>
+   <div style="flex:1">
+    <b style="font-size:12px">${esc(p.display_name)} ${verifiedMark(p.is_verified)}</b>
+    <div style="font-size:10px;color:#999">@${esc(p.username||'user')}</div>
+   </div>
   </div>
- `).join(''):'<div class="empty-list">کاربری پیدا نشد. طرف مقابل باید حداقل یک‌بار وارد ایتل شده باشد.</div>';
- $('userResults').querySelectorAll('[data-user]').forEach(el=>{
+ `).join('');
+
+ document.querySelectorAll('.user-result').forEach(el=>{
   el.onclick=()=>startDirect(el.dataset.user);
  });
 }
 
-async function startDirect(userId){
- const {data,error}=await sb.rpc('aitel_create_direct_chat',{p_other_user:userId});
- if(error){toast(error.message);return}
- closeModal();await loadChats();await selectChat(data);
-}
+async function startDirect(otherId){
+ const {data,error}=await sb.rpc('aitel_create_direct_chat',{
+  p_other_user:otherId
+ });
 
-/* ساخت گروه و کانال */
-function showCreateGroup(type){
- openModal(`
-  <h3>${type==='channel'?'ساخت کانال جدید':'ساخت گروه جدید'}</h3>
-  <label>نام ${type==='channel'?'کانال':'گروه'}</label>
-  <input id="groupTitle" maxlength="70" placeholder="یک نام انتخاب کن">
-  <label>توضیحات</label>
-  <textarea id="groupDescription" rows="3" maxlength="300" placeholder="توضیح کوتاه (اختیاری)"></textarea>
-  <label>افزودن اعضا با جست‌وجو</label>
-  <input id="groupUserSearch" placeholder="نام کاربر...">
-  <div id="groupSearchResults"></div>
-  <div id="selectedUsers" style="font-size:12px;color:#7868f6;margin:10px 0"></div>
-  <div class="modal-actions">
-   <button class="secondary" id="cancelGroup">انصراف</button>
-   <button class="primary" id="createGroup">ایجاد</button>
-  </div>
- `);
-
- let selected=[];
- $('cancelGroup').onclick=closeModal;
- let timer;
- $('groupUserSearch').oninput=()=>{
-  clearTimeout(timer);
-  timer=setTimeout(async()=>{
-   const q=$('groupUserSearch').value.trim();
-   if(q.length<2)return;
-   const safe=q.replace(/[,%()]/g,' ');
-   const {data,error}=await sb.from('aitel_profiles')
-    .select('id,display_name,avatar_url,username')
-    .neq('id',me.id)
-    .or(`display_name.ilike.%${safe}%,username.ilike.%${safe}%`).limit(8);
-   if(error){$('groupSearchResults').textContent=error.message;return}
-   $('groupSearchResults').innerHTML=(data||[]).map(p=>`
-    <div class="user-result" data-id="${p.id}">
-     ${avatarMarkup(p.avatar_url,p.display_name)}
-     <span>${esc(p.display_name)}</span>
-    </div>`).join('');
-   $('groupSearchResults').querySelectorAll('[data-id]').forEach(el=>{
-    el.onclick=()=>{
-     if(!selected.includes(el.dataset.id))selected.push(el.dataset.id);
-     $('selectedUsers').textContent='اعضای انتخاب‌شده: '+selected.length;
-    };
-   });
-  },300);
- };
-
- $('createGroup').onclick=async()=>{
-  const title=$('groupTitle').value.trim();
-  const description=$('groupDescription').value.trim();
-  if(!title){toast('نام گفتگو را وارد کن.');return}
-  const row={
-   title,
-   is_group:true,
-   created_by:me.id
-  };
-  /* chat_type فقط در صورت وجود ستون جدید استفاده می‌شود. */
-  let result=await sb.from('aitel_chats').insert({...row,chat_type:type}).select().single();
-  if(result.error&&/chat_type|column/i.test(result.error.message)){
-   result=await sb.from('aitel_chats').insert(row).select().single();
-  }
-  if(result.error){toast('ساخت گفتگو ناموفق بود: '+result.error.message);return}
-  const chat=result.data;
-  const memberRows=[me.id,...selected].map(uid=>({
-   chat_id:chat.id,user_id:uid,role:uid===me.id?'owner':'member',added_by:me.id
-  }));
-  const {error:memberError}=await sb.from('aitel_chat_members').insert(memberRows);
-  if(memberError){
-   toast('گفتگو ساخته شد اما افزودن اعضا ناموفق بود: '+memberError.message);
-   return;
-  }
-  closeModal();
-  toast(type==='channel'?'کانال ساخته شد.':'گروه ساخته شد.');
-  await loadChats();await selectChat(chat.id);
- };
-}
-
-/* پیام‌های ذخیره‌شده: ساخت گفت‌وگوی شخصی با خود کاربر */
-async function openSavedMessages(){
- closeModal();
- const {data,error}=await sb.rpc('aitel_create_direct_chat',{p_other_user:me.id});
  if(error){
-  toast('ساخت پیام‌های ذخیره‌شده ممکن نشد: '+error.message);
+  toast('ساخت گفتگو ناموفق بود: '+error.message);
   return;
  }
- await loadChats();await selectChat(data);
-}
 
-/* منوی پیام */
-function messageMenu(m){
- openModal(`
-  <h3>مدیریت پیام</h3>
-  <div class="menu-grid">
-   <button class="menu-card" id="copyMessage"><b>📋 کپی متن</b><small>کپی محتوای پیام</small></button>
-   <button class="menu-card" id="saveMessage"><b>🔖 ذخیره پیام</b><small>ذخیره در فضای شخصی</small></button>
-  </div>
-  ${m.sender_id===me.id?'<button class="danger" id="deleteMessage" style="width:100%;margin-top:12px">حذف پیام</button>':''}
-  <div class="modal-actions"><button class="secondary" id="closeMessageMenu">بستن</button></div>
- `);
- $('closeMessageMenu').onclick=closeModal;
- $('copyMessage').onclick=()=>{
-  navigator.clipboard?.writeText(m.content||'');
-  toast('متن کپی شد.');closeModal();
- };
- $('saveMessage').onclick=async()=>{
-  const {data,error}=await sb.rpc('aitel_create_direct_chat',{p_other_user:me.id});
-  if(error){toast('ذخیره پیام ممکن نشد: '+error.message);return}
-  const {error:copyError}=await sb.from('aitel_messages').insert({
-   chat_id:data,sender_id:me.id,message_type:'text',
-   content:(m.content||'')+'\n\nذخیره‌شده از ایتل'
-  });
-  if(copyError){toast(copyError.message);return}
-  closeModal();toast('پیام در فضای شخصی ذخیره شد.');
- };
- if($('deleteMessage'))$('deleteMessage').onclick=async()=>{
-  const {error}=await sb.from('aitel_messages')
-   .update({deleted_at:new Date().toISOString()}).eq('id',m.id).eq('sender_id',me.id);
-  if(error){toast(error.message);return}
-  closeModal();await loadMessages();
- };
-}
-
-/* پروفایل */
-$('profileBtn').onclick=()=>{
- openModal(`
-  <h3>پروفایل من</h3>
-  <label>نام نمایشی</label>
-  <input id="editName" maxlength="60" value="${esc(profile?.display_name||'')}">
-  <label>نام کاربری</label>
-  <input id="editUsername" maxlength="24" placeholder="مثلاً ehsan_01" value="${esc(profile?.username||'')}">
-  <label>درباره من</label>
-  <textarea id="editBio" maxlength="140" rows="3">${esc(profile?.bio||'')}</textarea>
-  <div class="modal-actions">
-   <button class="secondary" id="cancelProfile">انصراف</button>
-   <button class="primary" id="saveProfile">ذخیره تغییرات</button>
-  </div>
- `);
-};
-
-document.addEventListener('click',async e=>{
- if(e.target.id==='cancelProfile')closeModal();
- if(e.target.id==='saveProfile'){
-  const display_name=$('editName').value.trim();
-  const username=$('editUsername').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
-  const bio=$('editBio').value.trim();
-  if(!display_name){toast('نام نمایشی نمی‌تواند خالی باشد.');return}
-  const {data,error}=await sb.from('aitel_profiles')
-   .update({display_name,username:username||null,bio})
-   .eq('id',me.id).select().single();
-  if(error){toast('ذخیره نشد: '+error.message);return}
-  profile=data;
-  $('myName').textContent=display_name;
-  $('myAvatar').textContent=initials(display_name);
-  closeModal();toast('پروفایل به‌روز شد.');
- }
-});
-
-/* تنظیمات */
-$('settingsBtn').onclick=()=>{
- openModal(`
-  <h3>تنظیمات ایتل</h3>
-  <div class="menu-grid">
-   <button class="menu-card" id="themeToggle"><b>🌙 حالت تاریک</b><small>تغییر ظاهر برنامه</small></button>
-   <button class="menu-card" id="notificationToggle"><b>🔔 اعلان‌ها</b><small>فعال‌سازی اعلان مرورگر</small></button>
-   <button class="menu-card" id="installGuide"><b>📲 نصب ایتل</b><small>افزودن به صفحه اصلی</small></button>
-   <button class="menu-card" id="aboutAitel"><b>ℹ️ درباره ایتل</b><small>نسخه آزمایشی</small></button>
-  </div>
-  <div class="modal-actions"><button class="secondary" id="closeSettings">بستن</button></div>
- `);
- $('closeSettings').onclick=closeModal;
- $('themeToggle').onclick=()=>{
-  document.body.classList.toggle('dark');
-  localStorage.setItem('aitel_theme',document.body.classList.contains('dark')?'dark':'light');
- };
- $('notificationToggle').onclick=enableNotifications;
- $('installGuide').onclick=()=>{
-  toast('در Safari گزینه Share و سپس Add to Home Screen را انتخاب کن.');
- };
- $('aboutAitel').onclick=()=>toast('AITEL Messenger • نسخه آزمایشی');
-};
-
-if(localStorage.getItem('aitel_theme')==='dark')document.body.classList.add('dark');
-
-/* اعلان‌ها */
-async function enableNotifications(){
- if(!('Notification'in window)){
-  toast('این مرورگر اعلان را پشتیبانی نمی‌کند.');return;
- }
- const permission=await Notification.requestPermission();
- if(permission==='granted'){
-  toast('اعلان‌های مرورگر فعال شدند.');
-  registerServiceWorker();
- }else toast('مجوز اعلان داده نشد.');
+ const id=Array.isArray(data)?data[0]:data;
  closeModal();
+ await loadChats();
+ const chat=chats.find(c=>c.id===id);
+ if(chat)selectChat(id);
 }
 
-function notifyIncoming(m){
- if(!('Notification'in window)||Notification.permission!=='granted')return;
- if(document.visibilityState==='visible')return;
- const title=chatName(activeChat||{});
- const body=m.message_type==='text'?m.content:'پیام رسانه‌ای جدید';
- try{
-  if(navigator.serviceWorker?.controller){
-   navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{
-    body,icon:'/AITEL/icon-192.png',badge:'/AITEL/icon-192.png',
-    data:{url:SITE_URL}
-   }));
-  }else new Notification(title,{body});
- }catch(e){console.warn('Notification:',e)}
-}
+/* =========================
+   CREATE GROUP
+========================= */
 
-async function registerServiceWorker(){
- if(!('serviceWorker'in navigator))return;
- try{
-  await navigator.serviceWorker.register('/AITEL/sw.js');
- }catch(e){console.warn('Service worker registration:',e)}
-}
-
-/* تایپ کردن */
-function setupTyping(id){
- if(typingChannel)sb.removeChannel(typingChannel);
- typingChannel=sb.channel('typing-'+id);
- typingChannel.on('broadcast',{event:'typing'},payload=>{
-  if(payload.payload?.user!==me.id){
-   $('typingIndicator').classList.remove('hidden');
-   clearTimeout(typingTimer);
-   typingTimer=setTimeout(()=>$('typingIndicator').classList.add('hidden'),1800);
-  }
- }).subscribe();
-}
-
-function sendTyping(){
- if(!typingChannel||!me)return;
- const now=Date.now();
- if(now-lastTypingSent<900)return;
- lastTypingSent=now;
- typingChannel.send({
-  type:'broadcast',event:'typing',
-  payload:{user:me.id}
- });
-}
-
-$('backBtn').onclick=()=>setMobileChat(false);
-$('chatInfoBtn').onclick=()=>{
- if(!activeChat)return;
- openModal(`
-  <h3>اطلاعات گفتگو</h3>
-  <p style="font-size:13px;color:#8790a5">نام: ${esc(chatName(activeChat))}</p>
-  <p style="font-size:13px;color:#8790a5">تعداد اعضا: ${activeMembers.length}</p>
-  <p style="font-size:13px;color:#8790a5">شناسه گفتگو:</p>
-  <input readonly value="${esc(activeChat.id)}" dir="ltr">
-  <div class="modal-actions"><button class="secondary" id="closeInfo">بستن</button></div>
- `);
- $('closeInfo').onclick=closeModal;
-};
-
-$('moreChatBtn').onclick=()=>{
- openModal(`
-  <h3>گزینه‌های گفتگو</h3>
-  <div class="menu-grid">
-   <button class="menu-card" id="refreshChat"><b>🔄 بروزرسانی</b><small>دریافت پیام‌های تازه</small></button>
-   <button class="menu-card" id="copyChatId"><b>📋 کپی شناسه</b><small>شناسه این گفتگو</small></button>
+function showCreateGroup(){
+ $('modal').innerHTML=`
+  <h3>ساخت گروه جدید</h3>
+  <input id="groupTitle" maxlength="80" placeholder="نام گروه">
+  <input id="groupMembers" placeholder="شناسه کاربران، با کاما جدا کن">
+  <p style="font-size:10px;color:#999;line-height:1.8">
+   برای افزودن اعضا، شناسه UUID کاربران را وارد کن. خودت به‌صورت خودکار مدیر گروه می‌شوی.
+  </p>
+  <div class="modal-actions">
+   <button class="secondary-btn" onclick="closeModal()">انصراف</button>
+   <button class="primary-btn" id="makeGroupBtn">ساخت گروه</button>
   </div>
-  <div class="modal-actions"><button class="secondary" id="closeMore">بستن</button></div>
- `);
- $('closeMore').onclick=closeModal;
- $('refreshChat').onclick=async()=>{closeModal();await loadMessages();await loadChats()};
- $('copyChatId').onclick=()=>{
-  navigator.clipboard?.writeText(activeChat.id);
-  closeModal();toast('شناسه کپی شد.');
+ `;
+ openModal();
+ $('makeGroupBtn').onclick=createGroup;
+}
+
+async function createGroup(){
+ const title=$('groupTitle').value.trim();
+ if(!title){
+  toast('نام گروه را وارد کن.');
+  return;
+ }
+
+ const raw=$('groupMembers').value.trim();
+ const memberIds=raw?raw.split(',').map(x=>x.trim()).filter(Boolean):[];
+
+ const {data,error}=await sb.rpc('aitel_create_group',{
+  p_title:title,
+  p_member_ids:memberIds
+ });
+
+ if(error){
+  toast('ساخت گروه ناموفق بود: '+error.message);
+  return;
+ }
+
+ const id=Array.isArray(data)?data[0]:data;
+ closeModal();
+ await loadChats();
+ if(chats.some(c=>c.id===id))selectChat(id);
+ toast('گروه ساخته شد.');
+}
+
+/* =========================
+   CREATE CHANNEL
+========================= */
+
+function showCreateChannel(){
+ $('modal').innerHTML=`
+  <h3>ساخت کانال جدید</h3>
+  <input id="channelTitle" maxlength="80" placeholder="نام کانال">
+  <textarea id="channelDescription" maxlength="500" placeholder="توضیحات کانال"></textarea>
+  <div class="modal-actions">
+   <button class="secondary-btn" onclick="closeModal()">انصراف</button>
+   <button class="primary-btn" id="makeChannelBtn">ساخت کانال</button>
+  </div>
+ `;
+ openModal();
+ $('makeChannelBtn').onclick=createChannel;
+}
+
+async function createChannel(){
+ const title=$('channelTitle').value.trim();
+ const description=$('channelDescription').value.trim();
+
+ if(!title){
+  toast('نام کانال را وارد کن.');
+  return;
+ }
+
+ const {data,error}=await sb.rpc('aitel_create_channel',{
+  p_title:title,
+  p_description:description
+ });
+
+ if(error){
+  toast('ساخت کانال ناموفق بود: '+error.message);
+  return;
+ }
+
+ const id=Array.isArray(data)?data[0]:data;
+ closeModal();
+ await loadChats();
+ if(chats.some(c=>c.id===id))selectChat(id);
+ toast('کانال ساخته شد.');
+}
+
+/* =========================
+   EMOJI
+========================= */
+
+const emojis=['😀','😁','😂','🥹','😍','🥰','😘','😎','🤔','😭','😡','🥳','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🔥','✨','👍','👎','👏','🙏','💯','🎉','🌹','☕','📸','🚀','💬','👀','🤝','😴','😅','😉','🙃','🥺','💔','⭐','🌙','🌈'];
+
+$('emojiGrid').innerHTML=emojis.map(e=>`<button>${e}</button>`).join('');
+$('emojiGrid').querySelectorAll('button').forEach(btn=>{
+ btn.onclick=()=>{
+  $('messageInput').value+=$(btn).textContent;
+  $('messageInput').focus();
  };
+});
+
+/* =========================
+   MODALS
+========================= */
+
+function openModal(){
+ $('modalOverlay').style.display='flex';
+}
+
+function closeModal(){
+ $('modalOverlay').style.display='none';
+ $('modal').innerHTML='';
+}
+
+/* =========================
+   EVENTS
+========================= */
+
+$('googleLogin').onclick=loginGoogle;
+$('profileBtn').onclick=showProfile;
+$('newChatBtn').onclick=showNewChat;
+$('createGroupBtn').onclick=showCreateGroup;
+$('createChannelBtn').onclick=showCreateChannel;
+
+$('sendBtn').onclick=sendText;
+
+$('messageInput').addEventListener('keydown',e=>{
+ if(e.key==='Enter'&&!e.shiftKey){
+  e.preventDefault();
+  sendText();
+ }
+});
+
+$('messageInput').addEventListener('input',e=>{
+ e.target.style.height='43px';
+ e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';
+});
+
+$('fileBtn').onclick=()=>$('fileInput').click();
+
+$('fileInput').onchange=e=>{
+ const file=e.target.files[0];
+ if(file)uploadAndSend(file);
+ e.target.value='';
 };
 
-window.addEventListener('beforeunload',()=>{
- if(activeChannel)sb.removeChannel(activeChannel);
- if(typingChannel)sb.removeChannel(typingChannel);
+$('emojiBtn').onclick=()=>{
+ const panel=$('emojiPanel');
+ panel.style.display=panel.style.display==='block'?'none':'block';
+};
+
+$('backBtn').onclick=()=>{
+ document.body.classList.remove('mobile-chat');
+};
+
+$('chatSearch').addEventListener('input',renderChats);
+
+document.querySelectorAll('.tab').forEach(tab=>{
+ tab.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  tab.classList.add('active');
+  currentFilter=tab.dataset.filter;
+  renderChats();
+ };
 });
 
-boot().catch(error=>{
- console.error('AITEL boot error:',error);
- setLoggedIn(false);
- toast('راه‌اندازی ایتل ناموفق بود: '+(error.message||error));
+$('modalOverlay').addEventListener('click',e=>{
+ if(e.target===$('modalOverlay'))closeModal();
 });
 
-})();
+$('chatMoreBtn').onclick=()=>{
+ if(!currentChat)return;
+
+ $('modal').innerHTML=`
+  <h3>${esc(chatName(currentChat))}</h3>
+  <p style="font-size:11px;color:#888">تعداد اعضا: ${currentChat.memberCount||1}</p>
+  ${currentChat.is_official?'<p style="font-size:11px;color:#3988ff">کانال رسمی تأییدشده ایتل</p>':''}
+  <div class="modal-actions">
+   <button class="secondary-btn" onclick="closeModal()">بستن</button>
+  </div>
+ `;
+ openModal();
+};
+
+/* =========================
+   START
+========================= */
+
+boot();
 </script>
 </body>
 </html>
