@@ -1370,6 +1370,14 @@ img {
 .message-text:empty { display:none; }
 .message-bubble { max-width:min(86%, 430px); }
 
+
+.aitel-settings-form .field{display:flex;flex-direction:column;gap:7px;margin:12px 0;color:var(--text);font-size:13px}
+.aitel-settings-form select,.aitel-settings-form textarea{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--surface-2);color:var(--text);font:inherit;box-sizing:border-box}
+.aitel-pref-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 4px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)}
+.aitel-pref-row input{width:19px;height:19px;accent-color:var(--accent)}
+.aitel-settings-form .form-hint{font-size:11px;line-height:1.9;color:var(--muted);margin:9px 0}
+.aitel-settings-form .primary-btn{margin-top:12px}
+
 </style>
 </head>
 
@@ -2512,6 +2520,12 @@ async function initializeApplication(session) {
 
     await loadMyPrivacySettings();
 
+    // پیام‌های سیستمی با کنترل تکرار سمت سرور: خوش‌آمد، ثبت‌نام و نظرسنجی ماهانه
+    Promise.all(["new_registration", "welcome", "survey"].map(event =>
+      db.functions.invoke("aitel-system-bot", { body: { event } })
+        .catch(error => console.warn("AITEL system bot event:", event, error))
+    ));
+
     await loadChats();
 
     await loadChannels();
@@ -3006,11 +3020,9 @@ async function loadMyPrivacySettings() {
 
     if (!data) return;
 
-    AITEL.readReceiptEnabled =
-      data.read_receipts_enabled !== false;
-
-    AITEL.onlineStatusEnabled =
-      data.online_status_enabled !== false;
+    AITEL.readReceiptEnabled = data.read_receipts_enabled !== false;
+    AITEL.onlineStatusEnabled = data.online_visibility !== "nobody";
+    AITEL.privateSettings = data;
   } catch (error) {
     console.error("AITEL privacy settings error:", error);
   }
@@ -4620,6 +4632,33 @@ async function sendMessage() {
   if (!content) return;
 
   const chat = AITEL.activeChat;
+
+  // پاسخ مدیر به گزارش پشتیبانی: با Reply روی پیام ربات، پاسخ از طرف ربات به همان کاربر می‌رسد.
+  const isAitelBotChat = (chat.members || []).some(member =>
+    member.user_id !== AITEL.user.id && member.profile?.username === "aitel_bot"
+  );
+  if (isAitelBotChat && AITEL.pendingReply?.id) {
+    AITEL.isSending = true;
+    const sendButton = byId("sendBtn");
+    if (sendButton) sendButton.disabled = true;
+    try {
+      const { data, error } = await db.functions.invoke("aitel-system-bot", {
+        body: { event: "admin_reply", source_message_id: AITEL.pendingReply.id, content }
+      });
+      if (error) throw error;
+      if (data?.ok === false) throw new Error(data.error || "ارسال پاسخ ناموفق بود");
+      if (input) { input.value = ""; input.style.height = "auto"; }
+      AITEL.pendingReply = null;
+      byId("replyPreview")?.classList.remove("active");
+      toast("پاسخ از طریق ربات برای کاربر ارسال شد.", "success");
+    } catch (error) {
+      toast("ارسال پاسخ پشتیبانی ناموفق بود: " + getErrorMessage(error), "error", 5000);
+    } finally {
+      AITEL.isSending = false;
+      if (sendButton) sendButton.disabled = false;
+    }
+    return;
+  }
 
   if (isChannelChat(chat) && !canSendInChat(chat)) {
     toast("اجازه ارسال پیام در این کانال را ندارید.", "error");
@@ -6956,8 +6995,62 @@ const AITEL_MEDIA = (() => {
   modal('انتخاب ایموجی',`<div class="aitel-emoji-grid">${emojis.map(e=>`<button type="button" class="aitel-emoji" data-emoji="${e}">${e}</button>`).join('')}</div>`);
   el('modalBody')?.addEventListener('click',function pick(e){const b=e.target.closest('[data-emoji]');if(!b)return;const input=el('messageInput');if(input){const a=input.selectionStart??input.value.length,z=input.selectionEnd??input.value.length;input.value=input.value.slice(0,a)+b.dataset.emoji+input.value.slice(z);input.focus();input.setSelectionRange(a+b.dataset.emoji.length,a+b.dataset.emoji.length);input.dispatchEvent(new Event('input',{bubbles:true}));}if(typeof window.closeModal==='function')window.closeModal();this.removeEventListener('click',pick);});
  });
- const pending={createChannelBtn:['ساخت کانال','ساخت کانال هنوز به عملیات ایجاد کانال در دیتابیس متصل نشده است.'],privacySettingsBtn:['حریم خصوصی','تنظیمات حریم خصوصی هنوز به‌طور کامل برای تغییر و ذخیره در دیتابیس متصل نشده است.'],notificationSettingBtn:['اعلان‌ها','تنظیمات اعلان هنوز پیاده‌سازی نشده است.'],helpSettingBtn:['پشتیبانی AITEL','برای فعال‌سازی پشتیبانی باید نشانی یا شناسه پشتیبانی رسمی مشخص شود.']};
+ const pending={createChannelBtn:['ساخت کانال','ساخت کانال هنوز به عملیات ایجاد کانال در دیتابیس متصل نشده است.']};
  Object.entries(pending).forEach(([id,v])=>el(id)?.addEventListener('click',()=>modal(v[0],`<p>${v[1]}</p>`)));
+ const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const getPrivateSettings = async () => {
+   const {data,error}=await db.from('aitel_private_profiles').select('*').eq('user_id',AITEL.user.id).maybeSingle();
+   if(error) throw error;
+   return data || {user_id:AITEL.user.id,phone_visibility:'private',last_seen_visibility:'everyone',online_visibility:'everyone',read_receipts_enabled:true,allow_messages_from:'everyone',notify_messages:true,notify_groups:true,notify_channels:true,notify_sound:true};
+ };
+ const savePrivateSettings = async values => {
+   const {error}=await db.from('aitel_private_profiles').upsert({user_id:AITEL.user.id,...values,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+   if(error) throw error;
+   await loadMyPrivacySettings();
+ };
+ const fieldSelect=(id,label,value,items)=>`<label class="field"><span>${label}</span><select id="${id}" class="input">${items.map(([v,t])=>`<option value="${v}" ${value===v?'selected':''}>${t}</option>`).join('')}</select></label>`;
+ const fieldCheck=(id,label,value)=>`<label class="aitel-pref-row"><span>${label}</span><input id="${id}" type="checkbox" ${value?'checked':''}></label>`;
+ const showPrivacy=async()=>{
+   try{const d=await getPrivateSettings();
+     modal('حریم خصوصی',`<div class="aitel-settings-form">
+       ${fieldSelect('pvOnline','نمایش وضعیت آنلاین',d.online_visibility,[['everyone','همه کاربران'],['contacts','فقط مخاطبین'],['nobody','هیچ‌کس']])}
+       ${fieldSelect('pvLast','نمایش آخرین بازدید',d.last_seen_visibility,[['everyone','همه کاربران'],['contacts','فقط مخاطبین'],['nobody','هیچ‌کس']])}
+       ${fieldSelect('pvPhone','نمایش شماره تلفن',d.phone_visibility,[['private','هیچ‌کس'],['contacts','فقط مخاطبین'],['everyone','همه کاربران']])}
+       ${fieldSelect('pvMessages','دریافت پیام از',d.allow_messages_from,[['everyone','همه کاربران'],['contacts','فقط مخاطبین'],['nobody','هیچ‌کس']])}
+       ${fieldCheck('pvReceipts','ارسال رسید خواندن پیام‌ها',d.read_receipts_enabled)}
+       <button type="button" class="primary-btn" id="savePrivacyBtn">ذخیره تنظیمات</button><p id="privacyStatus" class="form-hint"></p></div>`);
+     el('savePrivacyBtn')?.addEventListener('click',async()=>{const b=el('savePrivacyBtn'),st=el('privacyStatus');b.disabled=true;st.textContent='در حال ذخیره...';try{await savePrivateSettings({online_visibility:el('pvOnline').value,last_seen_visibility:el('pvLast').value,phone_visibility:el('pvPhone').value,allow_messages_from:el('pvMessages').value,read_receipts_enabled:el('pvReceipts').checked});st.textContent='تنظیمات حریم خصوصی ذخیره شد.';if(typeof window.toast==='function')window.toast('تنظیمات حریم خصوصی ذخیره شد.','success');}catch(e){st.textContent='ذخیره انجام نشد: '+(e.message||e);}finally{b.disabled=false;}});
+   }catch(e){modal('حریم خصوصی',`<p>بارگذاری تنظیمات ناموفق بود: ${escape(e.message||e)}</p>`);}
+ };
+ const showNotifications=async()=>{
+   try{const d=await getPrivateSettings();
+     modal('تنظیمات اعلان',`<div class="aitel-settings-form">
+       ${fieldCheck('ntMessages','اعلان پیام‌های خصوصی',d.notify_messages)}
+       ${fieldCheck('ntGroups','اعلان پیام‌های گروه‌ها',d.notify_groups)}
+       ${fieldCheck('ntChannels','اعلان کانال‌ها',d.notify_channels)}
+       ${fieldCheck('ntSound','صدای اعلان‌ها',d.notify_sound)}
+       <button type="button" class="primary-btn" id="requestNotifBtn">فعال‌سازی اعلان مرورگر</button>
+       <button type="button" class="primary-btn" id="saveNotifBtn">ذخیره تنظیمات</button><p id="notificationStatus" class="form-hint"></p></div>`);
+     el('requestNotifBtn')?.addEventListener('click',async()=>{const st=el('notificationStatus');if(!('Notification' in window)){st.textContent='این مرورگر از اعلان پشتیبانی نمی‌کند.';return;}try{const permission=await Notification.requestPermission();st.textContent=permission==='granted'?'اجازه اعلان مرورگر فعال شد.':permission==='denied'?'اجازه اعلان از تنظیمات مرورگر مسدود شده است.':'اجازه اعلان داده نشد.';}catch(e){st.textContent=e.message||'امکان فعال‌سازی وجود ندارد.';}});
+     el('saveNotifBtn')?.addEventListener('click',async()=>{const b=el('saveNotifBtn'),st=el('notificationStatus');b.disabled=true;st.textContent='در حال ذخیره...';try{await savePrivateSettings({notify_messages:el('ntMessages').checked,notify_groups:el('ntGroups').checked,notify_channels:el('ntChannels').checked,notify_sound:el('ntSound').checked});st.textContent='تنظیمات اعلان ذخیره شد.';if(typeof window.toast==='function')window.toast('تنظیمات اعلان ذخیره شد.','success');}catch(e){st.textContent='ذخیره انجام نشد: '+(e.message||e);}finally{b.disabled=false;}});
+   }catch(e){modal('اعلان‌ها',`<p>بارگذاری تنظیمات ناموفق بود: ${escape(e.message||e)}</p>`);}
+ };
+ const showSupport=()=>{
+   modal('پشتیبانی AITEL',`<form id="aitelSupportForm" class="aitel-settings-form">
+     <p class="form-hint">پیام شما از طریق ربات رسمی AITEL برای مدیر ارسال می‌شود و پاسخ در همین گفت‌وگو به دستتان می‌رسد.</p>
+     ${fieldSelect('supportType','موضوع پیام','bug',[['bug','گزارش مشکل'],['suggestion','پیشنهاد'],['feature','درخواست قابلیت'],['report','انتقاد یا رضایت']])}
+     <label class="field"><span>متن پیام</span><textarea id="supportContent" rows="5" maxlength="3000" required placeholder="پیامت را بنویس..."></textarea></label>
+     <button type="submit" class="primary-btn" id="sendSupportBtn">ارسال به پشتیبانی</button><p id="supportStatus" class="form-hint"></p></form>`);
+   el('aitelSupportForm')?.addEventListener('submit',async ev=>{ev.preventDefault();const b=el('sendSupportBtn'),st=el('supportStatus'),content=el('supportContent').value.trim();if(!content)return; b.disabled=true;st.textContent='در حال ارسال...';try{
+     const {data:profile}=await db.from('aitel_profiles').select('username,display_name').eq('id',AITEL.user.id).maybeSingle();
+     const {data:row,error}=await db.from('aitel_feedback').insert({user_id:AITEL.user.id,username:profile?.username||null,display_name:profile?.display_name||null,feedback_type:el('supportType').value,content}).select('id').single();if(error)throw error;
+     const {data:fn,error:fnErr}=await db.functions.invoke('aitel-system-bot',{body:{event:'feedback',feedback_id:row.id}});if(fnErr)throw fnErr;if(fn?.ok===false)throw new Error(fn.error||'ارسال ربات ناموفق بود');
+     st.textContent='پیام شما با موفقیت برای پشتیبانی ارسال شد.';el('supportContent').value='';if(typeof window.toast==='function')window.toast('پیام به پشتیبانی ارسال شد.','success');
+   }catch(e){st.textContent='پیام ذخیره شد اما ارسال به مدیر ممکن است ناموفق باشد: '+(e.message||e);if(typeof window.toast==='function')window.toast('ارسال پشتیبانی ناموفق بود.','error');}finally{b.disabled=false;}});
+ };
+ el('privacySettingsBtn')?.addEventListener('click',showPrivacy);
+ el('notificationSettingBtn')?.addEventListener('click',showNotifications);
+ el('helpSettingBtn')?.addEventListener('click',showSupport);
  el('chatMoreBtn')?.addEventListener('click',()=>{
   modal('گزینه‌های گفت‌وگو','<div class="aitel-chat-more"><button type="button" data-more="search">جست‌وجو در پیام‌ها</button><button type="button" data-more="back">بازگشت به فهرست گفت‌وگوها</button></div>');
   el('modalBody')?.addEventListener('click',function more(e){const a=e.target.closest('[data-more]')?.dataset.more;if(!a)return;if(typeof window.closeModal==='function')window.closeModal();if(a==='search')el('chatSearchMessagesBtn')?.click();if(a==='back')el('chatBackBtn')?.click();this.removeEventListener('click',more);});
