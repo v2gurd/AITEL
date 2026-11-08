@@ -1351,6 +1351,25 @@ img {
   .theme-preset-preview::after { animation: none !important; }
 }
 
+
+/* Profile editor and improved message typography */
+.profile-edit-form .field { margin: 12px 0; }
+.profile-edit-form .field textarea { min-height: 92px; resize: vertical; }
+.profile-edit-avatar { display:flex; align-items:center; gap:14px; margin: 4px 0 16px; }
+.profile-edit-avatar img { width:64px; height:64px; border-radius:20px; object-fit:cover; background:var(--surface-3); }
+.profile-edit-avatar button, .gallery-actions button { border-radius:12px; padding:10px 13px; background:var(--surface-3); font-size:12px; }
+.profile-edit-form .form-hint { color:var(--muted); font-size:10px; line-height:1.8; margin-top:8px; }
+.profile-edit-form .primary-btn { margin-top:12px; }
+.aitel-gallery-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.aitel-gallery-grid img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:12px; }
+.gallery-actions { display:flex; gap:8px; margin:12px 0; }
+.gallery-actions button { flex:1; }
+.message-text { white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; line-height:1.95; }
+.message-text a { color:#83c4ff; text-decoration:underline; text-underline-offset:3px; direction:ltr; unicode-bidi:plaintext; }
+.message-row.mine .message-text a { color:#d6eaff; }
+.message-text:empty { display:none; }
+.message-bubble { max-width:min(86%, 430px); }
+
 </style>
 </head>
 
@@ -4466,10 +4485,12 @@ function renderMessageContent(message) {
     "";
 
   if (!mediaUrl) {
-    return escapeHTML(content);
+    return window.AITEL_formatMessageText ? window.AITEL_formatMessageText(content) : escapeHTML(content);
   }
 
-  const safeUrl = escapeAttribute(mediaUrl);
+  const validatedMediaUrl = window.AITEL_safeMediaUrl ? window.AITEL_safeMediaUrl(mediaUrl) : mediaUrl;
+  if (!validatedMediaUrl) return window.AITEL_formatMessageText ? window.AITEL_formatMessageText(content) : escapeHTML(content);
+  const safeUrl = escapeAttribute(validatedMediaUrl);
 
   if (mediaType.startsWith("image")) {
     return `
@@ -4481,7 +4502,7 @@ function renderMessageContent(message) {
           loading="lazy"
         >
       </div>
-      ${escapeHTML(content)}
+      ${window.AITEL_formatMessageText ? window.AITEL_formatMessageText(content) : escapeHTML(content)}
     `;
   }
 
@@ -4494,7 +4515,7 @@ function renderMessageContent(message) {
           preload="metadata"
         ></video>
       </div>
-      ${escapeHTML(content)}
+      ${window.AITEL_formatMessageText ? window.AITEL_formatMessageText(content) : escapeHTML(content)}
     `;
   }
 
@@ -4506,7 +4527,7 @@ function renderMessageContent(message) {
         controls
         preload="metadata"
       ></audio>
-      ${escapeHTML(content)}
+      ${window.AITEL_formatMessageText ? window.AITEL_formatMessageText(content) : escapeHTML(content)}
     `;
   }
 
@@ -4518,7 +4539,7 @@ function renderMessageContent(message) {
     >
       📎 دریافت فایل
     </a>
-    ${escapeHTML(content)}
+    ${window.AITEL_formatMessageText ? window.AITEL_formatMessageText(content) : escapeHTML(content)}
   `;
 }
 
@@ -6935,12 +6956,202 @@ const AITEL_MEDIA = (() => {
   modal('انتخاب ایموجی',`<div class="aitel-emoji-grid">${emojis.map(e=>`<button type="button" class="aitel-emoji" data-emoji="${e}">${e}</button>`).join('')}</div>`);
   el('modalBody')?.addEventListener('click',function pick(e){const b=e.target.closest('[data-emoji]');if(!b)return;const input=el('messageInput');if(input){const a=input.selectionStart??input.value.length,z=input.selectionEnd??input.value.length;input.value=input.value.slice(0,a)+b.dataset.emoji+input.value.slice(z);input.focus();input.setSelectionRange(a+b.dataset.emoji.length,a+b.dataset.emoji.length);input.dispatchEvent(new Event('input',{bubbles:true}));}if(typeof window.closeModal==='function')window.closeModal();this.removeEventListener('click',pick);});
  });
- const pending={createChannelBtn:['ساخت کانال','ساخت کانال هنوز به عملیات ایجاد کانال در دیتابیس متصل نشده است.'],editProfileBtn:['ویرایش پروفایل','فرم ویرایش پروفایل هنوز به ذخیره‌سازی اطلاعات حساب متصل نشده است.'],profileGalleryBtn:['گالری پروفایل','مدیریت چند تصویر پروفایل هنوز پیاده‌سازی نشده است.'],privacySettingsBtn:['حریم خصوصی','تنظیمات حریم خصوصی هنوز به‌طور کامل برای تغییر و ذخیره در دیتابیس متصل نشده است.'],notificationSettingBtn:['اعلان‌ها','تنظیمات اعلان هنوز پیاده‌سازی نشده است.'],helpSettingBtn:['پشتیبانی AITEL','برای فعال‌سازی پشتیبانی باید نشانی یا شناسه پشتیبانی رسمی مشخص شود.']};
+ const pending={createChannelBtn:['ساخت کانال','ساخت کانال هنوز به عملیات ایجاد کانال در دیتابیس متصل نشده است.'],privacySettingsBtn:['حریم خصوصی','تنظیمات حریم خصوصی هنوز به‌طور کامل برای تغییر و ذخیره در دیتابیس متصل نشده است.'],notificationSettingBtn:['اعلان‌ها','تنظیمات اعلان هنوز پیاده‌سازی نشده است.'],helpSettingBtn:['پشتیبانی AITEL','برای فعال‌سازی پشتیبانی باید نشانی یا شناسه پشتیبانی رسمی مشخص شود.']};
  Object.entries(pending).forEach(([id,v])=>el(id)?.addEventListener('click',()=>modal(v[0],`<p>${v[1]}</p>`)));
  el('chatMoreBtn')?.addEventListener('click',()=>{
   modal('گزینه‌های گفت‌وگو','<div class="aitel-chat-more"><button type="button" data-more="search">جست‌وجو در پیام‌ها</button><button type="button" data-more="back">بازگشت به فهرست گفت‌وگوها</button></div>');
   el('modalBody')?.addEventListener('click',function more(e){const a=e.target.closest('[data-more]')?.dataset.more;if(!a)return;if(typeof window.closeModal==='function')window.closeModal();if(a==='search')el('chatSearchMessagesBtn')?.click();if(a==='back')el('chatBackBtn')?.click();this.removeEventListener('click',more);});
  });
+})();
+</script>
+
+
+<script>
+/* AITEL profile editor + safer, clearer message text */
+(function () {
+  const $id = id => document.getElementById(id);
+  const safeImageFile = file => file && /^image\/(jpeg|png|webp|gif)$/i.test(file.type) && file.size <= 5 * 1024 * 1024;
+  const safePublicUrl = value => {
+    try { const u = new URL(String(value || ""), location.href); return ["https:", "http:"].includes(u.protocol) ? u.href : ""; }
+    catch (_) { return ""; }
+  };
+  window.AITEL_safeMediaUrl = safePublicUrl;
+  const notify = (message, type = "normal") => {
+    if (typeof window.toast === "function") window.toast(message, type);
+    else alert(message);
+  };
+  const open = (title, html) => {
+    if (typeof window.openModal === "function") window.openModal(title, html);
+    else notify("امکان باز کردن پنجره وجود ندارد", "error");
+  };
+
+  function profileForm() {
+    const p = AITEL.profile || {};
+    open("ویرایش پروفایل", `
+      <form id="aitelProfileEditForm" class="profile-edit-form">
+        <div class="profile-edit-avatar">
+          <img id="aitelEditAvatarPreview" src="${escapeAttribute(getAvatar(p))}" alt="تصویر پروفایل">
+          <button type="button" id="aitelChooseAvatar">تغییر عکس پروفایل</button>
+          <input id="aitelProfileAvatarFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+        </div>
+        <div class="field"><label for="aitelEditDisplayName">نام نمایشی</label>
+          <input id="aitelEditDisplayName" maxlength="40" required value="${escapeAttribute(p.display_name || getDisplayName(p))}" placeholder="نامی که دیگران می‌بینند"></div>
+        <div class="field"><label for="aitelEditUsername">نام کاربری</label>
+          <input id="aitelEditUsername" maxlength="24" required dir="ltr" value="${escapeAttribute(p.username || "")}" placeholder="username">
+          <div class="form-hint">فقط حروف انگلیسی، عدد و زیرخط؛ حداقل ۳ و حداکثر ۲۴ کاراکتر</div>
+        </div>
+        <div class="field"><label for="aitelEditBio">درباره من</label>
+          <textarea id="aitelEditBio" maxlength="160" placeholder="چند خط درباره خودت بنویس">${escapeHTML(p.bio || "")}</textarea></div>
+        <div id="aitelProfileEditError" class="auth-error" role="alert"></div>
+        <button class="primary-btn" id="aitelSaveProfile" type="submit">ذخیره تغییرات</button>
+      </form>
+    `);
+    const fileInput = $id("aitelProfileAvatarFile");
+    $id("aitelChooseAvatar")?.addEventListener("click", () => fileInput?.click());
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      if (!safeImageFile(file)) {
+        notify("فرمت عکس باید JPG، PNG، WEBP یا GIF و حجم آن حداکثر ۵ مگابایت باشد.", "error");
+        fileInput.value = "";
+        return;
+      }
+      const preview = $id("aitelEditAvatarPreview");
+      if (preview) preview.src = URL.createObjectURL(file);
+    });
+    $id("aitelProfileEditForm")?.addEventListener("submit", saveProfile);
+  }
+
+  async function saveProfile(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const button = $id("aitelSaveProfile");
+    const errorBox = $id("aitelProfileEditError");
+    const displayName = ($id("aitelEditDisplayName")?.value || "").trim();
+    const username = normalizeUsername($id("aitelEditUsername")?.value || "");
+    const bio = ($id("aitelEditBio")?.value || "").trim();
+    const file = $id("aitelProfileAvatarFile")?.files?.[0];
+    if (!AITEL.user || !db) { errorBox.textContent = "نشست شما منقضی شده؛ دوباره وارد شوید."; return; }
+    if (!displayName) { errorBox.textContent = "نام نمایشی را وارد کنید."; return; }
+    if (!validUsername(username)) { errorBox.textContent = "نام کاربری معتبر نیست؛ از ۳ تا ۲۴ حرف انگلیسی، عدد یا زیرخط استفاده کنید."; return; }
+    if (file && !safeImageFile(file)) { errorBox.textContent = "عکس انتخاب‌شده معتبر نیست یا حجم آن بیشتر از ۵ مگابایت است."; return; }
+    button.disabled = true; button.textContent = "در حال ذخیره...";
+    errorBox.textContent = "";
+    try {
+      if (username !== normalizeUsername(AITEL.profile?.username)) {
+        const { data: taken, error: checkError } = await db.from("aitel_profiles")
+          .select("id").eq("username", username).neq("id", AITEL.user.id).limit(1);
+        if (checkError) throw checkError;
+        if (taken?.length) throw new Error("این نام کاربری قبلاً انتخاب شده است.");
+      }
+
+      let avatarUrl = AITEL.profile?.avatar_url || AITEL.profile?.photo_url || AITEL.profile?.avatar || null;
+      if (file) {
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const path = `${AITEL.user.id}/avatar-${Date.now()}.${ext}`;
+        const { error: uploadError } = await db.storage.from(AITEL_CONFIG.PROFILE_BUCKET)
+          .upload(path, file, { cacheControl: "3600", upsert: true, contentType: file.type });
+        if (uploadError) throw uploadError;
+        const { data: publicData } = db.storage.from(AITEL_CONFIG.PROFILE_BUCKET).getPublicUrl(path);
+        avatarUrl = publicData?.publicUrl;
+        if (!avatarUrl) throw new Error("لینک عکس پس از آپلود دریافت نشد.");
+      }
+
+      const updates = { display_name: displayName, username, bio };
+      if (file && avatarUrl) updates.avatar_url = avatarUrl;
+      const { data, error } = await db.from("aitel_profiles").update(updates)
+        .eq("id", AITEL.user.id).select("*").single();
+      if (error) throw error;
+      AITEL.profile = data || { ...AITEL.profile, ...updates };
+      renderMyProfile();
+      if (typeof window.closeModal === "function") window.closeModal();
+      notify("تغییرات پروفایل با موفقیت ذخیره شد.", "success");
+    } catch (error) {
+      console.error("AITEL profile update:", error);
+      errorBox.textContent = getErrorMessage(error);
+    } finally {
+      button.disabled = false; button.textContent = "ذخیره تغییرات";
+    }
+  }
+
+  async function openGallery() {
+    const photos = Array.isArray(AITEL.profile?.photo_urls) ? AITEL.profile.photo_urls : [];
+    const html = `
+      <p class="theme-picker-intro">تصاویر گالری پروفایل در حساب شما ذخیره می‌شوند. حداکثر ۹ تصویر؛ هر تصویر تا ۵ مگابایت.</p>
+      <div class="aitel-gallery-grid">${photos.map(url => `<img src="${escapeAttribute(safePublicUrl(url))}" alt="تصویر گالری" loading="lazy">`).join("")}</div>
+      <div class="gallery-actions"><button type="button" id="aitelAddGallery">افزودن تصویر</button><button type="button" id="aitelClearGallery">پاک‌کردن گالری</button></div>
+      <input id="aitelGalleryFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+      <div id="aitelGalleryStatus" class="auth-error"></div>`;
+    open("گالری پروفایل", html);
+    $id("aitelAddGallery")?.addEventListener("click", () => $id("aitelGalleryFiles")?.click());
+    $id("aitelGalleryFiles")?.addEventListener("change", uploadGallery);
+    $id("aitelClearGallery")?.addEventListener("click", async () => {
+      if (!confirm("تمام تصاویر گالری حذف شوند؟")) return;
+      try {
+        const { data, error } = await db.from("aitel_profiles").update({ photo_urls: [] })
+          .eq("id", AITEL.user.id).select("*").single();
+        if (error) throw error;
+        AITEL.profile = data; openGallery(); notify("گالری پاک شد.", "success");
+      } catch (e) { $id("aitelGalleryStatus").textContent = getErrorMessage(e); }
+    });
+  }
+
+  async function uploadGallery(event) {
+    const files = Array.from(event.target.files || []);
+    const status = $id("aitelGalleryStatus");
+    if (!files.length) return;
+    if (files.some(f => !safeImageFile(f))) { status.textContent = "همه تصاویر باید JPG، PNG، WEBP یا GIF و حداکثر ۵ مگابایت باشند."; return; }
+    const existing = Array.isArray(AITEL.profile?.photo_urls) ? [...AITEL.profile.photo_urls] : [];
+    if (existing.length + files.length > 9) { status.textContent = "گالری حداکثر ۹ تصویر می‌تواند داشته باشد."; return; }
+    status.textContent = "در حال آپلود تصاویر...";
+    try {
+      for (const file of files) {
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const path = `${AITEL.user.id}/gallery-${Date.now()}-${Math.random().toString(36).slice(2,7)}.${ext}`;
+        const { error } = await db.storage.from(AITEL_CONFIG.PROFILE_BUCKET)
+          .upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type });
+        if (error) throw error;
+        const { data } = db.storage.from(AITEL_CONFIG.PROFILE_BUCKET).getPublicUrl(path);
+        if (data?.publicUrl) existing.push(data.publicUrl);
+      }
+      const { data, error } = await db.from("aitel_profiles").update({ photo_urls: existing })
+        .eq("id", AITEL.user.id).select("*").single();
+      if (error) throw error;
+      AITEL.profile = data; openGallery(); notify("تصاویر به گالری اضافه شدند.", "success");
+    } catch (e) { status.textContent = getErrorMessage(e); }
+  }
+
+  // Make plain text links clickable without interpreting user HTML.
+  window.AITEL_formatMessageText = function (value) {
+    const escaped = escapeHTML(String(value ?? ""));
+    const linked = escaped.replace(/((https?:\/\/|www\.)[^\s<]+)/gi, raw => {
+      const clean = raw.replace(/[.,!?،؛:)\]}]+$/g, "");
+      const tail = raw.slice(clean.length);
+      const href = clean.toLowerCase().startsWith("www.") ? "https://" + clean : clean;
+      let parsed;
+      try { parsed = new URL(href); } catch (_) { return raw; }
+      if (!["http:", "https:"].includes(parsed.protocol)) return raw;
+      return `<a href="${escapeAttribute(parsed.href)}" target="_blank" rel="noopener noreferrer">${clean}</a>${tail}`;
+    });
+    return linked;
+  };
+
+  // Remove the old "not connected" placeholder handlers for these two controls.
+  document.addEventListener("click", event => {
+    const edit = event.target.closest("#editProfileBtn");
+    const gallery = event.target.closest("#profileGalleryBtn");
+    if (edit) { event.preventDefault(); event.stopImmediatePropagation(); profileForm(); }
+    if (gallery) { event.preventDefault(); event.stopImmediatePropagation(); openGallery(); }
+  }, true);
+
+  // Existing render function is retained; only plain text formatting is improved.
+  const originalRenderMessageContent = window.renderMessageContent;
+  if (typeof originalRenderMessageContent === "function") {
+    window.renderMessageContent = function (message) {
+      const result = originalRenderMessageContent(message);
+      return typeof result === "string" ? result.replace(/(<\/(?:div|audio|video)>|<\/a>)/g, "$1") : result;
+    };
+  }
 })();
 </script>
 
