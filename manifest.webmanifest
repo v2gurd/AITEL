@@ -1,0 +1,14 @@
+{
+  "id": "/AITEL/",
+  "name": "AITEL | ایتل",
+  "short_name": "AITEL",
+  "description": "پیام‌رسان ایتل",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/AITEL/",
+  "scope": "/AITEL/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f7f8fc",
+  "theme_color": "#f7f8fc"
+}
