@@ -1470,6 +1470,14 @@ input,textarea,select,.input{border-radius:13px!important}
 .modal-content{border-radius:24px!important}
 @media(prefers-reduced-motion:no-preference){.chat-item,.message-bubble,.section-card{transition:all .22s ease}}
 
+
+.google-auth-panel{padding:8px 0 4px;text-align:center}
+.google-auth-description{font-size:13px;color:var(--muted);line-height:1.9;margin:8px 0 22px}
+.google-signin-btn{display:flex;align-items:center;justify-content:center;gap:12px;min-height:54px;width:100%;background:#fff!important;color:#202124!important;border:1px solid #dadce0!important;box-shadow:0 2px 8px rgba(0,0,0,.06);font-weight:700}
+.google-signin-btn:hover{background:#f8faff!important;border-color:#b8c8e8!important}
+.google-mark{width:21px;height:21px;flex:none}
+.google-auth-footnote{font-size:11px;line-height:1.9;color:var(--muted);margin:15px 8px 0}
+
 </style>
 </head>
 
@@ -1485,75 +1493,14 @@ input,textarea,select,.input{border-radius:13px!important}
         <p>ارتباطی ساده‌تر، سریع‌تر و هوشمندتر</p>
       </div>
 
-      <div id="loginForm">
-        <div class="field">
-          <label for="loginEmail">ایمیل</label>
-          <input id="loginEmail" type="email" autocomplete="email" placeholder="example@email.com">
-        </div>
-
-        <div class="field">
-          <label for="loginPassword">رمز عبور</label>
-          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="رمز عبور">
-        </div>
-
+      <div id="loginForm" class="google-auth-panel">
+        <p class="google-auth-description">برای ورود امن و سریع، از حساب گوگل خود استفاده کنید</p>
         <div class="auth-error" id="loginError"></div>
-        <button class="primary-btn" id="loginBtn" type="button">ورود به ایتل</button>
-
-        <div class="auth-switch">
-          حساب کاربری نداری؟
-          <button type="button" onclick="showAuthForm('register')">ثبت‌نام</button>
-        </div>
-
-        <div class="auth-switch">
-          <button type="button" onclick="showAuthForm('forgot')">فراموشی رمز عبور</button>
-        </div>
-      </div>
-
-      <div id="registerForm" class="hidden">
-        <div class="field">
-          <label for="registerName">نام نمایشی</label>
-          <input id="registerName" type="text" maxlength="40" placeholder="نام شما">
-        </div>
-
-        <div class="field">
-          <label for="registerUsername">نام کاربری</label>
-          <input id="registerUsername" type="text" maxlength="24" placeholder="username">
-        </div>
-
-        <div class="field">
-          <label for="registerEmail">ایمیل</label>
-          <input id="registerEmail" type="email" autocomplete="email" placeholder="example@email.com">
-        </div>
-
-        <div class="field">
-          <label for="registerPhone">شماره تلفن</label>
-          <input id="registerPhone" type="tel" autocomplete="tel" placeholder="+98912xxxxxxx">
-        </div>
-
-        <div class="field">
-          <label for="registerPassword">رمز عبور</label>
-          <input id="registerPassword" type="password" autocomplete="new-password" placeholder="حداقل ۸ کاراکتر">
-        </div>
-
-        <div class="auth-error" id="registerError"></div>
-        <button class="primary-btn" id="registerBtn" type="button">ساخت حساب کاربری</button>
-
-        <div class="auth-switch">
-          قبلاً ثبت‌نام کرده‌ای؟
-          <button type="button" onclick="showAuthForm('login')">ورود</button>
-        </div>
-      </div>
-
-      <div id="forgotForm" class="hidden">
-        <div class="field">
-          <label for="forgotEmail">ایمیل حساب کاربری</label>
-          <input id="forgotEmail" type="email" placeholder="example@email.com">
-        </div>
-        <div class="auth-error" id="forgotError"></div>
-        <button class="primary-btn" id="forgotBtn" type="button">ارسال لینک بازیابی</button>
-        <div class="auth-switch">
-          <button type="button" onclick="showAuthForm('login')">بازگشت به ورود</button>
-        </div>
+        <button class="primary-btn google-signin-btn" id="googleLoginBtn" type="button">
+          <svg class="google-mark" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.7c3.9-3.6 6-8.8 6-15Z"/><path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.7-5.1c-1.8 1.2-4 1.9-6.8 1.9-5.2 0-9.6-3.5-11.2-8.2H5.9v5.3A20 20 0 0 0 24 44Z"/><path fill="#FBBC05" d="M12.8 27.7a12 12 0 0 1 0-7.4V15H5.9a20 20 0 0 0 0 17.9l6.9-5.2Z"/><path fill="#EA4335" d="M24 12.1c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 6.1 29.5 4 24 4A20 20 0 0 0 5.9 15l6.9 5.3c1.6-4.7 6-8.2 11.2-8.2Z"/></svg>
+          ورود با حساب گوگل
+        </button>
+        <p class="google-auth-footnote">با انتخاب این گزینه، حساب AITEL شما به‌صورت خودکار ساخته یا وارد می‌شود</p>
       </div>
 
       <div class="auth-info">
@@ -2331,6 +2278,34 @@ window.showAuthForm = showAuthForm;
 
 
 /* -------------------------
+   GOOGLE AUTHENTICATION
+------------------------- */
+async function loginWithGoogle() {
+  if (!db) {
+    toast("اتصال به سرور برقرار نیست.", "error");
+    return;
+  }
+  const button = byId("googleLoginBtn");
+  const errorBox = byId("loginError");
+  if (errorBox) errorBox.textContent = "";
+  setButtonLoading(button, true, "در حال اتصال به گوگل...");
+  try {
+    const { error } = await db.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + window.location.pathname,
+        queryParams: { access_type: "offline", prompt: "select_account" }
+      }
+    });
+    if (error) throw error;
+  } catch (error) {
+    console.error("AITEL Google login error:", error);
+    if (errorBox) errorBox.textContent = getErrorMessage(error);
+    setButtonLoading(button, false);
+  }
+}
+
+/* -------------------------
    8. LOGIN
 ------------------------- */
 
@@ -2607,6 +2582,26 @@ async function initializeApplication(session) {
   AITEL.isLoading = true;
 
   try {
+    // ساخت پروفایل اولیه برای حساب‌هایی که اولین بار با گوگل وارد می‌شوند.
+    const { data: existingProfile, error: profileCheckError } = await db
+      .from("aitel_profiles").select("id").eq("id", AITEL.user.id).maybeSingle();
+    if (profileCheckError) throw profileCheckError;
+    if (!existingProfile) {
+      const metadata = AITEL.user.user_metadata || {};
+      const googleName = metadata.full_name || metadata.name ||
+        (AITEL.user.email ? AITEL.user.email.split("@")[0] : "کاربر جدید");
+      const emailStem = (AITEL.user.email || "user").split("@")[0]
+        .toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 14) || "user";
+      const suffix = AITEL.user.id.replace(/-/g, "").slice(0, 6).toLowerCase();
+      const initialUsername = `${emailStem}_${suffix}`.slice(0, 24);
+      const { error: profileInsertError } = await db.from("aitel_profiles").insert({
+        id: AITEL.user.id,
+        username: initialUsername,
+        display_name: String(googleName).slice(0, 40),
+        avatar_url: metadata.avatar_url || metadata.picture || null
+      });
+      if (profileInsertError && !/duplicate key/i.test(profileInsertError.message || "")) throw profileInsertError;
+    }
     await loadMyProfile();
 
     await loadMyPrivacySettings();
@@ -2729,32 +2724,7 @@ byId("chatBackBtn")?.addEventListener(
    16. AUTH BUTTON EVENTS
 ------------------------- */
 
-byId("loginBtn")?.addEventListener(
-  "click",
-  loginUser
-);
-
-byId("registerBtn")?.addEventListener(
-  "click",
-  registerUser
-);
-
-byId("forgotBtn")?.addEventListener(
-  "click",
-  recoverPassword
-);
-
-byId("loginPassword")?.addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    loginUser();
-  }
-});
-
-byId("registerPassword")?.addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    registerUser();
-  }
-});
+byId("googleLoginBtn")?.addEventListener("click", loginWithGoogle);
 
 
 /* -------------------------
