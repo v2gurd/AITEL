@@ -1164,7 +1164,8 @@ img {
 }
 .app::before { top: 8%; left: -22%; }
 .app::after { width: min(56vw, 360px); bottom: 3%; right: -18%; animation-delay: -8s; animation-direction: alternate-reverse; }
-.app > * { position: relative; z-index: 1; }
+/* Keep the original absolute positioning of app screens; only lift screens above decorative background orbs. */
+.screen { z-index: 1; }
 .screen, .app .bottom-nav { background-color: color-mix(in srgb, var(--bg) 78%, transparent); }
 .screen { backdrop-filter: blur(var(--screen-blur, 10px)); -webkit-backdrop-filter: blur(var(--screen-blur, 10px)); }
 .auth-card, .section-card, .chat-item, .composer, .chat-header { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
