@@ -72,7 +72,7 @@ if (!window.supabase?.createClient) {
   return;
 }
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:true, flowType:'pkce' }
+  auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:false, flowType:'pkce' }
 });
 let me=null, profile=null, chats=[], activeChat=null, activeMembers=[], activeChannel=null;
 let recorder=null, recordedChunks=[], recording=false, currentFilter='all', toastTimer=null;
@@ -96,52 +96,83 @@ async function handleSession(session){
     if(authReady)setLoggedIn(false);
     return;
   }
-  if(authUserId===session.user.id || authLoading)return;
+  if(authLoading)return;
+  if(authUserId===session.user.id && profile){setLoggedIn(true);return;}
   authLoading=true;
-  authUserId=session.user.id;
   me=session.user;
+  setLoggedIn(true);
   try{
-    setLoggedIn(true);
     await afterLogin();
+    authUserId=session.user.id;
   }catch(error){
+    authUserId=null;
     console.error('AITEL afterLogin error:',error);
     toast('ورود انجام شد، اما بارگذاری حساب ناموفق بود: '+(error.message||error));
-  }finally{authLoading=false}
+  }finally{authLoading=false;}
 }
-async function boot(){
-  // ابتدا نشست را از URL یا حافظه می‌خوانیم؛ سپس listener را فعال می‌کنیم تا
-  // رویداد INITIAL_SESSION خالی، نشست واقعی را تصادفاً پاک نکند.
-  const {data,error}=await sb.auth.getSession();
-  if(error){
-    console.error('getSession error:',error);
-    toast('بررسی ورود ناموفق بود: '+error.message);
-  }
-  authReady=true;
-  if(data?.session) await handleSession(data.session);
-  else setLoggedIn(false);
 
-  sb.auth.onAuthStateChange((event,session)=>{
-    if(event==='SIGNED_OUT'){
-      authUserId=null;me=null;profile=null;chats=[];activeChat=null;setLoggedIn(false);
+async function boot(){
+  try{
+    // کد برگشتی OAuth را فقط یک‌بار به نشست Supabase تبدیل می‌کنیم.
+    const params=new URLSearchParams(location.search);
+    const code=params.get('code');
+    const oauthError=params.get('error_description')||params.get('error');
+
+    if(oauthError){
+      history.replaceState({},document.title,SITE_URL);
+      authReady=true;
+      setLoggedIn(false);
+      toast('خطای ورود گوگل: '+decodeURIComponent(String(oauthError).replace(/\+/g,' ')));
       return;
     }
-    if(session){
-      // عمداً عملیات دیتابیس را خارج از callback احراز هویت اجرا می‌کنیم.
-      setTimeout(()=>handleSession(session).catch(err=>{
-        console.error('Auth callback error:',err);
-        toast('خطا در تکمیل ورود: '+(err.message||err));
-      }),0);
+
+    if(code){
+      const {error}=await sb.auth.exchangeCodeForSession(code);
+      if(error){
+        console.error('OAuth exchange error:',error);
+        history.replaceState({},document.title,SITE_URL);
+        authReady=true;
+        setLoggedIn(false);
+        toast('تکمیل ورود ناموفق بود: '+error.message);
+        return;
+      }
+      // کد OAuth را از نوار آدرس پاک می‌کنیم تا دوباره مصرف نشود.
+      history.replaceState({},document.title,SITE_URL);
     }
-  });
+
+    const {data,error}=await sb.auth.getSession();
+    if(error)throw error;
+
+    authReady=true;
+    if(data?.session)await handleSession(data.session);
+    else setLoggedIn(false);
+
+    // عملیات دیتابیس خارج از callback احراز هویت اجرا می‌شود.
+    sb.auth.onAuthStateChange((event,session)=>{
+      if(event==='SIGNED_OUT'){
+        authUserId=null;me=null;profile=null;chats=[];activeChat=null;
+        setLoggedIn(false);
+        return;
+      }
+      if(session){
+        setTimeout(()=>handleSession(session),0);
+      }
+    });
+  }catch(error){
+    console.error('AITEL boot error:',error);
+    authReady=true;
+    setLoggedIn(false);
+    toast('خطای راه‌اندازی ایتل: '+(error.message||error));
+  }
 }
+
 async function afterLogin(){
   const u=me.user_metadata||{};
   const row={id:me.id,display_name:u.full_name||u.name||me.email?.split('@')[0]||'کاربر ایتل',avatar_url:u.avatar_url||u.picture||null};
   const {data,error}=await sb.from('aitel_profiles').upsert(row,{onConflict:'id'}).select().single();
   if(error){
     console.error('Profile upsert error:',error);
-    toast('خطای ساخت پروفایل: '+error.message);
-    return;
+    throw error;
   }
   profile=data;
   $('myName').textContent=profile.display_name||'کاربر ایتل';
