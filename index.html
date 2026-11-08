@@ -71,7 +71,7 @@ input,textarea{font-size:16px!important}
 .msg.mine{align-self:flex-end;background:var(--soft);border-bottom-right-radius:5px}
 .msg .sender{font-size:11px;color:var(--primary);font-weight:800;margin-bottom:5px;cursor:pointer}
 .msg .time{font-size:9px;color:var(--muted);text-align:left;margin-top:6px}
-.msg .ticks{color:var(--muted);margin-right:4px;font-size:13px}
+.msg .ticks{color:#929bad;margin-right:4px;font-size:13px;letter-spacing:-3px;font-weight:800}
 .msg .ticks.read{color:#1685ee}
 .msg .edited{font-size:9px;color:var(--muted);margin-right:4px}
 .msg.deleted{color:var(--muted);font-style:italic}
@@ -176,7 +176,7 @@ input,textarea{font-size:16px!important}
 <div class="top">
 <div class="brandline">
 <div class="brandmark"><img src="AITEL-Official-Logo.png" alt="AITEL"></div>
-<div><span class="brand">AITEL</span><span class="version">v1.6</span></div>
+<div><span class="brand">AITEL</span><span class="version">v1.7</span></div>
 </div>
 <button class="iconbtn" onclick="openChannels()" title="کانال‌ها"><span class="material-symbols-rounded">campaign</span></button>
 </div>
@@ -216,7 +216,7 @@ input,textarea{font-size:16px!important}
 <h2>ارتباط، ساده‌تر از همیشه</h2>
 <p style="color:var(--muted);font-size:13px">وارد حساب خود شوید و گفتگو را آغاز کنید.</p>
 <button class="google" onclick="loginGoogle()">ورود با حساب Google</button>
-<p style="font-size:10px;color:var(--muted);margin-top:20px">AITEL Messenger · v1.6</p>
+<p style="font-size:10px;color:var(--muted);margin-top:20px">AITEL Messenger · v1.7</p>
 </div>
 </div>
 <div class="modal hidden" id="modal" onclick="if(event.target===this)closeModal()">
@@ -232,6 +232,7 @@ const LOGO_URL=SITE_URL+'AITEL-Official-Logo.png';
 const PHOTO_BUCKET='aitel-profile-photos';
 const MEDIA_BUCKET='aitel-chat-media';
 const ADMIN_USERNAME='ehsanews';
+const SYSTEM_BOT_USERNAME='aitel_bot';
 
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
 auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:'pkce'}
@@ -247,6 +248,11 @@ let phoneGate=false,appStarted=false;
 let typingChannel=null,typingTimeout=null,isTyping=false;
 let mediaRecorder=null,recordedChunks=[],recordingStream=null;
 let audioContext=null,lastSoundAt=0;
+
+/* وضعیت ثبت‌نام و اعلان‌های سیستمی */
+let profileWasCreated=false;
+let registrationNotificationAttempted=false;
+let welcomeNotificationAttempted=false;
 
 const $=id=>document.getElementById(id);
 const MATERIAL={
@@ -378,6 +384,7 @@ async function handleOAuth(){
 
 /* پروفایل */
 async function loadProfile(){
+ profileWasCreated=false;
  const {data,error}=await db.from('aitel_profiles').select('*').eq('id',currentUser.id).maybeSingle();
  if(error){console.error(error);toast('خطای دریافت پروفایل: '+error.message)}
  if(data)myProfile=data;
@@ -387,6 +394,7 @@ async function loadProfile(){
   const {data:newProfile,error:insertError}=await db.from('aitel_profiles').insert({id:currentUser.id,display_name:displayName,username,bio:'',photo_urls:[]}).select().single();
   if(insertError){toast('ساخت پروفایل ناموفق بود: '+insertError.message);return}
   myProfile=newProfile;
+  profileWasCreated=true;
  }
  if(!myProfile)return;
  profilePhotos=Array.isArray(myProfile.photo_urls)?myProfile.photo_urls:[];
@@ -759,19 +767,26 @@ async function markRead(chatId){
  unreadMap[chatId]=0;updatePageTitle();renderList();
 }
 
-/* وضعیت خوانده‌شدن */
+/* وضعیت ارسال، تحویل و خوانده‌شدن */
 async function loadReadReceipts(chatId){
- const {data,error}=await db.from('aitel_chat_members').select('user_id,last_read_at').eq('chat_id',chatId).neq('user_id',currentUser.id);
+ const {data,error}=await db.from('aitel_chat_members').select('user_id,last_read_at,joined_at').eq('chat_id',chatId).neq('user_id',currentUser.id);
  if(error){console.warn('Read receipts:',error.message);return}
  const others=data||[];
  messageCache.forEach(m=>{
   if(m.sender_id!==currentUser.id)return;
-  m.wasRead=others.some(member=>member.last_read_at&&new Date(member.last_read_at)>=new Date(m.created_at));
+  const recipients=others.filter(member=>{
+   if(!member.joined_at)return true;
+   return new Date(member.joined_at)<=new Date(m.created_at);
+  });
+  m.wasDelivered=recipients.length>0;
+  m.wasRead=recipients.some(member=>member.last_read_at&&new Date(member.last_read_at)>=new Date(m.created_at));
  });
 }
 function tickHTML(m){
  if(m.sender_id!==currentUser.id)return '';
- return `<span class="ticks ${m.wasRead?'read':''}" title="${m.wasRead?'خوانده شده':'ارسال شده'}">${m.wasRead?'✓✓':'✓'}</span>`;
+ if(m.wasRead)return `<span class="ticks read" title="خوانده شده">✓✓</span>`;
+ if(m.wasDelivered)return `<span class="ticks" title="تحویل‌شده به گفتگو">✓✓</span>`;
+ return `<span class="ticks" title="ارسال‌شده">✓</span>`;
 }
 
 /* بارگذاری پیام‌ها */
@@ -1017,18 +1032,52 @@ function openFeedback(){
  <select id="feedbackType" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);margin-top:10px">
  <option value="bug">گزارش ایراد</option><option value="suggestion">پیشنهاد</option><option value="feature">قابلیت جدید</option></select>
  <textarea id="feedbackText" placeholder="پیام خود را بنویسید..."></textarea>
- <button class="primary profile-action" onclick="submitFeedback()">ارسال به ربات رسمی ایتل</button></div>`);
+ <button class="primary profile-action" id="feedbackSubmitButton" onclick="submitFeedback()">ارسال به ربات رسمی ایتل</button></div>`);
 }
 async function submitFeedback(){
  const type=$('feedbackType')?.value,text=$('feedbackText')?.value.trim();
+ const button=$('feedbackSubmitButton');
  if(!text){toast('متن گزارش را بنویسید');return}
- const {error}=await db.from('aitel_feedback').insert({
+ if(!currentUser||!myProfile){toast('ابتدا وارد حساب خود شوید');return}
+ if(button){button.disabled=true;button.textContent='در حال ثبت گزارش...'}
+ const {data:feedback,error}=await db.from('aitel_feedback').insert({
   user_id:currentUser.id,username:myProfile?.username||null,
   display_name:myProfile?.display_name||null,feedback_type:type,content:text
- });
- if(error){toast('ارسال گزارش ناموفق بود: '+error.message);console.error(error);return}
- closeModal();toast('گزارش شما برای تیم ایتل ثبت شد.');
- // ارسال اعلان مدیریتی باید توسط Trigger یا Edge Function امن Supabase انجام شود.
+ }).select('id').single();
+
+ if(error){
+  if(button){button.disabled=false;button.textContent='ارسال به ربات رسمی ایتل'}
+  toast('ثبت گزارش ناموفق بود: '+error.message);console.error('AITEL FEEDBACK INSERT:',error);return;
+ }
+
+ /* اعلان خصوصی به ادمین توسط Edge Function امن */
+ try{
+  const {data:botResult,error:botError}=await db.functions.invoke('aitel-system-bot',{
+   body:{
+    event:'feedback',
+    user_id:currentUser.id,
+    feedback_id:feedback.id,
+    username:myProfile?.username||null,
+    display_name:myProfile?.display_name||null,
+    feedback_type:type
+   }
+  });
+
+  if(botError){
+   console.error('AITEL BOT FEEDBACK NOTIFICATION:',botError);
+   closeModal();
+   toast('گزارش ذخیره شد، اما ارسال اعلان به ربات با خطا مواجه شد.');
+   return;
+  }
+
+  console.log('AITEL BOT FEEDBACK RESULT:',botResult);
+  closeModal();
+  toast('گزارش ثبت شد و برای ربات رسمی ایتل ارسال شد.');
+ }catch(e){
+  console.error('AITEL BOT FEEDBACK ERROR:',e);
+  closeModal();
+  toast('گزارش ذخیره شد، اما اعلان ربات ارسال نشد.');
+ }
 }
 
 /* کانال‌ها */
@@ -1182,26 +1231,44 @@ document.addEventListener('visibilitychange',async()=>{
  }
 });
 
-/* ثبت‌نام و ربات */
+/* ربات رسمی AITEL */
 async function notifyNewRegistration(){
- // این endpoint باید در Supabase به‌صورت Edge Function امن ساخته و Deploy شود.
- // وظیفه آن: ساخت/پیداکردن پیوی ادمین @ehsanews و ارسال گزارش ثبت‌نام.
+ if(!currentUser||!myProfile||!profileWasCreated||registrationNotificationAttempted)return;
+ registrationNotificationAttempted=true;
  try{
-  const {error}=await db.functions.invoke('aitel-system-bot',{body:{
-   event:'new_registration',user_id:currentUser.id,
-   username:myProfile?.username,display_name:myProfile?.display_name,
-   created_at:new Date().toISOString(),admin_username:ADMIN_USERNAME
-  }});
-  if(error)console.warn('AITEL bot registration notification:',error.message);
- }catch(e){console.warn('AITEL bot endpoint is not deployed yet:',e)}
+  const {data,error}=await db.functions.invoke('aitel-system-bot',{
+   body:{
+    event:'new_registration',
+    user_id:currentUser.id,
+    username:myProfile.username||null,
+    display_name:myProfile.display_name||null,
+    created_at:new Date().toISOString(),
+    admin_username:ADMIN_USERNAME
+   }
+  });
+  if(error){
+   console.error('AITEL BOT REGISTRATION NOTIFICATION:',error);
+   return;
+  }
+  console.log('AITEL BOT REGISTRATION RESULT:',data);
+ }catch(e){
+  console.error('AITEL BOT REGISTRATION ERROR:',e);
+ }
 }
 async function welcomeBotUser(){
- // خوشامدگویی واقعی باید از Edge Function سمت سرور انجام شود تا پیام از حساب ربات ارسال شود.
+ if(!currentUser||welcomeNotificationAttempted)return;
+ welcomeNotificationAttempted=true;
  try{
-  await db.functions.invoke('aitel-system-bot',{body:{
-   event:'welcome',user_id:currentUser.id,username:myProfile?.username
-  }});
- }catch(e){console.warn(e)}
+  const {data,error}=await db.functions.invoke('aitel-system-bot',{
+   body:{
+    event:'welcome',
+    user_id:currentUser.id,
+    username:myProfile?.username||null
+   }
+  });
+  if(error)console.warn('AITEL BOT WELCOME:',error);
+  else console.log('AITEL BOT WELCOME RESULT:',data);
+ }catch(e){console.warn('AITEL BOT WELCOME ERROR:',e)}
 }
 
 /* راه‌اندازی */
@@ -1210,6 +1277,11 @@ async function continueAppAfterPhone(){
  appStarted=true;
  await loadChannels();await loadMemberships();await loadChats();await loadUnread();
  subscribeAll();renderList();
+
+ /* اعلان ثبت‌نام فقط برای پروفایل تازه‌ساخته‌شده */
+ if(profileWasCreated)await notifyNewRegistration();
+
+ /* خوشامدگویی ربات؛ جلوگیری از پیام تکراری با idempotency سمت سرور */
  await welcomeBotUser();
 }
 async function startApp(){
@@ -1222,12 +1294,19 @@ async function startApp(){
 async function boot(){
  await handleOAuth();
  const {data,error}=await db.auth.getSession();if(error)console.error(error);
- if(data.session){currentUser=data.session.user;await startApp()}
- else $('login').classList.remove('hidden');
+ if(data.session){
+  currentUser=data.session.user;
+  await startApp();
+ }else $('login').classList.remove('hidden');
+
  db.auth.onAuthStateChange(async(event,session)=>{
   if(session?.user&&!currentUser){
-   currentUser=session.user;appStarted=false;await startApp();
-   await notifyNewRegistration();
+   currentUser=session.user;
+   appStarted=false;
+   profileWasCreated=false;
+   registrationNotificationAttempted=false;
+   welcomeNotificationAttempted=false;
+   await startApp();
   }
   if(event==='SIGNED_OUT')location.reload();
  });
