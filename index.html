@@ -1888,9 +1888,13 @@ const db = window.supabase
       AITEL_CONFIG.SUPABASE_ANON_KEY,
       {
         auth: {
+          // Keep the Google session in this browser between visits.
           autoRefreshToken: true,
           persistSession: true,
-          detectSessionInUrl: true
+          detectSessionInUrl: true,
+          storage: window.localStorage,
+          storageKey: "aitel-google-auth-v1",
+          flowType: "pkce"
         },
         realtime: {
           params: {
@@ -2319,7 +2323,8 @@ async function loginWithGoogle() {
       provider: "google",
       options: {
         redirectTo: window.location.origin + window.location.pathname,
-        queryParams: { access_type: "offline", prompt: "select_account" }
+        // Do not force the Google account chooser on every login.
+        queryParams: { access_type: "offline" }
       }
     });
     if (error) throw error;
@@ -2635,11 +2640,20 @@ async function initializeApplication(session) {
     const { data: officialSetup, error: officialSetupError } = await db.functions.invoke("aitel-system-bot", { body: { event: "ensure_officials" } });
     if (officialSetupError || officialSetup?.ok === false) console.warn("AITEL official accounts setup:", officialSetupError || officialSetup);
 
-    // پیام‌های سیستمی با کنترل تکرار سمت سرور.
-    Promise.all(["new_registration", "survey"].map(event =>
-      db.functions.invoke("aitel-system-bot", { body: { event } })
-        .catch(error => console.warn("AITEL system bot event:", event, error))
-    ));
+    // پیام‌های سیستمی: خوشامدگویی یک‌بار، اطلاع ثبت‌نام به مدیر یک‌بار
+    // و نظرسنجی حداکثر ماهی یک‌بار. کنترل تکرار در سمت سرور انجام می‌شود.
+    await Promise.all(["welcome", "new_registration", "survey"].map(async event => {
+      try {
+        const { data, error } = await db.functions.invoke("aitel-system-bot", { body: { event } });
+        if (error || data?.ok === false) {
+          console.warn("AITEL system bot event failed:", event, error || data);
+        } else {
+          console.info("AITEL system bot event:", event, data?.status || "ok");
+        }
+      } catch (error) {
+        console.warn("AITEL system bot event failed:", event, error);
+      }
+    }));
 
     await loadChats();
 
