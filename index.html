@@ -1478,6 +1478,31 @@ input,textarea,select,.input{border-radius:13px!important}
 .google-mark{width:21px;height:21px;flex:none}
 .google-auth-footnote{font-size:11px;line-height:1.9;color:var(--muted);margin:15px 8px 0}
 
+
+/* Theme picker live application: keep all app surfaces in sync with the selected palette. */
+:root {
+  --aitel-panel: rgba(29,45,69,.88);
+  --aitel-bar: rgba(23,36,58,.82);
+  --aitel-chat-base: #102d49;
+  --aitel-chat-bar: rgba(7,42,62,.78);
+  --aitel-foreground: #f4f7ff;
+  --aitel-muted: #aabbd2;
+}
+#mainScreen { background-color: var(--aitel-wallpaper-base, #17243a) !important; }
+#mainScreen .topbar, #mainScreen .bottom-nav { background: var(--aitel-bar) !important; }
+#mainScreen .section-card, #mainScreen .chat-item, #mainScreen .search-box,
+#mainScreen .filter-row, #mainScreen .profile-header {
+  background: var(--aitel-panel) !important;
+  color: var(--aitel-foreground) !important;
+}
+#mainScreen .setting-row, #mainScreen .section-title, #mainScreen .brand-name,
+#mainScreen .chat-name, #mainScreen .chat-preview, #mainScreen .setting-info strong,
+#mainScreen .setting-info small, #mainScreen .profile-name { color: var(--aitel-foreground) !important; }
+#mainScreen .muted, #mainScreen .chat-time, #mainScreen .profile-username,
+#mainScreen .profile-bio { color: var(--aitel-muted) !important; }
+.chat-screen { background-color: var(--aitel-chat-base) !important; }
+.chat-header { background: var(--aitel-chat-bar) !important; }
+.composer-wrap { background: var(--aitel-chat-bar) !important; }
 </style>
 </head>
 
@@ -2983,11 +3008,27 @@ function applyBackgroundTheme(id, save = true) {
 
   const wallpaper = makeTelegramWallpaper(theme);
   const glow = `radial-gradient(ellipse at 12% 18%, ${theme.a}30, transparent 48%), radial-gradient(ellipse at 88% 82%, ${theme.b}30, transparent 48%)`;
-  const base = document.documentElement.dataset.theme === "dark" ? "#17243a" : "#eaf1fa";
+  const isDark = document.documentElement.dataset.theme === "dark";
+  const base = isDark ? "#17243a" : "#edf3fb";
+  const panel = isDark ? "rgba(29,45,69,.88)" : "rgba(255,255,255,.88)";
+  const bar = isDark ? "rgba(23,36,58,.82)" : "rgba(255,255,255,.84)";
+  const chatBase = isDark ? "#102d49" : "#e8f1fa";
+  const chatBar = isDark ? "rgba(7,42,62,.78)" : "rgba(255,255,255,.82)";
+  const foreground = isDark ? "#f4f7ff" : "#172033";
+  const muted = isDark ? "#aabbd2" : "#64748b";
 
+  // Set theme tokens on the root so every screen and overlay receives them.
+  const root = document.documentElement;
+  root.style.setProperty("--aitel-panel", panel);
+  root.style.setProperty("--aitel-bar", bar);
+  root.style.setProperty("--aitel-chat-base", chatBase);
+  root.style.setProperty("--aitel-chat-bar", chatBar);
+  root.style.setProperty("--aitel-foreground", foreground);
+  root.style.setProperty("--aitel-muted", muted);
   app.style.setProperty("--aitel-wallpaper", wallpaper);
   app.style.setProperty("--aitel-wallpaper-glow", glow);
   app.style.setProperty("--aitel-wallpaper-base", base);
+  root.style.setProperty("--aitel-wallpaper-base", base);
   app.style.setProperty("--bg-a", theme.a);
   app.style.setProperty("--bg-b", theme.b);
   app.style.setProperty("--orb-speed", `${15 + (theme.style % 5) * 3}s`);
