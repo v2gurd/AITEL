@@ -1503,7 +1503,212 @@ input,textarea,select,.input{border-radius:13px!important}
 .chat-screen { background-color: var(--aitel-chat-base) !important; }
 .chat-header { background: var(--aitel-chat-bar) !important; }
 .composer-wrap { background: var(--aitel-chat-bar) !important; }
+
+.aitel-login-security-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.aitel-login-security-actions button{border-radius:12px;padding:10px 8px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--text)}
+.aitel-login-security-actions .aitel-security-yes{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.aitel-login-security-actions .aitel-security-no{border-color:#d45a5a;color:#c94d4d}
+.aitel-login-security-actions button:disabled{opacity:.55;cursor:wait}
+.aitel-security-done{grid-column:1/-1;color:var(--primary);font-size:11px;font-weight:700;text-align:center;padding:7px}
+
 </style>
+
+<style id="aitel-visual-refresh">
+/* AITEL visual refresh — editorial warmth + restrained glass, no layout or behavior changes */
+:root {
+  --aitel-glass-blur: 22px;
+  --aitel-glass-edge: rgba(255,255,255,.58);
+  --aitel-glass-shadow: 0 16px 44px rgba(45,42,33,.075), inset 0 1px 0 rgba(255,255,255,.56);
+  --aitel-dot: rgba(35,34,30,.10);
+}
+html, body { background: var(--bg); }
+body {
+  background:
+    radial-gradient(ellipse at 12% 10%, rgba(255,255,255,.72), transparent 38%),
+    radial-gradient(ellipse at 90% 84%, rgba(215,210,196,.24), transparent 42%),
+    var(--bg);
+}
+.app {
+  background:
+    radial-gradient(ellipse at 6% 5%, rgba(255,255,255,.42), transparent 34%),
+    radial-gradient(ellipse at 96% 94%, rgba(194,190,177,.16), transparent 38%),
+    var(--bg);
+  isolation: isolate;
+}
+.app::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  opacity: .20;
+  background-image: radial-gradient(var(--aitel-dot) .75px, transparent .85px);
+  background-size: 7px 7px;
+  mask-image: linear-gradient(135deg, #000 0%, transparent 55%, #000 100%);
+  animation: aitelDotDrift 32s linear infinite;
+}
+.screen { background: transparent; }
+.screen > * { position: relative; z-index: 1; }
+.topbar, .chat-header, .bottom-nav, .composer-wrap, .composer,
+.modal-content, .auth-card, .google-auth-panel, .section-card,
+.official-card, .profile-header, .chat-item, .settings-card,
+.profile-stats, .theme-preset, .search-panel, .attachment-menu {
+  border: 1px solid var(--line) !important;
+  box-shadow: var(--aitel-glass-shadow) !important;
+  backdrop-filter: blur(var(--aitel-glass-blur)) saturate(1.18);
+  -webkit-backdrop-filter: blur(var(--aitel-glass-blur)) saturate(1.18);
+}
+.topbar, .chat-header, .bottom-nav, .composer-wrap, .composer,
+.modal-content, .auth-card, .google-auth-panel, .section-card,
+.official-card, .profile-header, .chat-item, .settings-card,
+.profile-stats, .search-panel, .attachment-menu {
+  background: var(--aitel-panel, var(--surface)) !important;
+}
+.topbar, .chat-header, .bottom-nav, .composer-wrap {
+  border-color: var(--line) !important;
+}
+.auth-card, .modal-content, .section-card, .official-card,
+.google-auth-panel, .profile-header, .profile-stats {
+  border-radius: 25px !important;
+}
+.chat-item {
+  border-radius: 18px !important;
+  margin: 4px 8px;
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
+}
+.chat-item:active { transform: scale(.985); }
+.message-bubble {
+  border: 1px solid color-mix(in srgb, var(--line) 68%, transparent);
+  box-shadow: 0 5px 16px rgba(30,30,25,.035);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.message-row .message-bubble { border-radius: 19px 19px 7px 19px; }
+.message-row.own .message-bubble { border-radius: 19px 19px 19px 7px; }
+input, textarea, .field input, .field textarea, .composer-input-wrap {
+  border-color: var(--line) !important;
+  background: color-mix(in srgb, var(--surface) 76%, transparent) !important;
+  border-radius: 16px !important;
+}
+button.primary-btn, .primary-btn, .google-auth-button, #loginBtn, #registerBtn {
+  background: #242421 !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 20px rgba(24,23,20,.14), 0 0 22px rgba(210,174,255,.12), 0 0 30px rgba(137,218,208,.10) !important;
+  transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+}
+.primary-btn:hover, button.primary-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 25px rgba(24,23,20,.17), 0 0 28px rgba(210,174,255,.18), 0 0 36px rgba(137,218,208,.14) !important; }
+[data-theme="dark"] .primary-btn, [data-theme="dark"] button.primary-btn,
+[data-theme="dark"] .google-auth-button, [data-theme="dark"] #loginBtn,
+[data-theme="dark"] #registerBtn { background:#efede6 !important; color:#242421 !important; }
+.nav-item, .nav-icon, .chat-header-actions button, .top-actions button {
+  transition: transform .2s ease, opacity .2s ease;
+}
+.nav-item:active, .chat-header-actions button:active, .top-actions button:active { transform: scale(.92); }
+.auth-brand h1 { letter-spacing: .08em; font-weight: 900; }
+.auth-brand p { letter-spacing: -.15px; }
+.modal-backdrop { background: rgba(22,22,19,.28) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.modal-content { background: var(--surface) !important; }
+.theme-preset { border-radius: 18px !important; }
+@keyframes aitelDotDrift { from { background-position: 0 0; } to { background-position: 28px 28px; } }
+@media (prefers-reduced-motion: reduce) {
+  .app::before { animation: none !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}
+@media (max-width: 520px) {
+  .auth-card { box-shadow: 0 12px 34px rgba(45,42,33,.07), inset 0 1px 0 rgba(255,255,255,.5) !important; }
+}
+[data-theme="dark"] {
+  --aitel-glass-edge: rgba(255,255,255,.09);
+  --aitel-glass-shadow: 0 18px 48px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.045);
+  --aitel-dot: rgba(245,242,232,.12);
+}
+[data-theme="dark"] body, [data-theme="dark"] .app {
+  background: radial-gradient(ellipse at 8% 8%, rgba(255,255,255,.035), transparent 38%), radial-gradient(ellipse at 92% 90%, rgba(190,180,150,.045), transparent 42%), var(--bg);
+}
+
+
+/* AITEL sign-in visual direction — Keylight-inspired split composition.
+   Scoped exclusively to #authScreen; authentication logic and app screens stay unchanged. */
+#authScreen {
+  padding: 0 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  background: #f8f8f6 !important;
+  color: #10131d;
+}
+#authScreen .auth-layout {
+  width: 100%; min-height: 100%; display: grid;
+  grid-template-columns: minmax(360px, 41.5%) minmax(0, 1fr);
+  background: #fbfbfa;
+}
+#authScreen .auth-visual {
+  min-height: 100%; position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: clamp(28px, 4vw, 62px);
+  color: #f4f5fb;
+  background: #080d20 url("https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/d889cba6-535c-450f-9b74-7270c0e01e9a.webp") 62% center / cover no-repeat;
+}
+#authScreen .auth-visual::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg,rgba(4,8,24,.46),rgba(5,10,29,.18) 42%,rgba(4,8,24,.82)),
+              radial-gradient(ellipse at 72% 27%,rgba(255,157,76,.23),transparent 36%),
+              linear-gradient(90deg,rgba(4,8,24,.35),transparent 82%);
+}
+#authScreen .auth-visual::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  opacity: .18; background-image: radial-gradient(rgba(235,239,255,.58) .7px,transparent .9px);
+  background-size: 7px 7px; mask-image: linear-gradient(135deg,#000,transparent 68%);
+}
+#authScreen .auth-visual-brand { display:flex; align-items:center; gap:12px; position:relative; z-index:1; }
+#authScreen .auth-visual-brand .auth-logo { width:44px;height:44px;margin:0;border-radius:13px;object-fit:cover;box-shadow:0 5px 20px rgba(0,0,0,.2); }
+#authScreen .auth-visual-brand span { color:#fff;font-size:23px;font-weight:800;letter-spacing:1.3px; }
+#authScreen .auth-visual-copy { position:relative; z-index:1; max-width:470px; margin-block:auto; padding-block:50px; }
+#authScreen .auth-visual-copy h2 { margin:0 0 18px;font-size:clamp(34px,3.2vw,52px);line-height:1.35;letter-spacing:-1.5px;font-weight:800;color:#f5f6fc; }
+#authScreen .auth-visual-copy p { max-width:390px;margin:0;color:rgba(238,241,250,.68);font-size:15px;line-height:2.1; }
+#authScreen .auth-visual-foot { position:relative;z-index:1;display:flex;align-items:center;gap:10px;color:rgba(238,241,250,.64);font-size:12px; }
+#authScreen .auth-live-dot { width:7px;height:7px;border-radius:50%;background:#8eb7ff;box-shadow:0 0 14px rgba(142,183,255,.85); }
+#authScreen .auth-card {
+  align-self:center; justify-self:center; width:min(430px,calc(100% - 56px)); max-width:430px;
+  padding:0; border:0 !important; border-radius:0 !important; background:transparent !important;
+  box-shadow:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+#authScreen .auth-brand { text-align:right; margin:0 0 34px; }
+#authScreen .auth-brand h1 { color:#080d1b;font-size:32px;font-weight:700;letter-spacing:-1px;margin:0; }
+#authScreen .auth-brand p { color:#747985;font-size:15px;margin:7px 0 0;letter-spacing:0; }
+#authScreen .google-auth-panel { padding:0;text-align:right;border:0 !important;background:transparent !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important; }
+#authScreen .google-auth-description { color:#555d6b;font-size:14px;line-height:2;margin:0 0 22px; }
+#authScreen .google-signin-btn {
+  min-height:54px;justify-content:center;gap:12px;padding:0 18px;
+  color:#f8f9fc !important;background:#080d1b !important;border:1px solid rgba(255,255,255,.1) !important;
+  border-radius:10px !important;box-shadow:0 10px 24px rgba(7,12,28,.14),0 0 28px rgba(91,133,220,.10) !important;
+  font-size:14px;font-weight:650;transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+#authScreen .google-signin-btn:hover { transform:translateY(-2px);background:#111a30 !important;box-shadow:0 14px 28px rgba(7,12,28,.18),0 0 32px rgba(91,133,220,.16) !important; }
+#authScreen .google-mark { width:20px;height:20px; }
+#authScreen .google-auth-footnote { color:#858b96;font-size:11px;line-height:2;margin:15px 2px 0; }
+#authScreen .auth-error { text-align:right; }
+#authScreen .auth-info { margin-top:34px;padding-top:18px;border-top:1px solid #e7e8eb;text-align:right;color:#858b96;font-size:11px;line-height:2; }
+#authScreen .auth-card > #loginForm,
+#authScreen .auth-card > .auth-info { position:relative; }
+@media (max-width:739.98px) {
+  #authScreen { overflow-y:auto !important; display:none; }
+  #authScreen.active { display:block !important; }
+  #authScreen .auth-layout { min-height:100%;display:flex;flex-direction:column; }
+  #authScreen .auth-visual { min-height:300px;height:36vh;max-height:390px;padding:24px 25px 28px;background-position:65% 48%; }
+  #authScreen .auth-visual-copy { margin:auto 0 0;padding:26px 0 0; }
+  #authScreen .auth-visual-copy h2 { font-size:30px;line-height:1.35;margin-bottom:8px; }
+  #authScreen .auth-visual-copy p { font-size:12px;line-height:1.9;max-width:310px; }
+  #authScreen .auth-visual-foot { display:none; }
+  #authScreen .auth-card { width:100%;max-width:500px;margin:0 auto;padding:34px 26px 30px; }
+  #authScreen .auth-brand { margin-bottom:26px; }
+  #authScreen .auth-brand h1 { font-size:27px; }
+  #authScreen .auth-info { margin-top:26px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #authScreen .auth-visual::before,#authScreen .auth-visual::after { animation:none !important; }
+  #authScreen .google-signin-btn { transition:none !important; }
+}
+
+</style>
+
 </head>
 
 <body>
@@ -1511,12 +1716,23 @@ input,textarea,select,.input{border-radius:13px!important}
 
   <!-- AUTHENTICATION -->
   <section class="screen active" id="authScreen">
-    <div class="auth-card">
-      <div class="auth-brand">
-        <img class="auth-logo" src="./AITEL-Official-Logo.png" alt="AITEL">
-        <h1>AITEL</h1>
-        <p>ارتباطی ساده‌تر، سریع‌تر و هوشمندتر</p>
-      </div>
+    <div class="auth-layout">
+      <aside class="auth-visual" aria-label="معرفی ایتل">
+        <div class="auth-visual-brand">
+          <img class="auth-logo" src="./AITEL-Official-Logo.png" alt="AITEL">
+          <span>AITEL</span>
+        </div>
+        <div class="auth-visual-copy">
+          <h2>ارتباطی امن،<br>آرام و بی‌وقفه</h2>
+          <p>به فضای ارتباطی ایتل خوش آمدید؛ جایی برای گفتگوهای ساده‌تر، سریع‌تر و مطمئن‌تر.</p>
+        </div>
+        <div class="auth-visual-foot"><span class="auth-live-dot"></span> فضای ارتباطی شما، همیشه در دسترس</div>
+      </aside>
+      <div class="auth-card">
+        <div class="auth-brand">
+          <h1>خوش برگشتی</h1>
+          <p>برای ادامه، وارد حساب ایتل خود شوید</p>
+        </div>
 
       <div id="loginForm" class="google-auth-panel">
         <p class="google-auth-description">برای ورود امن و سریع، از حساب گوگل خود استفاده کنید</p>
@@ -1529,7 +1745,8 @@ input,textarea,select,.input{border-radius:13px!important}
       </div>
 
       <div class="auth-info">
-        با استفاده از AITEL، ارتباطات خود را در یک فضای مدرن مدیریت کنید.
+        با ورود به AITEL، گفتگوها و ارتباطات خود را در یک فضای امن و مدرن ادامه دهید.
+      </div>
       </div>
     </div>
   </section>
@@ -1712,6 +1929,14 @@ input,textarea,select,.input{border-radius:13px!important}
               <small>تغییر ظاهر برنامه</small>
             </div>
             <button class="switch" id="themeSwitch" aria-label="تغییر تم"></button>
+          </div>
+          <div class="setting-row" id="colorThemesBtn" role="button" tabindex="0">
+            <div class="setting-icon">◈</div>
+            <div class="setting-info">
+              <strong>رنگ‌بندی و ظاهر برنامه</strong>
+              <small>انتخاب تم رسمی، روشن، تیره و رنگ‌های متنوع</small>
+            </div>
+            <span>‹</span>
           </div>
           <div class="setting-row" id="backgroundThemesBtn" role="button" tabindex="0">
             <div class="setting-icon">✧</div>
@@ -2603,6 +2828,71 @@ function renderMyProfile() {
    13. AUTH SESSION INITIALIZATION
 ------------------------- */
 
+function getAITELSessionId(session) {
+  try {
+    const payload = JSON.parse(atob(String(session?.access_token || '').split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return String(payload.session_id || payload.sid || '');
+  } catch (_) { return ''; }
+}
+
+function getAITELDeviceId() {
+  const key = 'aitel_trusted_device_id_v1';
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = crypto.randomUUID ? crypto.randomUUID() : 'dev-' + Date.now().toString(36) + Math.random().toString(36).slice(2);
+    localStorage.setItem(key, id);
+  }
+  return id;
+}
+
+function getAITELDeviceLabel() {
+  const ua = navigator.userAgent || '';
+  const platform = /iPhone|iPad|iPod/i.test(ua) ? 'Apple iPhone/iPad' : /Android/i.test(ua) ? 'دستگاه اندرویدی' : /Windows/i.test(ua) ? 'رایانه ویندوزی' : /Mac OS|Macintosh/i.test(ua) ? 'رایانه مک' : /Linux/i.test(ua) ? 'رایانه لینوکس' : 'دستگاه ناشناس';
+  const browser = /Edg\//i.test(ua) ? 'Edge' : /Firefox\//i.test(ua) ? 'Firefox' : /CriOS|Chrome\//i.test(ua) ? 'Chrome' : /Safari\//i.test(ua) ? 'Safari' : 'مرورگر';
+  return `${platform} · ${browser}`;
+}
+
+async function sendLoginSecurityAlert(session) {
+  if (!db || !session?.user) return;
+  const sessionId = getAITELSessionId(session) || String(session.access_token || '').slice(-32);
+  if (!sessionId) return;
+  const marker = `aitel_login_alert_sent:${session.user.id}:${sessionId}`;
+  if (localStorage.getItem(marker)) return;
+  const { data, error } = await db.functions.invoke('aitel-system-bot', {
+    body: { event: 'login_alert', device_id: getAITELDeviceId(), device_label: getAITELDeviceLabel(), session_id: sessionId }
+  });
+  if (error) throw error;
+  if (data?.ok === false) throw new Error(data.error || 'login_alert_failed');
+  localStorage.setItem(marker, '1');
+}
+
+async function decideLoginSecurity(messageId, decision, button) {
+  if (!db || !messageId || button?.disabled) return;
+  const row = button?.closest('.message-row');
+  if (button) button.disabled = true;
+  try {
+    const { data, error } = await db.functions.invoke('aitel-system-bot', {
+      body: { event: 'device_decision', message_id: messageId, decision }
+    });
+    if (error) throw error;
+    if (data?.ok === false) throw new Error(data.error || 'security_decision_failed');
+    if (decision === 'trust') {
+      const wrap = row?.querySelector('.aitel-login-security-actions');
+      if (wrap) wrap.innerHTML = '<span class="aitel-security-done">این دستگاه با موفقیت ذخیره شد</span>';
+      toast('این دستگاه به‌عنوان دستگاه مورد اعتماد ذخیره شد.', 'success');
+    } else {
+      toast('ورود تأیید نشد؛ نشست‌های حسابت باطل شد. در حال خروج…', 'error');
+      await db.auth.signOut({ scope: 'local' });
+      resetApplicationState();
+      showAuthScreen();
+    }
+  } catch (error) {
+    if (button) button.disabled = false;
+    console.error('AITEL login security decision:', error);
+    toast('ثبت تصمیم امنیتی انجام نشد: ' + getErrorMessage(error), 'error');
+  }
+}
+
 async function initializeApplication(session) {
   if (!session?.user) return;
 
@@ -2635,6 +2925,10 @@ async function initializeApplication(session) {
     await loadMyProfile();
 
     await loadMyPrivacySettings();
+
+    // هشدار امنیتی فقط یک‌بار برای هر نشست واقعی؛ با تازه‌سازی صفحه تکرار نمی‌شود.
+    try { await sendLoginSecurityAlert(session); }
+    catch (securityError) { console.warn("AITEL login security alert failed:", securityError); }
 
     // اتصال خودکار به کانال رسمی و ساخت گفت‌وگوی ربات برای هر حساب.
     const { data: officialSetup, error: officialSetupError } = await db.functions.invoke("aitel-system-bot", { body: { event: "ensure_officials" } });
@@ -2906,55 +3200,72 @@ byId("logoutBtn")?.addEventListener(
    20. THEME MANAGEMENT
 ------------------------- */
 
-function applyTheme(theme) {
-  const selected = theme === "dark" ? "dark" : "light";
+let AITEL_WALLPAPER_READY = false;
+const AITEL_COLOR_THEMES = {
+  light: { name:"روشن رسمی", mode:"light", primary:"#252525", primarySoft:"#ecebe8", bg:"#f5f3ee", surface:"rgba(255,255,252,.82)", surface2:"#f8f7f3", surface3:"#ebe9e2", text:"#20201e", muted:"#85837c", line:"rgba(65,62,54,.13)", panel:"rgba(255,255,252,.78)", bar:"rgba(250,249,245,.78)", chat:"#efeee8", chatBar:"rgba(250,249,245,.78)" },
+  dark: { name:"تیره رسمی", mode:"dark", primary:"#f1eee7", primarySoft:"#33322e", bg:"#171715", surface:"rgba(38,38,35,.82)", surface2:"#292925", surface3:"#34342f", text:"#f3f1eb", muted:"#aaa79e", line:"rgba(230,225,211,.13)", panel:"rgba(38,38,35,.78)", bar:"rgba(30,30,27,.78)", chat:"#22231f", chatBar:"rgba(30,30,27,.78)" },
+  ocean: { name:"اقیانوسی", mode:"light", primary:"#087eaa", primarySoft:"#dff5fb", bg:"#eef8fb", surface:"#ffffff", surface2:"#f2fbfd", surface3:"#e2f3f8", text:"#123447", muted:"#648393", line:"rgba(36,130,160,.18)", panel:"rgba(255,255,255,.94)", bar:"rgba(255,255,255,.93)", chat:"#e4f4f8", chatBar:"rgba(255,255,255,.92)" },
+  emerald: { name:"زمردی", mode:"light", primary:"#16835d", primarySoft:"#e1f5ec", bg:"#f0f8f3", surface:"#ffffff", surface2:"#f6fbf7", surface3:"#e7f3eb", text:"#17382b", muted:"#718b7c", line:"rgba(42,132,88,.17)", panel:"rgba(255,255,255,.95)", bar:"rgba(255,255,255,.93)", chat:"#e8f4ed", chatBar:"rgba(255,255,255,.92)" },
+  violet: { name:"بنفش رسمی", mode:"light", primary:"#7053b8", primarySoft:"#eee8fb", bg:"#f6f3fb", surface:"#ffffff", surface2:"#faf8fe", surface3:"#eee9f7", text:"#2b2340", muted:"#887d9d", line:"rgba(112,83,184,.16)", panel:"rgba(255,255,255,.95)", bar:"rgba(255,255,255,.93)", chat:"#f0ebf8", chatBar:"rgba(255,255,255,.92)" },
+  rose: { name:"رز ملایم", mode:"light", primary:"#b65c78", primarySoft:"#fae9ef", bg:"#fcf4f6", surface:"#ffffff", surface2:"#fff9fb", surface3:"#f7e9ee", text:"#422b35", muted:"#9a7b87", line:"rgba(182,92,120,.17)", panel:"rgba(255,255,255,.95)", bar:"rgba(255,255,255,.93)", chat:"#f8edf1", chatBar:"rgba(255,255,255,.92)" },
+  graphite: { name:"گرافیتی", mode:"dark", primary:"#a6b4c8", primarySoft:"#303b4d", bg:"#171b22", surface:"#222832", surface2:"#29313d", surface3:"#343e4c", text:"#edf1f6", muted:"#a0aab8", line:"rgba(190,204,220,.15)", panel:"rgba(34,40,50,.97)", bar:"rgba(29,35,45,.96)", chat:"#202a36", chatBar:"rgba(25,32,42,.96)" },
+  midnight: { name:"شب آبی", mode:"dark", primary:"#55c2df", primarySoft:"#173e50", bg:"#0d1c29", surface:"#142a3a", surface2:"#193448", surface3:"#224357", text:"#e8f7fc", muted:"#91b5c4", line:"rgba(105,190,215,.17)", panel:"rgba(20,42,58,.97)", bar:"rgba(13,35,50,.96)", chat:"#102d40", chatBar:"rgba(10,31,45,.96)" }
+};
 
-  document.documentElement.dataset.theme = selected;
-
+function applyTheme(theme, save = false) {
+  const key = AITEL_COLOR_THEMES[theme] ? theme : "light";
+  const t = AITEL_COLOR_THEMES[key];
+  const root = document.documentElement;
+  root.dataset.theme = t.mode;
+  root.dataset.colorTheme = key;
+  const vars = {"--bg":t.bg,"--surface":t.surface,"--surface-2":t.surface2,"--surface-3":t.surface3,"--text":t.text,"--muted":t.muted,"--line":t.line,"--primary":t.primary,"--primary-soft":t.primarySoft,"--aitel-panel":t.panel,"--aitel-bar":t.bar,"--aitel-chat-base":t.chat,"--aitel-chat-bar":t.chatBar,"--aitel-foreground":t.text,"--aitel-muted":t.muted};
+  Object.entries(vars).forEach(([name,value]) => root.style.setProperty(name,value));
   const button = byId("themeSwitch");
-
-  if (button) {
-    button.classList.toggle(
-      "on",
-      selected === "dark"
-    );
+  if (button) button.classList.toggle("on", t.mode === "dark");
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = t.bg;
+  if (save) { try { localStorage.setItem("aitel_color_theme", key); localStorage.setItem("aitel_theme", t.mode); } catch (_) {} }
+  // Rebuild wallpaper colors so the selected wallpaper stays compatible with either appearance.
+  if (AITEL_WALLPAPER_READY) {
+    let wallpaperId = 1;
+    try { wallpaperId = localStorage.getItem("aitel_background_theme") || 1; } catch (_) {}
+    applyBackgroundTheme(wallpaperId, false);
   }
 }
 
 function toggleTheme() {
-  const current =
-    document.documentElement.dataset.theme || "light";
-
-  const next = current === "dark" ? "light" : "dark";
-
-  applyTheme(next);
-
-  try {
-    localStorage.setItem("aitel_theme", next);
-  } catch (error) {
-    console.warn("AITEL theme preference could not be saved.");
-  }
+  const current = document.documentElement.dataset.colorTheme || "light";
+  const currentMode = AITEL_COLOR_THEMES[current]?.mode || "light";
+  const next = currentMode === "dark" ? "light" : "dark";
+  applyTheme(next, true);
 }
 
-byId("themeSettingBtn")?.addEventListener(
-  "click",
-  toggleTheme
-);
+function openColorThemePicker() {
+  const current = document.documentElement.dataset.colorTheme || "light";
+  const cards = Object.entries(AITEL_COLOR_THEMES).map(([id,t]) => `
+    <button type="button" class="theme-preset ${id===current?"selected":""}" data-color-theme="${id}" style="--swatch-a:${t.primary};--swatch-b:${t.bg}">
+      <span class="theme-preset-preview"><i>ایتل</i><b>Aa</b></span><strong>${t.name}</strong><small>${t.mode === "dark" ? "حالت تیره" : "حالت روشن"}</small>
+    </button>`).join("");
+  openModal("انتخاب تم برنامه", `<p class="theme-picker-intro">تم دلخواهت را انتخاب کن؛ ظاهر تمام بخش‌های برنامه هماهنگ تغییر می‌کند و انتخابت ذخیره می‌شود.</p><div class="theme-picker-grid">${cards}</div><div class="theme-picker-actions"><button type="button" id="resetColorTheme">بازگشت به روشن رسمی</button><button type="button" id="closeColorTheme">بستن</button></div>`);
+  const body = byId("modalBody");
+  if (!body) return;
+  body.onclick = event => {
+    const choice = event.target.closest("[data-color-theme]");
+    if (choice) { applyTheme(choice.dataset.colorTheme, true); body.querySelectorAll("[data-color-theme]").forEach(card => card.classList.toggle("selected", card===choice)); }
+    if (event.target.closest("#resetColorTheme")) { applyTheme("light", true); body.querySelectorAll("[data-color-theme]").forEach(card => card.classList.toggle("selected", card.dataset.colorTheme==="light")); }
+    if (event.target.closest("#closeColorTheme")) closeModal();
+  };
+}
 
-byId("themeSwitch")?.addEventListener(
-  "click",
-  event => {
-    event.stopPropagation();
-    toggleTheme();
-  }
-);
-
+byId("themeSettingBtn")?.addEventListener("click", toggleTheme);
+byId("themeSwitch")?.addEventListener("click", event => { event.stopPropagation(); toggleTheme(); });
+byId("colorThemesBtn")?.addEventListener("click", openColorThemePicker);
+byId("colorThemesBtn")?.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openColorThemePicker(); } });
 try {
-  applyTheme(localStorage.getItem("aitel_theme") || "dark");
-} catch {
-  applyTheme("dark");
-}
-
+  const saved = localStorage.getItem("aitel_color_theme");
+  const legacy = localStorage.getItem("aitel_theme");
+  applyTheme(saved || (legacy === "dark" ? "dark" : "light"), false);
+} catch { applyTheme("light", false); }
 
 
 /* -------------------------
@@ -3022,14 +3333,14 @@ function applyBackgroundTheme(id, save = true) {
 
   const wallpaper = makeTelegramWallpaper(theme);
   const glow = `radial-gradient(ellipse at 12% 18%, ${theme.a}30, transparent 48%), radial-gradient(ellipse at 88% 82%, ${theme.b}30, transparent 48%)`;
-  const isDark = document.documentElement.dataset.theme === "dark";
-  const base = isDark ? "#17243a" : "#edf3fb";
-  const panel = isDark ? "rgba(29,45,69,.88)" : "rgba(255,255,255,.88)";
-  const bar = isDark ? "rgba(23,36,58,.82)" : "rgba(255,255,255,.84)";
-  const chatBase = isDark ? "#102d49" : "#e8f1fa";
-  const chatBar = isDark ? "rgba(7,42,62,.78)" : "rgba(255,255,255,.82)";
-  const foreground = isDark ? "#f4f7ff" : "#172033";
-  const muted = isDark ? "#aabbd2" : "#64748b";
+  const selectedPalette = AITEL_COLOR_THEMES[document.documentElement.dataset.colorTheme || "light"] || AITEL_COLOR_THEMES.light;
+  const base = selectedPalette.bg;
+  const panel = selectedPalette.panel;
+  const bar = selectedPalette.bar;
+  const chatBase = selectedPalette.chat;
+  const chatBar = selectedPalette.chatBar;
+  const foreground = selectedPalette.text;
+  const muted = selectedPalette.muted;
 
   // Set theme tokens on the root so every screen and overlay receives them.
   const root = document.documentElement;
@@ -3118,6 +3429,7 @@ try {
 } catch {
   applyBackgroundTheme(1, false);
 }
+AITEL_WALLPAPER_READY = true;
 
 /* -------------------------
    21. PRIVACY SETTINGS
@@ -4513,6 +4825,11 @@ function renderMessages(messages) {
       });
     });
 
+  // Login security confirmation actions.
+  container.querySelectorAll("[data-security-decision]").forEach(button => {
+    button.addEventListener("click", () => decideLoginSecurity(button.dataset.messageId, button.dataset.securityDecision, button));
+  });
+
   // Telegram-style bot menu and single-choice poll actions.
   container.querySelectorAll("[data-bot-menu]").forEach(button => {
     button.addEventListener("click", () => {
@@ -4620,6 +4937,14 @@ function renderSingleMessage(message) {
       ${botMeta.poll.options.map((option, index) => `<button type="button" class="aitel-poll-option" data-poll-option="${index}"><span>${escapeHTML(String(option))}</span><span class="aitel-poll-check"></span></button>`).join("")}
       <small style="color:var(--muted);font-size:10px">برای ثبت نظر، یکی از گزینه‌ها را انتخاب کن</small>
     </div>` : "";
+  const loginSecurity = botMeta.login_security && typeof botMeta.login_security === "object" ? botMeta.login_security : null;
+  const securityHTML = loginSecurity ? `
+    <div class="aitel-login-security-actions" data-login-security="${id}">
+      ${loginSecurity.status === "trusted" ? '<span class="aitel-security-done">این دستگاه مورد اعتماد است</span>' : loginSecurity.status === "rejected" ? '<span class="aitel-security-done">این ورود رد شده است</span>' : `
+        <button type="button" class="aitel-security-yes" data-security-decision="trust" data-message-id="${id}">من بودم · ذخیره دستگاه</button>
+        <button type="button" class="aitel-security-no" data-security-decision="reject" data-message-id="${id}">من نبودم · خروج از حساب</button>
+      `}
+    </div>` : "";
   const menuHTML = botMeta.bot_menu ? `
     <div class="aitel-bot-menu">
       <button type="button" data-bot-menu="support">ارسال گزارش و پیشنهاد</button>
@@ -4649,6 +4974,7 @@ function renderSingleMessage(message) {
           ${contentHTML}
         </div>
         ${pollHTML}
+        ${securityHTML}
         ${menuHTML}
 
         <div class="message-meta">
