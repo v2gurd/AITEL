@@ -1511,6 +1511,191 @@ input,textarea,select,.input{border-radius:13px!important}
 .aitel-login-security-actions button:disabled{opacity:.55;cursor:wait}
 .aitel-security-done{grid-column:1/-1;color:var(--primary);font-size:11px;font-weight:700;text-align:center;padding:7px}
 
+
+
+/* ===== Mobile chat polish: compact bubbles, aligned composer, low-jank dock ===== */
+#chatScreen .messages-area {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  padding:12px 12px 14px!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+#chatScreen .message-row {
+  display:flex!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-height:0!important;
+  align-items:flex-end!important;
+  gap:5px!important;
+}
+#chatScreen .message-bubble {
+  display:block!important;
+  flex:0 1 auto!important;
+  width:max-content!important;
+  min-width:0!important;
+  max-width:min(78%, 320px)!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:7px 10px 5px!important;
+  margin:0!important;
+  border-radius:16px!important;
+  line-height:1.45!important;
+  align-self:flex-start!important;
+  overflow:visible!important;
+}
+#chatScreen .message-bubble > .message-sender,
+#chatScreen .message-bubble > .message-reply,
+#chatScreen .message-bubble > .message-text,
+#chatScreen .message-bubble > .message-meta {
+  position:static!important;
+  display:block!important;
+  width:auto!important;
+  min-height:0!important;
+  height:auto!important;
+  flex:none!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+  transform:none!important;
+}
+#chatScreen .message-bubble > .message-sender {
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  margin:0 0 3px!important;
+  font-size:9px!important;
+  line-height:1.25!important;
+}
+#chatScreen .message-bubble > .message-text {
+  display:block!important;
+  font-size:13px!important;
+  line-height:1.55!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+#chatScreen .message-bubble > .message-meta {
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:4px!important;
+  margin:3px 0 0!important;
+  font-size:8px!important;
+  line-height:1.1!important;
+}
+#chatScreen .message-bubble .message-meta span {font-size:8px!important;line-height:1.1!important;}
+
+#chatScreen .composer-wrap {
+  flex:0 0 auto!important;
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom))!important;
+  border-top:1px solid var(--line)!important;
+  background:color-mix(in srgb,var(--surface) 94%,transparent)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.25)!important;
+  backdrop-filter:blur(18px) saturate(1.25)!important;
+}
+#chatScreen .composer {
+  display:flex!important;
+  flex-direction:row!important;
+  direction:rtl!important;
+  align-items:center!important;
+  gap:7px!important;
+  width:100%!important;
+  min-height:54px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#chatScreen .composer-input-wrap {
+  display:flex!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  min-height:52px!important;
+  max-height:112px!important;
+  align-items:center!important;
+  padding:4px 12px!important;
+  border:1px solid var(--line)!important;
+  border-radius:24px!important;
+  background:color-mix(in srgb,var(--surface-2) 90%,transparent)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 2px 9px rgba(25,45,75,.035)!important;
+}
+#chatScreen .composer textarea {
+  display:block!important;
+  flex:1 1 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:38px!important;
+  max-height:92px!important;
+  height:38px!important;
+  margin:0!important;
+  padding:8px 2px!important;
+  border:0!important;
+  outline:0!important;
+  resize:none!important;
+  background:transparent!important;
+  font-size:14px!important;
+  line-height:1.55!important;
+  text-align:right!important;
+}
+#chatScreen .composer-action {
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 48px!important;
+  width:48px!important;
+  min-width:48px!important;
+  height:48px!important;
+  min-height:48px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:50%!important;
+  font-size:19px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+#chatScreen #voiceBtn {font-size:10px!important;font-weight:700!important;border-radius:17px!important;}
+#chatScreen #sendBtn {
+  color:#fff!important;
+  background:linear-gradient(145deg,var(--primary),color-mix(in srgb,var(--primary) 72%,#243d85))!important;
+  border:1px solid color-mix(in srgb,var(--primary) 45%,white)!important;
+  box-shadow:0 4px 12px color-mix(in srgb,var(--primary) 22%,transparent),inset 0 1px 0 rgba(255,255,255,.35)!important;
+  font-size:21px!important;
+}
+#chatScreen #emojiBtn[hidden] {display:none!important;}
+#chatScreen .composer-action:active {transform:scale(.94)!important;}
+
+/* Keep the moving glass lens on the compositor; avoid expensive blur/reflow during tab changes. */
+#mainScreen .bottom-nav {contain:layout paint!important;}
+.nav-liquid-indicator {
+  transition:left .42s cubic-bezier(.2,.82,.22,1),width .32s ease,opacity .18s ease!important;
+  will-change:left,transform!important;
+  filter:none!important;
+}
+.nav-liquid-indicator.waving {animation:aitelBubbleTransferLite .58s cubic-bezier(.2,.82,.22,1) both!important;}
+@keyframes aitelBubbleTransferLite {
+  0% {transform:scale(1);border-radius:50%;}
+  28% {transform:scaleX(1.22) scaleY(.88);border-radius:46% 54% 52% 48%;}
+  58% {transform:scaleX(.94) scaleY(1.06);border-radius:52% 48% 46% 54%;}
+  100% {transform:scale(1);border-radius:50%;}
+}
+.nav-liquid-indicator::before,.nav-liquid-indicator::after {filter:none!important;}
+#mainScreen .nav-item,#mainScreen .nav-item .nav-icon {
+  transition:color .28s ease,transform .38s cubic-bezier(.2,.82,.22,1),background .28s ease,box-shadow .28s ease!important;
+  filter:none!important;
+}
+#mainScreen .nav-item.active span:last-child {animation:none!important;}
+@media(max-width:420px) {
+  #chatScreen .message-bubble {max-width:min(82%,300px)!important;padding:7px 9px 5px!important;}
+  #chatScreen .composer {gap:6px!important;}
+  #chatScreen .composer-action {flex-basis:44px!important;width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important;}
+  #chatScreen .composer-input-wrap {min-height:48px!important;border-radius:22px!important;}
+  #chatScreen .composer textarea {min-height:36px!important;height:36px!important;font-size:13px!important;}
+}
+
 </style>
 
 <style id="aitel-visual-refresh">
@@ -2088,6 +2273,64 @@ input, textarea, select, .input, .composer-input-wrap {
  .nav-liquid-indicator{width:42px!important;height:42px!important;top:10px!important;}
  #chatFilters{max-width:calc(100% - 20px);margin-left:10px;margin-right:10px;}
  .message-bubble{max-width:min(80%,310px)!important;padding:6px 9px 5px!important;}
+}
+
+
+/* Distinct animated wallpaper presets: motion, scale and visual treatment vary by style. */
+#app[data-wallpaper-style] .screen,
+#app[data-wallpaper-style] .chat-screen,
+#app[data-wallpaper-style] .messages-area {
+  background-size: cover, var(--wallpaper-pattern-size, 320px) var(--wallpaper-pattern-size, 360px) !important;
+  animation: aitelWallpaperDrift var(--wallpaper-motion-speed, 24s) ease-in-out infinite alternate;
+  will-change: background-position;
+}
+#app[data-wallpaper-style="0"] .screen,
+#app[data-wallpaper-style="0"] .chat-screen,
+#app[data-wallpaper-style="0"] .messages-area { background-position: 0 0, 0 0; }
+#app[data-wallpaper-style="1"] .screen,
+#app[data-wallpaper-style="1"] .chat-screen,
+#app[data-wallpaper-style="1"] .messages-area { background-position: 50% 0, 0 0; }
+#app[data-wallpaper-style="2"] .screen,
+#app[data-wallpaper-style="2"] .chat-screen,
+#app[data-wallpaper-style="2"] .messages-area { background-position: 100% 50%, 0 0; }
+#app[data-wallpaper-style="3"] .screen,
+#app[data-wallpaper-style="3"] .chat-screen,
+#app[data-wallpaper-style="3"] .messages-area { background-position: 0 100%, 0 0; }
+#app[data-wallpaper-style="4"] .screen,
+#app[data-wallpaper-style="4"] .chat-screen,
+#app[data-wallpaper-style="4"] .messages-area { background-position: 100% 100%, 0 0; }
+#app[data-wallpaper-style="5"] .screen,
+#app[data-wallpaper-style="5"] .chat-screen,
+#app[data-wallpaper-style="5"] .messages-area { background-position: 50% 50%, 0 0; }
+#app[data-wallpaper-style="6"] .screen,
+#app[data-wallpaper-style="6"] .chat-screen,
+#app[data-wallpaper-style="6"] .messages-area { background-position: 0 50%, 0 0; }
+#app[data-wallpaper-style="7"] .screen,
+#app[data-wallpaper-style="7"] .chat-screen,
+#app[data-wallpaper-style="7"] .messages-area { background-position: 100% 0, 0 0; }
+#app[data-wallpaper-style="8"] .screen,
+#app[data-wallpaper-style="8"] .chat-screen,
+#app[data-wallpaper-style="8"] .messages-area { background-position: 0 0, 0 0; }
+#app[data-wallpaper-style="9"] .screen,
+#app[data-wallpaper-style="9"] .chat-screen,
+#app[data-wallpaper-style="9"] .messages-area { background-position: 100% 50%, 0 0; }
+@keyframes aitelWallpaperDrift {
+  0% { background-position: 0% 0%, 0 0; }
+  50% { background-position: 100% 45%, 24px -18px; }
+  100% { background-position: 0% 100%, -22px 20px; }
+}
+#app[data-wallpaper-style="1"]::before { animation-duration: 13s; filter: blur(4px); }
+#app[data-wallpaper-style="2"]::before, #app[data-wallpaper-style="2"]::after { animation-duration: 25s; }
+#app[data-wallpaper-style="3"]::before, #app[data-wallpaper-style="3"]::after { animation-duration: 11s; opacity:.56; }
+#app[data-wallpaper-style="5"]::before, #app[data-wallpaper-style="5"]::after { animation-duration: 9s; opacity:.22; }
+#app[data-wallpaper-style="6"]::before, #app[data-wallpaper-style="6"]::after { animation-duration: 30s; filter:blur(24px); }
+#app[data-wallpaper-style="8"]::before, #app[data-wallpaper-style="8"]::after { animation-duration: 12s; opacity:.62; }
+#app[data-wallpaper-style="9"]::before, #app[data-wallpaper-style="9"]::after { animation-duration: 16s; }
+.theme-preset-preview { background-repeat: repeat, no-repeat, no-repeat !important; }
+@media (prefers-reduced-motion: reduce) {
+  #app[data-wallpaper-style] .screen,
+  #app[data-wallpaper-style] .chat-screen,
+  #app[data-wallpaper-style] .messages-area { animation: none !important; }
 }
 
 </style>
@@ -3434,10 +3677,9 @@ function moveAitelNavIndicator(target, animate = true) {
   indicator.classList.add("ready");
   if (animate) {
     indicator.classList.remove("waving");
-    void indicator.offsetWidth;
-    indicator.classList.add("waving");
+    requestAnimationFrame(() => indicator.classList.add("waving"));
     clearTimeout(aitelNavWaveTimer);
-    aitelNavWaveTimer = setTimeout(() => indicator.classList.remove("waving"), 760);
+    aitelNavWaveTimer = setTimeout(() => indicator.classList.remove("waving"), 620);
   }
 }
 requestAnimationFrame(() => {
@@ -3709,35 +3951,23 @@ const AITEL_WALLPAPER_MOTIFS = [
 ];
 
 function makeTelegramWallpaper(theme) {
-  const accent = theme.a;
-  const accent2 = theme.b;
-  const motif = AITEL_WALLPAPER_MOTIFS[theme.style];
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="300" height="360" viewBox="0 0 300 360">
-    <g fill="none" stroke="${accent}" stroke-opacity=".22" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M28 48c8-15 28-15 36 0 8 15-18 30-18 30S20 63 28 48Z"/>
-      <circle cx="130" cy="35" r="13"/><circle cx="130" cy="35" r="5"/>
-      <path d="m220 28 7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2Z"/>
-      <path d="M40 160c-8-8-20-2-17 9 2 8 17 20 17 20s15-12 17-20c3-11-9-17-17-9Z"/>
-      <path d="M145 126q20-18 40 0t0 36q-20 18-40 0t0-36Z"/>
-      <path d="m230 145 28 12-28 12 6-12-6-12Z"/><path d="M230 157h-19"/>
-      <path d="M83 260c0-17 28-17 28 0 0 10-14 22-14 22S83 270 83 260Z"/>
-      <path d="M180 248l13 13-13 13-13-13Z"/><path d="M244 270c8-9 22-9 30 0"/>
-      <path d="M24 320q15-15 30 0m-15-15v30"/>
-      <circle cx="145" cy="315" r="10"/><path d="M145 300v30m-15-15h30"/>
-    </g>
-    <g fill="none" stroke="${accent2}" stroke-opacity=".20" stroke-width="1.8" stroke-linecap="round">
-      <path d="M80 80q10-12 20 0t20 0"/><path d="M190 85q10-12 20 0t20 0"/>
-      <circle cx="68" cy="215" r="17"/><circle cx="68" cy="215" r="7"/>
-      <path d="M145 205l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z"/>
-      <path d="M260 330q-10-18-20 0t-20 0"/>
-    </g>
-    <g fill="${accent}" fill-opacity=".22" font-family="Arial" font-size="17">
-      <text x="12" y="112">${motif.slice(0, 3)}</text>
-      <text x="190" y="215">${motif.slice(6, 9)}</text>
-      <text x="112" y="350">${motif.slice(12, 15)}</text>
-    </g>
-  </svg>`;
+  const a = theme.a;
+  const b = theme.b;
+  // Each of the ten styles has its own visual language instead of reusing one wallpaper.
+  const patterns = [
+    `<g fill="none" stroke="${a}" stroke-width="2.2" stroke-opacity=".42"><circle cx="42" cy="45" r="22"/><circle cx="42" cy="45" r="12"/><circle cx="242" cy="90" r="34"/><circle cx="242" cy="90" r="19"/><circle cx="132" cy="270" r="42"/><circle cx="132" cy="270" r="25"/></g><g fill="${b}" fill-opacity=".3"><circle cx="170" cy="70" r="5"/><circle cx="75" cy="190" r="8"/><circle cx="255" cy="300" r="6"/></g>`,
+    `<g fill="none" stroke="${a}" stroke-width="3" stroke-opacity=".38"><path d="M-20 90 C35 10 85 170 145 90 S255 10 320 90"/><path d="M-20 155 C35 75 85 235 145 155 S255 75 320 155"/><path d="M-20 220 C35 140 85 300 145 220 S255 140 320 220"/></g><path d="M0 290 Q75 220 150 290 T300 290" fill="none" stroke="${b}" stroke-width="10" stroke-opacity=".22"/>`,
+    `<g fill="none" stroke="${a}" stroke-width="2" stroke-opacity=".42"><path d="M150 18 L282 92 L282 244 L150 322 L18 244 L18 92 Z"/><path d="M150 55 L248 110 L248 226 L150 282 L52 226 L52 110 Z"/><path d="M150 92 L215 128 L215 208 L150 245 L85 208 L85 128 Z"/></g><g fill="${b}" fill-opacity=".28"><circle cx="150" cy="18" r="7"/><circle cx="282" cy="244" r="7"/><circle cx="18" cy="92" r="7"/></g>`,
+    `<g fill="none" stroke="${a}" stroke-width="1.8" stroke-opacity=".52"><path d="M150 35l9 27 28 1-22 17 8 27-23-16-23 16 8-27-22-17 28-1Z"/><path d="M55 190l6 18 19 1-15 11 5 18-15-11-15 11 5-18-15-11 19-1Z"/><path d="M245 245l7 21 22 1-17 13 6 21-18-12-18 12 6-21-17-13 22-1Z"/></g><g fill="${b}" fill-opacity=".38"><circle cx="220" cy="65" r="3"/><circle cx="95" cy="290" r="4"/><circle cx="35" cy="65" r="3"/></g>`,
+    `<g fill="none" stroke="${a}" stroke-width="2.4" stroke-opacity=".42"><path d="M40 30h70v70H40z"/><path d="M55 45h40v40H55z"/><path d="M190 175h75v75h-75z"/><path d="M207 192h41v41h-41z"/><path d="M35 245l45-45 45 45-45 45Z"/><path d="M185 25l30 30-30 30-30-30Z"/></g>`,
+    `<g fill="none" stroke="${a}" stroke-width="2.2" stroke-opacity=".4"><path d="M-20 60h340M-20 105h340M-20 150h340M-20 195h340M-20 240h340M-20 285h340"/><path d="M35 0v360M95 0v360M155 0v360M215 0v360M275 0v360" stroke="${b}" stroke-opacity=".32"/></g>`,
+    `<g fill="url(#halo)" opacity=".72"><circle cx="70" cy="80" r="48"/><circle cx="235" cy="205" r="62"/><circle cx="95" cy="300" r="35"/></g><g fill="none" stroke="${a}" stroke-opacity=".48" stroke-width="2"><circle cx="70" cy="80" r="48"/><circle cx="235" cy="205" r="62"/></g>`,
+    `<g fill="${a}" fill-opacity=".17"><ellipse cx="70" cy="70" rx="48" ry="24" transform="rotate(-35 70 70)"/><ellipse cx="220" cy="135" rx="62" ry="30" transform="rotate(35 220 135)"/><ellipse cx="105" cy="275" rx="55" ry="28" transform="rotate(-25 105 275)"/></g><g fill="none" stroke="${b}" stroke-width="2" stroke-opacity=".48"><path d="M20 130q45-65 90 0t90 0 90 0"/><path d="M-10 235q45-65 90 0t90 0 90 0"/></g>`,
+    `<g fill="none" stroke="${a}" stroke-width="3" stroke-opacity=".38"><path d="M35 70 C5 25 100 5 110 55 C120 105 40 120 55 165 C70 210 155 175 165 225 C175 275 95 320 60 285"/><path d="M220 35 C280 65 270 120 220 130 C170 140 180 200 230 205 C280 210 300 270 250 310"/></g><g fill="${b}" fill-opacity=".32"><circle cx="110" cy="55" r="10"/><circle cx="165" cy="225" r="12"/><circle cx="220" cy="130" r="9"/></g>`,
+    `<g fill="none" stroke="${a}" stroke-width="2" stroke-opacity=".42"><ellipse cx="150" cy="180" rx="118" ry="42" transform="rotate(-28 150 180)"/><ellipse cx="150" cy="180" rx="118" ry="42" transform="rotate(28 150 180)"/><ellipse cx="150" cy="180" rx="118" ry="42"/><circle cx="150" cy="180" r="17" fill="${b}" fill-opacity=".42"/></g><g fill="${b}"><circle cx="35" cy="122" r="6"/><circle cx="265" cy="238" r="6"/><circle cx="150" cy="62" r="5"/></g>`
+  ];
+  const art = patterns[theme.style] || patterns[0];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="360" viewBox="0 0 300 360"><defs><radialGradient id="halo"><stop stop-color="${b}" stop-opacity=".42"/><stop offset="1" stop-color="${b}" stop-opacity="0"/></radialGradient></defs>${art}</svg>`;
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
@@ -3773,6 +4003,10 @@ function applyBackgroundTheme(id, save = true) {
   app.style.setProperty("--bg-b", theme.b);
   app.style.setProperty("--orb-speed", `${15 + (theme.style % 5) * 3}s`);
   app.dataset.backgroundTheme = String(theme.id);
+  app.dataset.wallpaperStyle = String(theme.style);
+  app.style.setProperty("--wallpaper-motion-speed", `${[34, 22, 28, 18, 26, 15, 32, 24, 20, 17][theme.style]}s`);
+  app.style.setProperty("--wallpaper-pattern-size", `${[320, 420, 300, 360, 280, 260, 460, 380, 340, 420][theme.style]}px`);
+  app.style.setProperty("--wallpaper-orb-opacity", String([.32,.42,.24,.38,.28,.2,.5,.36,.46,.3][theme.style]));
 
   document.querySelectorAll(".theme-preset").forEach(button => {
     button.classList.toggle("selected", Number(button.dataset.themeId) === theme.id);
@@ -3796,7 +4030,7 @@ function openBackgroundThemePicker() {
   const cards = AITEL_BACKGROUND_THEMES.map(theme => `
     <button type="button" class="theme-preset ${theme.id === current ? "selected" : ""}"
       data-theme-id="${theme.id}" style="--swatch-a:${theme.a};--swatch-b:${theme.b};--motif-index:${theme.style}">
-      <span class="theme-preset-preview"><i>✧　♡　◇　◉</i><b>✦　⌁　☾</b></span>
+      <span class="theme-preset-preview" style="background-image:${makeTelegramWallpaper(theme)},radial-gradient(circle at 20% 20%,rgba(255,255,255,.32),transparent 28%),linear-gradient(135deg,${theme.a},${theme.b});background-size:cover,cover,cover"><i>${theme.id.toString().padStart(2,"0")}</i><b>${AITEL_BACKGROUND_STYLES[theme.style]}</b></span>
       <strong>${theme.id}. ${theme.name}</strong>
       <small>طرح تلگرامی · پس‌زمینه چت</small>
     </button>`).join("");
