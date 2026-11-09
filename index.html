@@ -1882,6 +1882,43 @@ input, textarea, select, .input, .composer-input-wrap {
 .chat-item:active { transform:scale(.975); }
 @media (prefers-reduced-motion:reduce) { .nav-liquid-indicator,.nav-item,.nav-icon,.page.active,.screen.active,.chat-screen.active,.chat-item { animation:none!important;transition:none!important;filter:none!important; } }
 
+
+
+/* ===== Halden-inspired atmosphere: soft bowl glow + fluid glass motion ===== */
+#mainScreen, #chatScreen { isolation:isolate; }
+#mainScreen::before, #chatScreen::before {
+  content:"";position:absolute;z-index:-1;pointer-events:none;top:-31vh;left:50%;
+  width:min(150vw,1500px);height:62vh;transform:translateX(-50%);
+  border-radius:0 0 50% 50% / 0 0 43% 43%;
+  background:radial-gradient(ellipse at 50% 0%,rgba(143,213,241,.34) 0%,rgba(143,213,241,.18) 36%,transparent 73%),radial-gradient(ellipse at 50% 8%,rgba(210,218,255,.42) 0%,transparent 67%);
+  filter:blur(25px);opacity:.82;animation:aitelBowlDrift 13s ease-in-out infinite alternate;
+}
+@keyframes aitelBowlDrift { 0%{transform:translate3d(-50%,-1.5vh,0) scaleX(.96)}100%{transform:translate3d(-50%,2vh,0) scaleX(1.045)} }
+[data-theme="dark"] #mainScreen::before,[data-theme="dark"] #chatScreen::before { opacity:.34;filter:blur(32px); }
+
+/* Selected tab: a soft water lens with a travelling inner reflection. */
+#mainScreen .bottom-nav { border:1px solid color-mix(in srgb,var(--primary) 8%,var(--line))!important;border-bottom:0!important;background:color-mix(in srgb,var(--surface) 76%,transparent)!important;-webkit-backdrop-filter:blur(38px) saturate(1.72)!important;backdrop-filter:blur(38px) saturate(1.72)!important; }
+.nav-liquid-indicator { top:7px!important;height:42px!important;border-radius:50%!important;background:radial-gradient(ellipse at 28% 17%,rgba(255,255,255,.96),transparent 42%),radial-gradient(ellipse at 76% 88%,color-mix(in srgb,var(--primary) 36%,transparent),transparent 64%),linear-gradient(145deg,color-mix(in srgb,var(--surface) 66%,white),color-mix(in srgb,var(--primary) 13%,var(--surface)))!important;box-shadow:inset 0 1.5px 2px rgba(255,255,255,.88),inset 0 -3px 7px color-mix(in srgb,var(--primary) 14%,transparent),0 7px 18px color-mix(in srgb,var(--primary) 15%,transparent),0 0 0 1px rgba(255,255,255,.38)!important;transition:left .82s cubic-bezier(.16,1.22,.28,1),width .72s cubic-bezier(.16,1.22,.28,1),opacity .24s ease,transform .72s cubic-bezier(.16,1.22,.28,1),border-radius .56s cubic-bezier(.2,.8,.2,1)!important; }
+.nav-liquid-indicator::before { inset:3px!important;border-radius:inherit;background:radial-gradient(ellipse at 26% 18%,rgba(255,255,255,.95),transparent 44%),radial-gradient(ellipse at 70% 76%,color-mix(in srgb,var(--primary) 22%,transparent),transparent 62%);opacity:.92!important;transform:scale(.88); }
+.nav-liquid-indicator::after { content:"";position:absolute;inset:7px 9px!important;border:1px solid rgba(255,255,255,.58)!important;border-radius:inherit;opacity:.65!important;filter:blur(.55px);transform:scale(.72) rotate(-12deg); }
+.nav-liquid-indicator.waving { animation:aitelWaterLens .9s cubic-bezier(.18,.9,.22,1)!important; }
+.nav-liquid-indicator.waving::before { animation:aitelWaterShimmer .9s ease-out both; }
+.nav-liquid-indicator.waving::after { animation:aitelWaterRipple .9s ease-out both; }
+@keyframes aitelWaterLens { 0%{border-radius:50%!important;transform:scale(.78,.92)}18%{border-radius:44% 56% 60% 40% / 54% 42% 58% 46%!important;transform:scale(1.28,.78)}38%{border-radius:62% 38% 42% 58% / 40% 62% 38% 60%!important;transform:scale(.9,1.16)}62%{border-radius:48% 52% 54% 46% / 52% 46% 54% 48%!important;transform:scale(1.08,.94)}100%{border-radius:50%!important;transform:scale(1)} }
+@keyframes aitelWaterShimmer { 0%{transform:translateX(-5px) scale(.72);opacity:.2}35%{transform:translateX(4px) scale(1.12);opacity:1}100%{transform:translateX(0) scale(.9);opacity:.82} }
+@keyframes aitelWaterRipple { 0%{transform:scale(.48) rotate(-12deg);opacity:0}34%{transform:scale(1.22) rotate(7deg);opacity:.9}100%{transform:scale(.82) rotate(0);opacity:.58} }
+.nav-item { transition:color .42s ease,transform .62s cubic-bezier(.16,1.18,.28,1),filter .42s ease!important; }
+.nav-item.active .nav-icon { transform:translateY(-2px) scale(1.13)!important; }
+.nav-item.active span:last-child { animation:aitelTabLabel .42s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes aitelTabLabel { from{opacity:.45;transform:translateY(3px);filter:blur(2px)}to{opacity:1;transform:translateY(0);filter:blur(0)} }
+
+/* Soft scene transitions for tabs and private conversations. */
+.page.active { animation:aitelPageArrive .62s cubic-bezier(.18,.82,.22,1) both!important; }
+.chat-screen.active { animation:aitelChatArrive .68s cubic-bezier(.18,.88,.22,1) both!important; }
+.chat-header,.messages-area,.composer-wrap { animation:aitelChatLayers .72s cubic-bezier(.18,.82,.22,1) both; }
+.chat-header { animation-delay:.015s; }.messages-area { animation-delay:.055s; }.composer-wrap { animation-delay:.09s; }
+@keyframes aitelChatLayers { from{opacity:0;transform:translate3d(0,9px,0)}to{opacity:1;transform:translate3d(0,0,0)} }
+@media (prefers-reduced-motion:reduce) { #mainScreen::before,#chatScreen::before,.nav-liquid-indicator.waving,.nav-liquid-indicator.waving::before,.nav-liquid-indicator.waving::after,.nav-item.active span:last-child,.chat-header,.messages-area,.composer-wrap { animation:none!important; } }
 </style>
 
 </head>
