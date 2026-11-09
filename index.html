@@ -1854,6 +1854,34 @@ input, textarea, select, .input, .composer-input-wrap {
 @media (prefers-reduced-motion: reduce) {
   .primary-btn, button.primary-btn, .icon-btn, .composer-action, .aitel-poll-option, .aitel-bot-menu button { transition: none !important; }
 }
+
+
+/* AITEL Liquid Glass navigation + fluid screen transitions */
+#mainScreen .bottom-nav { position:relative; isolation:isolate; overflow:hidden; border-radius:23px 23px 0 0; background:color-mix(in srgb,var(--surface) 72%,transparent)!important; -webkit-backdrop-filter:blur(34px) saturate(1.55)!important; backdrop-filter:blur(34px) saturate(1.55)!important; box-shadow:0 -8px 32px rgba(24,48,82,.055),inset 0 1px 0 rgba(255,255,255,.56)!important; }
+.nav-liquid-indicator { position:absolute; z-index:0; top:8px; left:0; width:48px; height:39px; border-radius:18px; pointer-events:none; opacity:0; transform:translate3d(0,0,0) scale(.72); transform-origin:center; background:radial-gradient(ellipse at 28% 18%,rgba(255,255,255,.88),transparent 43%),radial-gradient(ellipse at 78% 85%,color-mix(in srgb,var(--primary) 28%,transparent),transparent 66%),color-mix(in srgb,var(--primary) 13%,rgba(255,255,255,.40)); border:1px solid color-mix(in srgb,var(--primary) 19%,rgba(255,255,255,.62)); box-shadow:inset 0 1.5px 2px rgba(255,255,255,.72),inset 0 -2px 4px rgba(35,94,160,.08),0 5px 15px color-mix(in srgb,var(--primary) 13%,transparent); -webkit-backdrop-filter:blur(18px) saturate(1.8); backdrop-filter:blur(18px) saturate(1.8); transition:left .72s cubic-bezier(.18,1.18,.32,1),width .58s cubic-bezier(.18,1.18,.32,1),opacity .22s ease,transform .65s cubic-bezier(.18,1.18,.32,1),border-radius .48s ease; will-change:left,width,transform,border-radius; }
+.nav-liquid-indicator::before,.nav-liquid-indicator::after { content:"";position:absolute;inset:2px;border-radius:inherit;pointer-events:none; }
+.nav-liquid-indicator::before { background:radial-gradient(ellipse at 30% 10%,rgba(255,255,255,.78),transparent 48%);opacity:.9; }
+.nav-liquid-indicator::after { inset:5px 8px;border:1px solid rgba(255,255,255,.42);filter:blur(.35px);opacity:.65; }
+.nav-liquid-indicator.ready { opacity:1;transform:translate3d(0,0,0) scale(1); }
+.nav-liquid-indicator.waving { animation:aitelLiquidWave .72s cubic-bezier(.2,.85,.25,1); }
+@keyframes aitelLiquidWave { 0%{border-radius:18px;transform:scale(1,1)}22%{border-radius:48% 52% 42% 58%/55% 42% 58% 45%;transform:scale(1.24,.78)}42%{border-radius:36% 64% 60% 40%/42% 60% 40% 58%;transform:scale(.88,1.15)}66%{border-radius:48%;transform:scale(1.08,.94)}100%{border-radius:18px;transform:scale(1,1)} }
+.nav-item { position:relative;z-index:1;background:transparent!important;transition:color .35s ease,transform .35s cubic-bezier(.2,.9,.25,1); }
+.nav-item.active { color:var(--primary)!important;background:transparent!important; }
+.nav-item.active::before { display:none!important; }
+.nav-item .nav-icon { transition:transform .55s cubic-bezier(.18,1.2,.32,1),filter .35s ease; }
+.nav-item.active .nav-icon { transform:translateY(-1px) scale(1.08);filter:drop-shadow(0 2px 5px color-mix(in srgb,var(--primary) 24%,transparent)); }
+.nav-item:active { transform:scale(.94); }
+.nav-item:active .nav-icon { transform:scale(.88); }
+.page.active { animation:aitelPageArrive .48s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes aitelPageArrive { from{opacity:0;transform:translate3d(0,10px,0) scale(.992);filter:blur(5px)}to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)} }
+.screen.active { animation:aitelScreenArrive .52s cubic-bezier(.2,.82,.22,1) both; }
+@keyframes aitelScreenArrive { from{opacity:0;transform:scale(.986);filter:blur(7px)}to{opacity:1;transform:scale(1);filter:blur(0)} }
+.chat-screen.active { animation:aitelChatArrive .58s cubic-bezier(.18,.9,.22,1) both; }
+@keyframes aitelChatArrive { from{opacity:0;transform:translate3d(0,14px,0) scale(.985);filter:blur(8px)}65%{opacity:1;filter:blur(1px)}to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)} }
+.chat-item { transition:background .28s ease,transform .38s cubic-bezier(.18,1.15,.32,1),box-shadow .3s ease!important; }
+.chat-item:active { transform:scale(.975); }
+@media (prefers-reduced-motion:reduce) { .nav-liquid-indicator,.nav-item,.nav-icon,.page.active,.screen.active,.chat-screen.active,.chat-item { animation:none!important;transition:none!important;filter:none!important; } }
+
 </style>
 
 </head>
@@ -2127,6 +2155,7 @@ input, textarea, select, .input, .composer-input-wrap {
     </main>
 
     <nav class="bottom-nav" id="bottomNav">
+      <span class="nav-liquid-indicator" id="navLiquidIndicator" aria-hidden="true"></span>
       <button class="nav-item active" data-page="chatsPage">
         <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-1-1 1.5-3A7.5 7.5 0 1 1 20 11.5Z"/></svg></span>
         <span>گفت‌وگوها</span>
@@ -3182,6 +3211,35 @@ function closeChatScreen() {
    15. NAVIGATION EVENTS
 ------------------------- */
 
+let aitelNavWaveTimer = 0;
+function moveAitelNavIndicator(target, animate = true) {
+  const nav = byId("bottomNav");
+  const indicator = byId("navLiquidIndicator");
+  if (!nav || !indicator || !target) return;
+  const width = Math.min(50, Math.max(40, target.getBoundingClientRect().width * .48));
+  const navRect = nav.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const left = targetRect.left - navRect.left + (targetRect.width - width) / 2;
+  indicator.style.width = width + "px";
+  indicator.style.left = left + "px";
+  indicator.classList.add("ready");
+  if (animate) {
+    indicator.classList.remove("waving");
+    void indicator.offsetWidth;
+    indicator.classList.add("waving");
+    clearTimeout(aitelNavWaveTimer);
+    aitelNavWaveTimer = setTimeout(() => indicator.classList.remove("waving"), 760);
+  }
+}
+requestAnimationFrame(() => {
+  const initialNavItem = byId("bottomNav")?.querySelector(".nav-item.active");
+  if (initialNavItem) moveAitelNavIndicator(initialNavItem, false);
+});
+window.addEventListener("resize", () => {
+  const activeNavItem = byId("bottomNav")?.querySelector(".nav-item.active");
+  if (activeNavItem) moveAitelNavIndicator(activeNavItem, false);
+}, { passive:true });
+
 byId("bottomNav")?.addEventListener("click", event => {
   const button = event.target.closest(".nav-item");
 
@@ -3191,6 +3249,7 @@ byId("bottomNav")?.addEventListener("click", event => {
 
   if (pageId) {
     showPage(pageId);
+    moveAitelNavIndicator(button, true);
   }
 });
 
