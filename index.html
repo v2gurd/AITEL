@@ -8393,5 +8393,158 @@ const AITEL_MEDIA = (() => {
 })();
 </script>
 
+
+
+<style id="aitel-private-chat-real-fix-v2">
+/* Private chat: prevent bubbles from stretching vertically or distributing
+   sender/text/time across a tall empty card. */
+#chatScreen .messages-area {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  justify-content:flex-start !important;
+  gap:7px !important;
+  padding:12px 10px 14px !important;
+}
+#chatScreen .message-row {
+  display:flex !important;
+  flex:0 0 auto !important;
+  flex-grow:0 !important;
+  align-items:flex-end !important;
+  justify-content:flex-start !important;
+  width:100% !important;
+  min-height:0 !important;
+  height:auto !important;
+  gap:5px !important;
+}
+#chatScreen .message-row.theirs { justify-content:flex-end !important; }
+#chatScreen .message-row.mine { justify-content:flex-start !important; }
+#chatScreen .message-bubble {
+  display:flex !important;
+  flex:0 1 auto !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  align-self:flex-end !important;
+  width:fit-content !important;
+  min-width:0 !important;
+  max-width:min(78%, 320px) !important;
+  min-height:0 !important;
+  height:auto !important;
+  max-height:none !important;
+  padding:7px 10px 5px !important;
+  margin:0 !important;
+  gap:0 !important;
+  overflow-wrap:anywhere !important;
+  box-sizing:border-box !important;
+}
+#chatScreen .message-bubble > .message-sender {
+  display:flex !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 0 3px !important;
+  padding:0 !important;
+  line-height:1.25 !important;
+  font-size:9px !important;
+}
+#chatScreen .message-bubble > .message-text {
+  display:block !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  font-size:13px !important;
+  line-height:1.5 !important;
+  white-space:pre-wrap !important;
+  overflow-wrap:anywhere !important;
+  word-break:normal !important;
+}
+#chatScreen .message-bubble > .message-meta {
+  display:flex !important;
+  flex:0 0 auto !important;
+  align-self:stretch !important;
+  justify-content:flex-end !important;
+  align-items:center !important;
+  width:auto !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:3px 0 0 !important;
+  padding:0 !important;
+  line-height:1.1 !important;
+  font-size:8px !important;
+}
+#chatScreen .message-bubble > .message-reply,
+#chatScreen .message-bubble > .aitel-bot-poll,
+#chatScreen .message-bubble > .aitel-login-security-actions,
+#chatScreen .message-bubble > .aitel-bot-menu {
+  flex:0 0 auto !important;
+  height:auto !important;
+  min-height:0 !important;
+}
+/* Composer: stable four-control row, input takes only the remaining width. */
+#chatScreen .composer-wrap { padding:7px 9px calc(7px + env(safe-area-inset-bottom)) !important; }
+#chatScreen .composer {
+  display:flex !important;
+  flex-direction:row !important;
+  direction:rtl !important;
+  align-items:center !important;
+  gap:6px !important;
+  width:100% !important;
+  min-height:48px !important;
+}
+#chatScreen .composer > .composer-action,
+#chatScreen .composer-input-wrap > .composer-action {
+  flex:0 0 44px !important;
+  width:44px !important;
+  min-width:44px !important;
+  height:44px !important;
+  min-height:44px !important;
+  max-height:44px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:grid !important;
+  place-items:center !important;
+  box-sizing:border-box !important;
+}
+#chatScreen .composer-input-wrap {
+  flex:1 1 0% !important;
+  width:auto !important;
+  min-width:0 !important;
+  min-height:46px !important;
+  max-height:100px !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:3px 10px !important;
+  gap:4px !important;
+  box-sizing:border-box !important;
+}
+#chatScreen #messageInput {
+  flex:1 1 0% !important;
+  width:100% !important;
+  min-width:0 !important;
+  min-height:36px !important;
+  height:36px !important;
+  max-height:86px !important;
+  margin:0 !important;
+  padding:7px 2px !important;
+  line-height:1.45 !important;
+  resize:none !important;
+  box-sizing:border-box !important;
+}
+#chatScreen #voiceBtn { flex:0 0 44px !important; width:44px !important; min-width:44px !important; font-size:10px !important; }
+@media(max-width:420px) {
+  #chatScreen .message-bubble { max-width:min(80%, 300px) !important; }
+  #chatScreen .composer { gap:5px !important; }
+  #chatScreen .composer > .composer-action,
+  #chatScreen .composer-input-wrap > .composer-action,
+  #chatScreen #voiceBtn { flex-basis:42px !important; width:42px !important; min-width:42px !important; height:42px !important; min-height:42px !important; }
+}
+</style>
+
 </body>
 </html>
