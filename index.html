@@ -2009,6 +2009,87 @@ input, textarea, select, .input, .composer-input-wrap {
   .nav-liquid-indicator { height:41px!important;width:41px; }
 }
 
+
+
+/* AITEL 2-layer liquid navigation + compact message design */
+#mainScreen .bottom-nav {
+  position:relative!important; isolation:isolate; overflow:hidden!important;
+  height:calc(82px + var(--safe-bottom))!important;
+  min-height:calc(82px + var(--safe-bottom))!important;
+  margin:0 12px max(8px,env(safe-area-inset-bottom))!important;
+  width:calc(100% - 24px)!important;
+  padding:7px 8px calc(7px + var(--safe-bottom))!important;
+  border:1px solid color-mix(in srgb,var(--line) 70%,rgba(255,255,255,.7))!important;
+  border-radius:34px!important;
+  background:color-mix(in srgb,var(--surface) 76%,transparent)!important;
+  -webkit-backdrop-filter:blur(30px) saturate(1.65)!important;
+  backdrop-filter:blur(30px) saturate(1.65)!important;
+  box-shadow:0 9px 30px rgba(30,55,90,.09),inset 0 1px 0 rgba(255,255,255,.82)!important;
+}
+#mainScreen .nav-item {
+  flex:1 1 0!important; min-width:0!important; height:64px!important;
+  display:flex!important; flex-direction:column!important; justify-content:center!important;
+  align-items:center!important; gap:2px!important; padding:0!important;
+  color:var(--muted)!important; background:transparent!important; border:0!important;
+  z-index:2; transition:color .3s ease,transform .45s cubic-bezier(.2,.9,.2,1)!important;
+}
+#mainScreen .nav-item .nav-icon {
+  width:43px!important;height:43px!important;display:grid!important;place-items:center!important;
+  border-radius:50%!important; flex:0 0 43px!important;
+  background:color-mix(in srgb,var(--surface-2) 68%,transparent)!important;
+  border:1px solid color-mix(in srgb,var(--line) 72%,transparent)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.68),0 2px 6px rgba(25,50,85,.035)!important;
+  transition:transform .58s cubic-bezier(.16,1.25,.3,1),background .35s ease,border-color .35s ease,box-shadow .35s ease!important;
+}
+#mainScreen .nav-item .nav-icon svg {width:20px!important;height:20px!important;}
+#mainScreen .nav-item>span:not(.nav-icon) {font-size:8px!important;line-height:1!important;font-weight:600!important;}
+#mainScreen .nav-item.active {color:var(--primary)!important;}
+#mainScreen .nav-item.active .nav-icon {background:color-mix(in srgb,var(--primary) 8%,var(--surface))!important;border-color:transparent!important;transform:translateY(-1px) scale(1.035)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.88),0 3px 10px color-mix(in srgb,var(--primary) 10%,transparent)!important;}
+#mainScreen .nav-item::before {display:none!important;}
+.nav-liquid-indicator {
+  z-index:1!important; top:10px!important; height:45px!important; width:45px!important;
+  border-radius:50%!important; opacity:0; pointer-events:none;
+  background:radial-gradient(circle at 28% 18%,rgba(255,255,255,.98),transparent 43%),
+    radial-gradient(circle at 70% 78%,color-mix(in srgb,var(--primary) 35%,transparent),transparent 65%),
+    color-mix(in srgb,var(--surface) 82%,var(--primary) 18%)!important;
+  border:1px solid color-mix(in srgb,var(--primary) 25%,rgba(255,255,255,.85))!important;
+  box-shadow:0 5px 16px color-mix(in srgb,var(--primary) 17%,transparent),inset 0 1.5px 2px rgba(255,255,255,.95),inset 0 -3px 7px color-mix(in srgb,var(--primary) 12%,transparent)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(1.8)!important;backdrop-filter:blur(20px) saturate(1.8)!important;
+  transition:left .82s cubic-bezier(.16,1,.3,1),width .72s cubic-bezier(.16,1,.3,1),transform .78s cubic-bezier(.16,1,.3,1),opacity .22s ease!important;
+  will-change:left,width,transform;
+}
+.nav-liquid-indicator::before {content:"";position:absolute;inset:5px;border-radius:50%;background:radial-gradient(circle at 28% 18%,rgba(255,255,255,.9),transparent 58%);filter:blur(1px);opacity:.9;}
+.nav-liquid-indicator::after {content:"";position:absolute;inset:12px;border-radius:50%;background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.6),color-mix(in srgb,var(--primary) 18%,transparent));border:1px solid rgba(255,255,255,.52);box-shadow:0 0 12px color-mix(in srgb,var(--primary) 14%,transparent);}
+.nav-liquid-indicator.ready {opacity:1!important;transform:translate3d(0,0,0) scale(1)!important;}
+.nav-liquid-indicator.waving {animation:aitelInnerBubble .88s cubic-bezier(.18,.9,.2,1) both!important;}
+@keyframes aitelInnerBubble {0%{border-radius:50%;transform:scale(1)}18%{border-radius:48% 52% 52% 48%;transform:scaleX(1.28) scaleY(.82)}38%{border-radius:50% 50% 42% 58%;transform:scaleX(1.12) scaleY(1.08)}62%{border-radius:50%;transform:scaleX(.94) scaleY(1.05)}100%{border-radius:50%;transform:scale(1)}}
+[data-theme="dark"] .nav-liquid-indicator {background:radial-gradient(circle at 27% 18%,rgba(255,255,255,.3),transparent 45%),radial-gradient(circle at 72% 78%,color-mix(in srgb,var(--primary) 45%,transparent),transparent 68%),color-mix(in srgb,var(--surface-3) 74%,var(--primary) 26%)!important;border-color:rgba(156,190,255,.3)!important;box-shadow:0 0 10px color-mix(in srgb,var(--primary) 35%,transparent),0 0 24px color-mix(in srgb,var(--primary) 28%,transparent),inset 0 1px 3px rgba(255,255,255,.35),inset 0 -3px 8px rgba(0,0,0,.24)!important;}
+[data-theme="dark"] .nav-liquid-indicator::after {background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.38),color-mix(in srgb,var(--primary) 32%,transparent));border-color:rgba(205,220,255,.32);box-shadow:0 0 18px color-mix(in srgb,var(--primary) 34%,transparent);}
+
+/* Filter tabs: outer glass capsule with a softly filled active capsule */
+#chatFilters {margin:2px 14px 14px;padding:5px!important;gap:5px!important;width:max-content;max-width:calc(100% - 28px);border-radius:999px!important;overflow-x:auto!important;scrollbar-width:none;background:color-mix(in srgb,var(--surface) 72%,transparent)!important;border:1px solid var(--line)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 15px rgba(20,45,80,.035)!important;-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);}
+#chatFilters .filter-chip {position:relative;z-index:0;flex:0 0 auto;padding:8px 13px!important;border:1px solid transparent!important;border-radius:999px!important;background:transparent!important;color:var(--muted)!important;font-size:10px!important;font-weight:600!important;white-space:nowrap;transition:color .3s ease,transform .35s cubic-bezier(.2,.8,.2,1),background .35s ease,box-shadow .35s ease!important;}
+#chatFilters .filter-chip.active {color:var(--primary)!important;background:color-mix(in srgb,var(--primary) 12%,var(--surface))!important;border-color:color-mix(in srgb,var(--primary) 13%,transparent)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 3px 10px color-mix(in srgb,var(--primary) 10%,transparent)!important;transform:scale(1.025);}
+#chatFilters .filter-chip:active {transform:scale(.96)!important;}
+
+/* Smaller, quieter message cards and a consistent sender label */
+.messages-area {gap:6px!important;padding:12px 11px!important;}
+.message-row {gap:5px!important;}
+.message-bubble {max-width:min(76%,340px)!important;min-width:52px!important;padding:7px 10px 5px!important;border-radius:14px!important;box-shadow:0 3px 12px rgba(0,0,0,.045),inset 0 1px 0 rgba(255,255,255,.24)!important;}
+.message-row.mine .message-bubble {border-bottom-right-radius:5px!important;}
+.message-row.theirs .message-bubble {border-bottom-left-radius:5px!important;}
+.message-sender {display:flex!important;align-items:center!important;gap:4px!important;margin:0 0 3px!important;font-size:9px!important;line-height:1.35!important;font-weight:700!important;letter-spacing:-.01em;color:var(--primary)!important;opacity:.9;}
+.message-text,.message-bubble .message-text {font-size:12px!important;line-height:1.72!important;font-weight:450!important;}
+.message-meta,.message-meta span,.message-ticks {font-size:8px!important;line-height:1.2!important;}
+.message-meta {margin-top:3px!important;gap:4px!important;}
+@media(max-width:420px){
+ #mainScreen .bottom-nav{margin-left:7px!important;margin-right:7px!important;width:calc(100% - 14px)!important;padding-left:5px!important;padding-right:5px!important;}
+ #mainScreen .nav-item .nav-icon{width:40px!important;height:40px!important;flex-basis:40px!important;}
+ .nav-liquid-indicator{width:42px!important;height:42px!important;top:10px!important;}
+ #chatFilters{max-width:calc(100% - 20px);margin-left:10px;margin-right:10px;}
+ .message-bubble{max-width:min(80%,310px)!important;padding:6px 9px 5px!important;}
+}
+
 </style>
 
 </head>
@@ -3343,10 +3424,11 @@ function moveAitelNavIndicator(target, animate = true) {
   const nav = byId("bottomNav");
   const indicator = byId("navLiquidIndicator");
   if (!nav || !indicator || !target) return;
-  const width = Math.min(50, Math.max(40, target.getBoundingClientRect().width * .48));
+  const icon = target.querySelector(".nav-icon") || target;
+  const iconRect = icon.getBoundingClientRect();
   const navRect = nav.getBoundingClientRect();
-  const targetRect = target.getBoundingClientRect();
-  const left = targetRect.left - navRect.left + (targetRect.width - width) / 2;
+  const width = Math.min(48, Math.max(40, iconRect.width + 4));
+  const left = iconRect.left - navRect.left + (iconRect.width - width) / 2;
   indicator.style.width = width + "px";
   indicator.style.left = left + "px";
   indicator.classList.add("ready");
@@ -5230,22 +5312,19 @@ function renderSingleMessage(message) {
   const senderId = getMessageSender(message);
 
   const sender = AITEL.activeChat?.members?.find(
-    member => member.user_id === senderId
+    member => member.user_id === senderId || member.id === senderId
   );
 
-  const senderName = sender?.profile
-    ? getDisplayName(sender.profile)
-    : "کاربر";
-
-  const senderProfile = sender?.profile;
+  const senderProfile = mine ? (AITEL.profile || sender?.profile) : sender?.profile;
+  const senderName = senderProfile
+    ? getDisplayName(senderProfile)
+    : (mine ? (AITEL.user?.user_metadata?.full_name || AITEL.user?.email?.split("@")[0] || "شما") : (sender?.display_name || sender?.username || AITEL.activeChat?.title || "کاربر"));
   const isOfficialBotSender = senderProfile?.username === AITEL_CONFIG.BOT_USERNAME;
-  const senderHTML = (AITEL.activeChat?.isGroup && !mine) || isOfficialBotSender
-    ? `
-      <div class="message-sender" data-user-id="${escapeAttribute(senderId || "")}" style="font-size:10px;color:var(--primary);margin-bottom:5px;display:flex;align-items:center;gap:5px">
-        ${escapeHTML(senderName)} ${isOfficialBotSender ? officialVerifiedBadge() : ""}
-      </div>
-    `
-    : "";
+  const senderHTML = `
+    <div class="message-sender" data-user-id="${escapeAttribute(senderId || "")}">
+      ${escapeHTML(senderName)} ${isOfficialBotSender ? officialVerifiedBadge() : ""}
+    </div>
+  `;
 
   const replyHTML = message.reply_to
     ? `
