@@ -8546,5 +8546,172 @@ const AITEL_MEDIA = (() => {
 }
 </style>
 
+
+<style id="aitel-private-bubble-final-compact">
+/* Final compact layout: grid rows collapse to their actual content height. */
+#chatScreen .messages-area .message-row {
+  display:flex !important;
+  flex:0 0 auto !important;
+  height:auto !important;
+  min-height:0 !important;
+  align-items:flex-end !important;
+}
+#chatScreen .messages-area .message-bubble {
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) !important;
+  grid-auto-rows:min-content !important;
+  align-content:start !important;
+  justify-content:start !important;
+  justify-items:stretch !important;
+  flex:0 1 auto !important;
+  width:fit-content !important;
+  min-width:0 !important;
+  max-width:min(74%,280px) !important;
+  min-height:0 !important;
+  height:auto !important;
+  max-height:none !important;
+  padding:6px 9px 5px !important;
+  row-gap:0 !important;
+  box-sizing:border-box !important;
+}
+#chatScreen .messages-area .message-bubble > .message-sender {
+  display:flex !important;
+  align-self:start !important;
+  width:max-content !important;
+  max-width:100% !important;
+  height:min-content !important;
+  min-height:0 !important;
+  margin:0 0 2px !important;
+  padding:0 !important;
+  font-size:8px !important;
+  line-height:1.15 !important;
+}
+#chatScreen .messages-area .message-bubble > .message-text {
+  display:block !important;
+  align-self:start !important;
+  width:auto !important;
+  height:min-content !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  font-size:12px !important;
+  line-height:1.32 !important;
+  white-space:pre-wrap !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+#chatScreen .messages-area .message-bubble > .message-meta {
+  display:flex !important;
+  align-self:stretch !important;
+  width:auto !important;
+  height:min-content !important;
+  min-height:0 !important;
+  margin:2px 0 0 !important;
+  padding:0 !important;
+  line-height:1 !important;
+  font-size:7px !important;
+}
+#chatScreen .messages-area .message-bubble > .message-reply,
+#chatScreen .messages-area .message-bubble > .aitel-bot-poll,
+#chatScreen .messages-area .message-bubble > .aitel-login-security-actions,
+#chatScreen .messages-area .message-bubble > .aitel-bot-menu {
+  min-height:0 !important;
+  height:auto !important;
+  margin-block:3px 0 !important;
+}
+#chatScreen .messages-area .message-bubble .message-text p,
+#chatScreen .messages-area .message-bubble .message-text div {
+  margin-block:0 !important;
+  min-height:0 !important;
+}
+@media(max-width:420px) {
+  #chatScreen .messages-area .message-bubble { max-width:min(74%,270px) !important; }
+}
+
+
+/* AITEL — compact liquid-glass chat list search */
+#chatsPage > .search-box {
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+  width:auto !important;
+  min-width:0 !important;
+  margin:7px 16px 13px !important;
+  padding:4px !important;
+  border:1px solid color-mix(in srgb, var(--line) 78%, transparent) !important;
+  border-radius:22px !important;
+  background:color-mix(in srgb, var(--surface) 82%, transparent) !important;
+  box-shadow:0 5px 18px rgba(25,38,60,.055), inset 0 1px 0 rgba(255,255,255,.62) !important;
+  backdrop-filter:blur(18px) saturate(145%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(145%) !important;
+  transition:border-color .22s ease, box-shadow .22s ease, background .22s ease !important;
+  box-sizing:border-box !important;
+}
+#chatsPage > .search-box:focus-within {
+  border-color:color-mix(in srgb, var(--accent, #6288d8) 55%, var(--line)) !important;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent, #6288d8) 11%, transparent), 0 7px 22px rgba(25,38,60,.075), inset 0 1px 0 rgba(255,255,255,.7) !important;
+}
+#chatsPage > .search-box input#chatSearchInput {
+  display:block !important;
+  flex:1 1 auto !important;
+  width:100% !important;
+  min-width:0 !important;
+  height:43px !important;
+  margin:0 !important;
+  padding:0 13px 0 43px !important;
+  border:0 !important;
+  outline:0 !important;
+  border-radius:17px !important;
+  background:transparent !important;
+  color:var(--text) !important;
+  font:500 13px/1.4 inherit !important;
+  text-align:right !important;
+  direction:rtl !important;
+  box-shadow:none !important;
+  -webkit-appearance:none !important;
+  appearance:none !important;
+}
+#chatsPage > .search-box input#chatSearchInput::placeholder {
+  color:var(--muted) !important;
+  opacity:.82 !important;
+}
+#chatsPage > .search-box > span {
+  position:absolute !important;
+  z-index:1 !important;
+  left:9px !important;
+  right:auto !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  display:grid !important;
+  place-items:center !important;
+  width:32px !important;
+  height:32px !important;
+  margin:0 !important;
+  border-radius:50% !important;
+  border:1px solid color-mix(in srgb, var(--line) 75%, transparent) !important;
+  background:color-mix(in srgb, var(--surface) 92%, transparent) !important;
+  color:var(--muted) !important;
+  font-size:17px !important;
+  line-height:1 !important;
+  pointer-events:none !important;
+}
+#mainScreen[data-theme="dark"] #chatsPage > .search-box,
+#mainScreen.dark #chatsPage > .search-box {
+  background:rgba(255,255,255,.075) !important;
+  border-color:rgba(255,255,255,.13) !important;
+  box-shadow:0 7px 22px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+#mainScreen[data-theme="dark"] #chatsPage > .search-box > span,
+#mainScreen.dark #chatsPage > .search-box > span {
+  background:rgba(255,255,255,.08) !important;
+  border-color:rgba(255,255,255,.12) !important;
+}
+@media(max-width:480px) {
+  #chatsPage > .search-box { margin:6px 13px 11px !important; border-radius:20px !important; }
+  #chatsPage > .search-box input#chatSearchInput { height:41px !important; font-size:12.5px !important; }
+}
+
+</style>
+
 </body>
 </html>
